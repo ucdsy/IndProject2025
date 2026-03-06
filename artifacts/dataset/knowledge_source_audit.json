@@ -1,23 +1,23 @@
 {
-  "query_count": 105,
+  "query_count": 109,
   "descriptor_count": 25,
   "descriptor_phrase_count": 185,
   "lexicon_phrase_count": 136,
   "summary": {
-    "descriptor_alias_hit_count": 65,
+    "descriptor_alias_hit_count": 64,
     "descriptor_example_hit_count": 1,
-    "segment_alias_hit_count": 38,
-    "lexicon_hit_count": 216,
+    "segment_alias_hit_count": 33,
+    "lexicon_hit_count": 203,
     "lexicon_hit_outside_descriptor_count": 26
   },
   "findings": {
     "descriptor_example_hits": [
       {
-        "fqdn": "clinic.health.cn",
-        "phrase": "去哪里挂号",
+        "fqdn": "tutoring.education.cn",
+        "phrase": "找个导师",
         "hits": 1,
         "sample_ids": [
-          "formal_dev_000048"
+          "formal_blind_000035"
         ]
       }
     ],
@@ -25,7 +25,7 @@
       {
         "fqdn": "risk.security.cn",
         "phrase": "风险",
-        "hits": 11,
+        "hits": 14,
         "sample_ids": [
           "formal_dev_000007",
           "formal_dev_000009",
@@ -37,7 +37,7 @@
       {
         "fqdn": "compliance.security.cn",
         "phrase": "合规",
-        "hits": 9,
+        "hits": 11,
         "sample_ids": [
           "formal_dev_000007",
           "formal_dev_000008",
@@ -47,33 +47,9 @@
         ]
       },
       {
-        "fqdn": "invoice.finance.cn",
-        "phrase": "入账",
-        "hits": 8,
-        "sample_ids": [
-          "formal_dev_000018",
-          "formal_dev_000020",
-          "formal_blind_000011",
-          "formal_blind_000013",
-          "formal_blind_000014"
-        ]
-      },
-      {
-        "fqdn": "invoice.finance.cn",
-        "phrase": "票据",
-        "hits": 8,
-        "sample_ids": [
-          "formal_dev_000015",
-          "formal_dev_000016",
-          "formal_dev_000017",
-          "formal_dev_000018",
-          "formal_blind_000012"
-        ]
-      },
-      {
         "fqdn": "tax.finance.cn",
         "phrase": "税务",
-        "hits": 8,
+        "hits": 10,
         "sample_ids": [
           "formal_dev_000015",
           "formal_dev_000017",
@@ -83,27 +59,39 @@
         ]
       },
       {
-        "fqdn": "meeting.productivity.cn",
-        "phrase": "安排",
-        "hits": 7,
+        "fqdn": "invoice.finance.cn",
+        "phrase": "票据",
+        "hits": 9,
         "sample_ids": [
-          "formal_dev_000024",
-          "formal_dev_000027",
-          "formal_dev_000042",
-          "formal_dev_000043",
-          "formal_dev_000044"
+          "formal_dev_000015",
+          "formal_dev_000016",
+          "formal_dev_000017",
+          "formal_dev_000018",
+          "formal_blind_000011"
         ]
       },
       {
         "fqdn": "coupon.commerce.cn",
         "phrase": "优惠",
-        "hits": 6,
+        "hits": 7,
         "sample_ids": [
           "formal_dev_000032",
           "formal_dev_000034",
           "formal_dev_000035",
           "formal_dev_000041",
-          "formal_blind_000021"
+          "formal_blind_000022"
+        ]
+      },
+      {
+        "fqdn": "meeting.productivity.cn",
+        "phrase": "安排",
+        "hits": 7,
+        "sample_ids": [
+          "formal_dev_000024",
+          "formal_dev_000025",
+          "formal_dev_000026",
+          "formal_dev_000027",
+          "formal_dev_000036"
         ]
       },
       {
@@ -113,9 +101,21 @@
         "sample_ids": [
           "formal_dev_000038",
           "formal_dev_000039",
-          "formal_blind_000024",
           "formal_blind_000025",
-          "formal_blind_000027"
+          "formal_blind_000026",
+          "formal_blind_000028"
+        ]
+      },
+      {
+        "fqdn": "invoice.finance.cn",
+        "phrase": "入账",
+        "hits": 6,
+        "sample_ids": [
+          "formal_dev_000018",
+          "formal_dev_000020",
+          "formal_blind_000014",
+          "formal_challenge_000007",
+          "formal_challenge_000008"
         ]
       },
       {
@@ -149,69 +149,80 @@
         "sample_ids": [
           "formal_dev_000038",
           "formal_dev_000039",
-          "formal_blind_000024",
           "formal_blind_000025",
-          "formal_blind_000027"
-        ]
-      },
-      {
-        "fqdn": "activity.travel.cn",
-        "phrase": "活动",
-        "hits": 5,
-        "sample_ids": [
-          "formal_dev_000037",
-          "formal_dev_000042",
-          "formal_blind_000023",
-          "formal_blind_000027",
-          "formal_challenge_000017"
-        ]
-      },
-      {
-        "fqdn": "itinerary.travel.cn",
-        "phrase": "行程",
-        "hits": 5,
-        "sample_ids": [
-          "formal_dev_000036",
-          "formal_dev_000037",
-          "formal_dev_000040",
-          "formal_dev_000045",
+          "formal_blind_000026",
           "formal_blind_000028"
         ]
       },
       {
         "fqdn": "meeting.productivity.cn",
         "phrase": "会议",
-        "hits": 5,
+        "hits": 6,
         "sample_ids": [
           "formal_dev_000024",
+          "formal_dev_000025",
           "formal_dev_000026",
-          "formal_blind_000017",
-          "formal_blind_000018",
-          "formal_challenge_000010"
+          "formal_dev_000027",
+          "formal_blind_000018"
         ]
       },
       {
-        "fqdn": "meeting.productivity.cn",
-        "phrase": "要点",
+        "fqdn": "invoice.finance.cn",
+        "phrase": "发票",
         "hits": 5,
         "sample_ids": [
-          "formal_dev_000010",
-          "formal_dev_000024",
-          "formal_blind_000005",
-          "formal_blind_000007",
-          "formal_challenge_000004"
+          "formal_dev_000015",
+          "formal_dev_000016",
+          "formal_dev_000017",
+          "formal_blind_000011",
+          "formal_blind_000012"
         ]
       },
       {
-        "fqdn": "permit.gov.cn",
-        "phrase": "备案",
+        "fqdn": "policy.gov.cn",
+        "phrase": "标准",
         "hits": 5,
         "sample_ids": [
-          "formal_dev_000001",
-          "formal_dev_000003",
-          "formal_dev_000004",
+          "formal_dev_000005",
           "formal_dev_000006",
+          "formal_blind_000003",
+          "formal_blind_000004",
+          "formal_challenge_000002"
+        ]
+      },
+      {
+        "fqdn": "policy.gov.cn",
+        "phrase": "规范",
+        "hits": 5,
+        "sample_ids": [
+          "formal_dev_000004",
+          "formal_dev_000005",
+          "formal_dev_000006",
+          "formal_blind_000003",
           "formal_blind_000004"
+        ]
+      },
+      {
+        "fqdn": "weather.cn",
+        "phrase": "天气",
+        "hits": 5,
+        "sample_ids": [
+          "formal_dev_000037",
+          "formal_dev_000040",
+          "formal_dev_000042",
+          "formal_dev_000045",
+          "formal_challenge_000019"
+        ]
+      },
+      {
+        "fqdn": "activity.travel.cn",
+        "phrase": "活动",
+        "hits": 4,
+        "sample_ids": [
+          "formal_dev_000042",
+          "formal_blind_000024",
+          "formal_blind_000028",
+          "formal_challenge_000017"
         ]
       },
       {
@@ -226,36 +237,25 @@
         ]
       },
       {
+        "fqdn": "docs.productivity.cn",
+        "phrase": "方案",
+        "hits": 4,
+        "sample_ids": [
+          "formal_dev_000028",
+          "formal_dev_000029",
+          "formal_dev_000046",
+          "formal_blind_000020"
+        ]
+      },
+      {
         "fqdn": "hotel.travel.cn",
-        "phrase": "杭州",
+        "phrase": "住宿",
         "hits": 4,
         "sample_ids": [
-          "formal_dev_000037",
-          "formal_dev_000044",
-          "formal_blind_000023",
-          "formal_blind_000026"
-        ]
-      },
-      {
-        "fqdn": "invoice.finance.cn",
-        "phrase": "发票",
-        "hits": 4,
-        "sample_ids": [
-          "formal_dev_000015",
-          "formal_dev_000016",
           "formal_dev_000017",
-          "formal_blind_000011"
-        ]
-      },
-      {
-        "fqdn": "itinerary.travel.cn",
-        "phrase": "杭州",
-        "hits": 4,
-        "sample_ids": [
-          "formal_dev_000037",
-          "formal_dev_000044",
-          "formal_blind_000023",
-          "formal_blind_000026"
+          "formal_dev_000038",
+          "formal_blind_000012",
+          "formal_challenge_000007"
         ]
       }
     ],
@@ -275,20 +275,6 @@
         "in_descriptors": false
       },
       {
-        "section": "primary_action",
-        "label": "check",
-        "phrase": "看看",
-        "hits": 20,
-        "sample_ids": [
-          "formal_dev_000004",
-          "formal_dev_000006",
-          "formal_dev_000011",
-          "formal_dev_000013",
-          "formal_dev_000032"
-        ],
-        "in_descriptors": false
-      },
-      {
         "section": "industry_context",
         "label": "manufacturing",
         "phrase": "设备",
@@ -299,6 +285,20 @@
           "formal_dev_000010",
           "formal_dev_000011",
           "formal_dev_000013"
+        ],
+        "in_descriptors": false
+      },
+      {
+        "section": "primary_action",
+        "label": "check",
+        "phrase": "看看",
+        "hits": 19,
+        "sample_ids": [
+          "formal_dev_000011",
+          "formal_dev_000013",
+          "formal_dev_000032",
+          "formal_dev_000034",
+          "formal_dev_000035"
         ],
         "in_descriptors": false
       },
@@ -317,6 +317,20 @@
         "in_descriptors": false
       },
       {
+        "section": "primary_action",
+        "label": "check",
+        "phrase": "检查",
+        "hits": 10,
+        "sample_ids": [
+          "formal_dev_000004",
+          "formal_dev_000006",
+          "formal_dev_000007",
+          "formal_dev_000012",
+          "formal_blind_000004"
+        ],
+        "in_descriptors": false
+      },
+      {
         "section": "industry_context",
         "label": "enterprise_service",
         "phrase": "平台",
@@ -331,16 +345,16 @@
         "in_descriptors": false
       },
       {
-        "section": "primary_action",
-        "label": "check",
-        "phrase": "检查",
+        "section": "secondary_intents",
+        "label": "docs.productivity.cn",
+        "phrase": "提纲",
         "hits": 8,
         "sample_ids": [
-          "formal_dev_000007",
-          "formal_dev_000012",
-          "formal_dev_000014",
-          "formal_blind_000005",
-          "formal_blind_000010"
+          "formal_dev_000004",
+          "formal_dev_000006",
+          "formal_dev_000027",
+          "formal_dev_000029",
+          "formal_dev_000031"
         ],
         "in_descriptors": false
       },
@@ -361,28 +375,14 @@
       {
         "section": "secondary_intents",
         "label": "docs.productivity.cn",
-        "phrase": "提纲",
-        "hits": 6,
-        "sample_ids": [
-          "formal_dev_000024",
-          "formal_dev_000028",
-          "formal_dev_000030",
-          "formal_blind_000018",
-          "formal_blind_000019"
-        ],
-        "in_descriptors": false
-      },
-      {
-        "section": "secondary_intents",
-        "label": "docs.productivity.cn",
         "phrase": "材料",
         "hits": 6,
         "sample_ids": [
-          "formal_dev_000024",
-          "formal_dev_000029",
+          "formal_dev_000027",
+          "formal_dev_000028",
+          "formal_dev_000030",
           "formal_dev_000031",
-          "formal_blind_000018",
-          "formal_blind_000020"
+          "formal_blind_000019"
         ],
         "in_descriptors": false
       },
@@ -396,19 +396,6 @@
           "formal_dev_000049",
           "formal_blind_000009",
           "formal_challenge_000005"
-        ],
-        "in_descriptors": false
-      },
-      {
-        "section": "primary_action",
-        "label": "verify",
-        "phrase": "核验",
-        "hits": 4,
-        "sample_ids": [
-          "formal_dev_000009",
-          "formal_blind_000006",
-          "formal_blind_000007",
-          "formal_challenge_000003"
         ],
         "in_descriptors": false
       },
@@ -443,8 +430,20 @@
         "hits": 3,
         "sample_ids": [
           "formal_dev_000030",
-          "formal_blind_000020",
+          "formal_blind_000021",
           "formal_challenge_000011"
+        ],
+        "in_descriptors": false
+      },
+      {
+        "section": "primary_action",
+        "label": "verify",
+        "phrase": "核验",
+        "hits": 3,
+        "sample_ids": [
+          "formal_dev_000009",
+          "formal_blind_000006",
+          "formal_challenge_000003"
         ],
         "in_descriptors": false
       },
@@ -455,19 +454,41 @@
         "hits": 3,
         "sample_ids": [
           "formal_dev_000030",
-          "formal_blind_000020",
+          "formal_blind_000021",
           "formal_challenge_000011"
         ],
         "in_descriptors": false
       },
       {
-        "section": "domain_hints",
-        "label": "security",
-        "phrase": "出境",
+        "section": "primary_action",
+        "label": "check",
+        "phrase": "查一下",
         "hits": 2,
         "sample_ids": [
-          "formal_dev_000007",
-          "formal_blind_000005"
+          "formal_dev_000044",
+          "formal_dev_000048"
+        ],
+        "in_descriptors": false
+      },
+      {
+        "section": "capability_hints",
+        "label": "itinerary",
+        "phrase": "路线",
+        "hits": 2,
+        "sample_ids": [
+          "formal_dev_000036",
+          "formal_blind_000034"
+        ],
+        "in_descriptors": false
+      },
+      {
+        "section": "primary_action",
+        "label": "apply",
+        "phrase": "办理",
+        "hits": 2,
+        "sample_ids": [
+          "formal_blind_000001",
+          "formal_blind_000002"
         ],
         "in_descriptors": false
       },
@@ -483,12 +504,13 @@
         "in_descriptors": false
       },
       {
-        "section": "primary_action",
-        "label": "check",
-        "phrase": "查一下",
-        "hits": 1,
+        "section": "target_object",
+        "label": "itinerary",
+        "phrase": "路线",
+        "hits": 2,
         "sample_ids": [
-          "formal_dev_000045"
+          "formal_dev_000036",
+          "formal_blind_000034"
         ],
         "in_descriptors": false
       },
@@ -503,32 +525,22 @@
         "in_descriptors": false
       },
       {
-        "section": "capability_hints",
-        "label": "itinerary",
-        "phrase": "路线",
-        "hits": 1,
-        "sample_ids": [
-          "formal_blind_000031"
-        ],
-        "in_descriptors": false
-      },
-      {
         "section": "domain_hints",
         "label": "education",
         "phrase": "学习",
         "hits": 1,
         "sample_ids": [
-          "formal_blind_000031"
+          "formal_blind_000034"
         ],
         "in_descriptors": false
       },
       {
-        "section": "primary_action",
-        "label": "apply",
-        "phrase": "办理",
+        "section": "domain_hints",
+        "label": "security",
+        "phrase": "出境",
         "hits": 1,
         "sample_ids": [
-          "formal_blind_000002"
+          "formal_dev_000007"
         ],
         "in_descriptors": false
       },
@@ -559,16 +571,6 @@
         "hits": 1,
         "sample_ids": [
           "formal_dev_000035"
-        ],
-        "in_descriptors": false
-      },
-      {
-        "section": "target_object",
-        "label": "itinerary",
-        "phrase": "路线",
-        "hits": 1,
-        "sample_ids": [
-          "formal_blind_000031"
         ],
         "in_descriptors": false
       }
