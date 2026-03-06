@@ -1,0 +1,53 @@
+# Extracted from: /Users/xizhuxizhu/Desktop/IndProj04/_inputs/vendor_docs/A2A_Agent_注册与发现服务技术实现方案.docx
+
+A2A Agent 注册与发现服务技术实现方案
+一、整体架构设计
+整个方案围绕三个核心组件展开：Agent Card（智能体名片）、Registry Service（注册中心） 和 Discovery Service（发现服务）。Agent 在启动时将自身元数据封装为标准化的 Agent Card，向注册中心注册；其他 Agent 或客户端通过发现服务按技能、标签、能力等多维度检索匹配的 Agent。
+二、Agent Card 数据模型
+Agent Card 是整个系统的核心数据载体，遵循 Google A2A 协议规范，描述一个 Agent 的身份、能力和通信方式。
+一张 Agent Card 包含以下几组信息。身份信息包括全局唯一的 agent_id、人类可读的 name、以及 description 自然语言描述。通信信息包括 base_url（A2A 协议端点）、version（协议版本）和 authentication 鉴权配置。能力声明包括 skills 列表（每个 skill 有自己的 skill_id、skill_name、description、input_schema 和 output_schema）、tags 标签数组、以及 capabilities 对象（声明是否支持 streaming、pushNotifications 等协议能力）。运行状态包括 status（active / inactive / degraded）和 created_at、updated_at 时间戳。
+三、注册写入流程
+3.1 入口验证
+Agent 通过 POST /agents/register 提交自己的 Agent Card。注册处理器首先进行合法性校验：检查 agent_id 是否符合命名规范，base_url 是否可达，skills 列表是否非空且每个 skill 的 input_schema 是否为合法 JSON Schema，tags 是否在允许的标签枚举范围内。
+对于已存在的 agent_id，系统视为更新操作。此时会比较新旧 Card 的差异，仅对变更部分进行增量更新，避免不必要的向量重算开销。
+3.2 三路写入
+验证通过后，注册处理器同时向三个存储发起写入。
+PostgreSQL 写入完整数据表。主表 agents 存储 Agent 级别的信息，子表 agent_skills 通过外键关联存储每个 skill 的详细信息。更新时先软删除该 Agent 的旧 skill 记录，再批量插入新的 skill 记录，整个操作包裹在一个数据库事务中。如果PostgreSQL写入失败，整个注册操作回滚，不会写入 Redis 和 Vector DB。
+Redis 写入包含四类 Key。第一类是技能索引 a2a:skill:{skill}，类型为 Set，将当前 agent_id 加入该 Set，表示这个 skill 由哪些 Agent 提供。第二类是标签索引 a2a:tag:{tag}，同样是 Set 类型，记录拥有该标签的所有 Agent。第三类是能力索引 a2a:cap:{capability}，记录支持某项协议能力（如 streaming）的 Agent。第四类是 Agent Card 缓存 a2a:card:{agent_id}，存储序列化后的完整 Card JSON，避免查询时回源 PostgreSQL。更新场景下，处理器会先清除该 Agent 在所有旧 Set 中的成员关系，再写入新的映射，这个过程通过 Redis Pipeline 批量执行以减少网络往返。
+Vector DB 写入是计算量最大的环节。处理器会为每个 skill 拼接一段用于 Embedding 的文本，拼接规则为 "{agent_name}: {skill_name}. {description}. [{tags}]"。例如 "政策分析Agent: 政策要点提炼与结构化摘要. 从政策文件中提取核心条款并生成结构化摘要报告. [workflow, policy]"。这段文本随后发送给 Embedding 模型（如 bge-large-zh-v1.5 或 text-embedding-3-small）编码为 768 维浮点向量。向量连同 agent_id、skill_id、skill_name、base_url、status 等元数据字段一起写入 Vector DB 的 agent_skills Collection。向量索引类型推荐使用 IVF_FLAT（Agent 数量在万级以下时）或 HNSW（更大规模时），距离度量使用 Cosine Similarity。
+3.3 写入一致性保障
+三路写入存在部分失败的风险。设计上以 PostgreSQL 为准：PG 写入成功即视为注册成功，Redis 和 Vector DB 的写入如果失败，系统运行一个后台对账任务，定期（如每 5 分钟）扫描 PostgreSQL 中 status=active 的 Agent，检查其在 Redis 和 Vector DB 中是否存在对应记录，发现缺失则自动补写。这种最终一致性模型对于 Agent 发现场景完全可接受——短暂的索引缺失只会导致某个 Agent 在几分钟内不被发现，不会造成数据错误。
+四、发现查询流程
+4.1 查询路由
+调用方通过 POST /agents/discover 提交查询请求。请求体中可能包含 skill（精确技能）、tag（标签过滤）、capability（能力过滤）、query（自然语言描述）等字段的任意组合。
+查询路由器根据字段组合决定走哪条检索路径。如果请求中包含 skill 或 tag 或 capability 等结构化字段，则走 L1 Redis 精确查找。如果请求中包含自然语言 query 字段，则走 L2 Vector DB 语义检索。如果两类字段同时存在（例如"在 workflow 标签下找一个能做政策分析的"），则两路同时发起，结果通过 RRF 融合。
+4.2 L1 Redis 精确查找
+Redis 查找的核心操作是集合运算。当请求包含单个 skill时，直接执行 SMEMBERS a2a:skill:{skill} 获取提供该技能的所有 Agent ID。当请求同时包含多个过滤条件（如 tag=workflow 且 capability=streaming）时，找出同时满足所有条件的 Agent。
+获取到 Agent ID 集合后，还需要做在线状态过滤。方法是对每个 agent_id 执行 EXISTS a2a:heartbeat:{agent_id}，只保留心跳 Key 尚未过期的 Agent。然后通过 GET a2a:card:{agent_id} 批量获取这些 Agent 的完整 Card 信息，组装为结果列表返回。
+整个过程涉及的全部是内存操作，典型延迟在 0.5ms 以内，且结果是确定性的——命中就是命中，不存在相关性评分的概念。
+4.3 L2 Vector DB 语义检索
+当请求包含自然语言 query 时，处理器首先调用与写入时相同的 Embedding 模型将 query 文本编码为向量。随后在 Vector DB 的 agent_skills Collection 上执行向量检索，指定 top_k（默认 10）和可选的元数据过滤条件。
+Vector DB 返回的结果列表包含每条记录的相似度分数（0 到 1 之间）。处理器会设置一个最低分数阈值（如 0.5），过滤掉相关性太低的噪声结果。然后通过结果中携带的 agent_id 回查 Redis 缓存获取完整的 Agent Card 信息。
+4.4 RRF 融合排序
+当 L1 和 L2 同时返回结果时，需要将两路结果合并为一个统一的排序列表。采用 RRF 算法，对每个出现在任意一路结果中的 Agent-Skill 对，计算 RRF 分数并进行倒排。
+五、心跳与健康管理
+5.1 心跳上报
+每个 Agent 在正常运行期间，需要定期调用 PUT /agents/{agent_id}/heartbeat 接口上报心跳。服务端收到心跳后执行 SET a2a:heartbeat:{agent_id} 1 EX 60，将心跳 Key 的 TTL 刷新为 60 秒。如果 Agent 连续 60 秒未上报心跳，该 Key 自动过期，系统即视为该 Agent 不在线。
+心跳间隔推荐设置为 TTL 的三分之一，即每 20 秒上报一次，这样即使偶尔丢失一两次心跳也不会误判离线。
+5.2 离线清理
+Redis 的 TTL 机制可以解决在线过滤问题，查询时只需检查心跳 Key 是否存在即可。但 Vector DB 和 PostgreSQL 中的数据不会自动过期，需要通过后台定时任务处理。
+系统运行一个周期清理任务。它扫描 PostgreSQL 中所有 status=active 的 Agent，逐一检查 Redis 中对应的心跳 Key 是否存在。如果心跳 Key 已过期，说明该 Agent 已离线，任务会将其 PostgreSQL 中的 status 更新为 inactive，并在 Vector DB 中将对应记录的 status 元数据字段也更新为 inactive（Vector DB 查询时通过元数据过滤排除 inactive 记录）。
+当 Agent 重新上线并调用注册接口时，上述流程反向执行：状态恢复为 active，索引重新生效。
+六、数据流向
+七、完整 API 端点汇总
+
+[TABLE 1]
+端点	说明
+/v1/registry/agents	注册/更新 Agent
+/v1/registry/agents/{agent_id}/heartbeat	心跳上报
+/v1/unregistry/agents/{agent_id}	注销 Agent
+/v1/discovery/agents	发现 Agent
+/v1/discovery/agents/{agent_id}	获取指定 Agent
+/v1/agent-card	获取Agent Card
+[/TABLE 1]
+

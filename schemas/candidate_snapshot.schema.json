@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdns.local/schemas/candidate_snapshot.schema.json",
+  "title": "CandidateSnapshot",
+  "type": "object",
+  "required": [
+    "id",
+    "stage_r_version",
+    "semantic_parse",
+    "fqdn_candidates",
+    "confusion_sources"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "stage_r_version": {
+      "type": "string"
+    },
+    "semantic_parse": {
+      "type": "object"
+    },
+    "descriptor_scores": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "subtree_scores": {
+      "type": "object"
+    },
+    "fqdn_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "fqdn",
+          "score_r",
+          "source"
+        ],
+        "properties": {
+          "fqdn": {
+            "type": "string",
+            "pattern": "^(?:[a-z0-9-]+\\.){1,3}cn$"
+          },
+          "score_r": {
+            "type": "number"
+          },
+          "source": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "confusion_sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "candidate_generation_rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "candidate_recall_hit": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}
+

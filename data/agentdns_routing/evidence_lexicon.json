@@ -1,0 +1,684 @@
+{
+  "primary_action": [
+    {
+      "label": "apply",
+      "phrases": [
+        "申请",
+        "办理",
+        "备案",
+        "报备",
+        "资质",
+        "审批"
+      ]
+    },
+    {
+      "label": "verify",
+      "phrases": [
+        "验真",
+        "查验",
+        "真伪",
+        "核验"
+      ]
+    },
+    {
+      "label": "issue",
+      "phrases": [
+        "开票",
+        "开电子发票",
+        "出具发票"
+      ]
+    },
+    {
+      "label": "reimburse",
+      "phrases": [
+        "报销",
+        "入账"
+      ]
+    },
+    {
+      "label": "schedule",
+      "phrases": [
+        "安排会议",
+        "排期",
+        "约一下",
+        "定会议室"
+      ]
+    },
+    {
+      "label": "summarize",
+      "phrases": [
+        "总结",
+        "纪要",
+        "整理成三条",
+        "整理要点"
+      ]
+    },
+    {
+      "label": "plan",
+      "phrases": [
+        "规划",
+        "计划",
+        "安排",
+        "设计"
+      ]
+    },
+    {
+      "label": "check",
+      "phrases": [
+        "检查",
+        "核查",
+        "看看",
+        "查一下",
+        "评估"
+      ]
+    },
+    {
+      "label": "lookup",
+      "phrases": [
+        "查询",
+        "检索",
+        "找一下",
+        "推荐"
+      ]
+    }
+  ],
+  "target_object": [
+    {
+      "label": "invoice",
+      "phrases": [
+        "发票",
+        "票据",
+        "电子发票"
+      ]
+    },
+    {
+      "label": "permit",
+      "phrases": [
+        "备案",
+        "资质",
+        "许可",
+        "审批"
+      ]
+    },
+    {
+      "label": "policy",
+      "phrases": [
+        "政策",
+        "标准",
+        "规范",
+        "条款"
+      ]
+    },
+    {
+      "label": "compliance",
+      "phrases": [
+        "合规",
+        "审计",
+        "留痕"
+      ]
+    },
+    {
+      "label": "risk",
+      "phrases": [
+        "风险",
+        "风控",
+        "评估"
+      ]
+    },
+    {
+      "label": "meeting",
+      "phrases": [
+        "会议",
+        "例会",
+        "评审会"
+      ]
+    },
+    {
+      "label": "docs",
+      "phrases": [
+        "文档",
+        "方案",
+        "说明"
+      ]
+    },
+    {
+      "label": "hotel",
+      "phrases": [
+        "酒店",
+        "住宿",
+        "民宿"
+      ]
+    },
+    {
+      "label": "itinerary",
+      "phrases": [
+        "行程",
+        "路线",
+        "旅游"
+      ]
+    },
+    {
+      "label": "price",
+      "phrases": [
+        "价格",
+        "比价",
+        "报价"
+      ]
+    },
+    {
+      "label": "coupon",
+      "phrases": [
+        "优惠",
+        "折扣",
+        "优惠券"
+      ]
+    },
+    {
+      "label": "weather",
+      "phrases": [
+        "天气",
+        "气温",
+        "下雨",
+        "降雨"
+      ]
+    },
+    {
+      "label": "nutrition",
+      "phrases": [
+        "营养",
+        "饮食",
+        "食谱"
+      ]
+    },
+    {
+      "label": "course",
+      "phrases": [
+        "课程",
+        "培训",
+        "学习计划"
+      ]
+    }
+  ],
+  "domain_hints": [
+    {
+      "label": "gov",
+      "phrases": [
+        "备案",
+        "资质",
+        "许可",
+        "审批",
+        "政策",
+        "规范",
+        "标准"
+      ]
+    },
+    {
+      "label": "security",
+      "phrases": [
+        "合规",
+        "审计",
+        "留痕",
+        "风险",
+        "风控",
+        "出境",
+        "权限"
+      ]
+    },
+    {
+      "label": "finance",
+      "phrases": [
+        "发票",
+        "报销",
+        "税务",
+        "税率",
+        "预算"
+      ]
+    },
+    {
+      "label": "productivity",
+      "phrases": [
+        "会议",
+        "纪要",
+        "待办",
+        "方案",
+        "文档"
+      ]
+    },
+    {
+      "label": "travel",
+      "phrases": [
+        "旅游",
+        "酒店",
+        "住宿",
+        "行程",
+        "景点"
+      ]
+    },
+    {
+      "label": "commerce",
+      "phrases": [
+        "比价",
+        "价格",
+        "优惠",
+        "折扣"
+      ]
+    },
+    {
+      "label": "health",
+      "phrases": [
+        "营养",
+        "饮食",
+        "健身",
+        "门诊"
+      ]
+    },
+    {
+      "label": "education",
+      "phrases": [
+        "课程",
+        "培训",
+        "学习",
+        "辅导"
+      ]
+    },
+    {
+      "label": "weather",
+      "phrases": [
+        "天气",
+        "气温",
+        "降雨"
+      ]
+    }
+  ],
+  "capability_hints": [
+    {
+      "label": "permit",
+      "phrases": [
+        "备案",
+        "资质",
+        "许可",
+        "审批"
+      ]
+    },
+    {
+      "label": "policy",
+      "phrases": [
+        "政策",
+        "规范",
+        "标准"
+      ]
+    },
+    {
+      "label": "invoice",
+      "phrases": [
+        "发票",
+        "票据"
+      ]
+    },
+    {
+      "label": "tax",
+      "phrases": [
+        "税务",
+        "税率"
+      ]
+    },
+    {
+      "label": "risk",
+      "phrases": [
+        "风险",
+        "风控",
+        "评估"
+      ]
+    },
+    {
+      "label": "compliance",
+      "phrases": [
+        "合规",
+        "审计",
+        "留痕"
+      ]
+    },
+    {
+      "label": "meeting",
+      "phrases": [
+        "会议",
+        "纪要",
+        "待办",
+        "评审会"
+      ]
+    },
+    {
+      "label": "docs",
+      "phrases": [
+        "文档",
+        "方案",
+        "说明"
+      ]
+    },
+    {
+      "label": "hotel",
+      "phrases": [
+        "酒店",
+        "住宿",
+        "民宿"
+      ]
+    },
+    {
+      "label": "itinerary",
+      "phrases": [
+        "行程",
+        "路线",
+        "旅游"
+      ]
+    },
+    {
+      "label": "price",
+      "phrases": [
+        "比价",
+        "价格",
+        "报价"
+      ]
+    },
+    {
+      "label": "coupon",
+      "phrases": [
+        "优惠",
+        "折扣",
+        "优惠券"
+      ]
+    },
+    {
+      "label": "nutrition",
+      "phrases": [
+        "营养",
+        "饮食",
+        "食谱"
+      ]
+    },
+    {
+      "label": "course",
+      "phrases": [
+        "课程",
+        "培训"
+      ]
+    }
+  ],
+  "segment_hints": [
+    {
+      "label": "verify",
+      "phrases": [
+        "验真",
+        "查验",
+        "真伪",
+        "验票"
+      ]
+    },
+    {
+      "label": "issue",
+      "phrases": [
+        "开票",
+        "开电子发票",
+        "出具发票"
+      ]
+    },
+    {
+      "label": "reimburse",
+      "phrases": [
+        "报销",
+        "入账",
+        "报销清单"
+      ]
+    },
+    {
+      "label": "schedule",
+      "phrases": [
+        "安排会议",
+        "排期",
+        "定会议室"
+      ]
+    },
+    {
+      "label": "summary",
+      "phrases": [
+        "纪要",
+        "总结",
+        "要点"
+      ]
+    },
+    {
+      "label": "action-items",
+      "phrases": [
+        "待办",
+        "行动项",
+        "后续任务"
+      ]
+    },
+    {
+      "label": "data",
+      "phrases": [
+        "数据出境",
+        "日志",
+        "留存",
+        "数据合规"
+      ]
+    },
+    {
+      "label": "account",
+      "phrases": [
+        "账号",
+        "实名",
+        "权限"
+      ]
+    },
+    {
+      "label": "transaction",
+      "phrases": [
+        "付款对象",
+        "交易对象",
+        "名单筛查",
+        "供应商付款"
+      ]
+    },
+    {
+      "label": "beijing",
+      "phrases": [
+        "北京"
+      ]
+    },
+    {
+      "label": "shanghai",
+      "phrases": [
+        "上海"
+      ]
+    },
+    {
+      "label": "chengdu",
+      "phrases": [
+        "成都"
+      ]
+    },
+    {
+      "label": "xian",
+      "phrases": [
+        "西安"
+      ]
+    },
+    {
+      "label": "hangzhou",
+      "phrases": [
+        "杭州"
+      ]
+    },
+    {
+      "label": "guangzhou",
+      "phrases": [
+        "广州"
+      ]
+    },
+    {
+      "label": "shenzhen",
+      "phrases": [
+        "深圳"
+      ]
+    },
+    {
+      "label": "yunnan",
+      "phrases": [
+        "云南"
+      ]
+    }
+  ],
+  "secondary_intents": [
+    {
+      "label": "weather.cn",
+      "phrases": [
+        "天气",
+        "气温",
+        "下雨"
+      ]
+    },
+    {
+      "label": "reimburse.invoice.finance.cn",
+      "phrases": [
+        "报销",
+        "入账"
+      ]
+    },
+    {
+      "label": "verify.invoice.finance.cn",
+      "phrases": [
+        "验真",
+        "真伪"
+      ]
+    },
+    {
+      "label": "policy.gov.cn",
+      "phrases": [
+        "政策",
+        "规范",
+        "标准"
+      ]
+    },
+    {
+      "label": "permit.gov.cn",
+      "phrases": [
+        "备案",
+        "资质",
+        "许可"
+      ]
+    },
+    {
+      "label": "action-items.meeting.productivity.cn",
+      "phrases": [
+        "待办",
+        "行动项",
+        "后续任务"
+      ]
+    },
+    {
+      "label": "summary.meeting.productivity.cn",
+      "phrases": [
+        "纪要",
+        "总结",
+        "要点"
+      ]
+    },
+    {
+      "label": "coupon.commerce.cn",
+      "phrases": [
+        "优惠",
+        "折扣",
+        "优惠券"
+      ]
+    },
+    {
+      "label": "price.commerce.cn",
+      "phrases": [
+        "比价",
+        "价格",
+        "报价"
+      ]
+    },
+    {
+      "label": "transport.travel.cn",
+      "phrases": [
+        "交通",
+        "接驳",
+        "通勤"
+      ]
+    }
+  ],
+  "risk_flags": [
+    {
+      "label": "regulated_service",
+      "phrases": [
+        "备案",
+        "资质",
+        "许可",
+        "审批",
+        "报备"
+      ]
+    },
+    {
+      "label": "high_risk_data",
+      "phrases": [
+        "数据出境",
+        "日志",
+        "设备标识符",
+        "地理位置"
+      ]
+    },
+    {
+      "label": "money_related",
+      "phrases": [
+        "发票",
+        "报销",
+        "税务",
+        "付款",
+        "预算"
+      ]
+    },
+    {
+      "label": "identity_related",
+      "phrases": [
+        "实名",
+        "账号",
+        "权限",
+        "身份"
+      ]
+    }
+  ],
+  "industry_context": [
+    {
+      "label": "enterprise_service",
+      "phrases": [
+        "企业",
+        "平台",
+        "api",
+        "系统",
+        "客户",
+        "供应商",
+        "saas"
+      ]
+    },
+    {
+      "label": "manufacturing",
+      "phrases": [
+        "制造",
+        "工厂",
+        "工业互联网",
+        "产线",
+        "设备"
+      ]
+    },
+    {
+      "label": "travel_consumer",
+      "phrases": [
+        "旅游",
+        "酒店",
+        "景点",
+        "门店"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdns.local/schemas/namespace_descriptor.schema.json",
+  "title": "NamespaceDescriptor",
+  "type": "object",
+  "required": [
+    "namespace_version",
+    "fqdn",
+    "l1",
+    "aliases",
+    "desc",
+    "examples",
+    "industry_tags",
+    "risk_tags",
+    "action_tags",
+    "object_tags"
+  ],
+  "properties": {
+    "namespace_version": {
+      "type": "string"
+    },
+    "fqdn": {
+      "type": "string",
+      "pattern": "^(?:[a-z0-9-]+\\.){1,3}cn$"
+    },
+    "l1": {
+      "type": "string"
+    },
+    "l2": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "desc": {
+      "type": "string"
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "industry_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "action_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "object_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowed_l3": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "segments": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "aliases"
+        ],
+        "properties": {
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "desc": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "fallback_to": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": true
+}
+

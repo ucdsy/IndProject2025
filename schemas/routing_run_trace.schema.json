@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdns.local/schemas/routing_run_trace.schema.json",
+  "title": "RoutingRunTrace",
+  "type": "object",
+  "required": [
+    "run_id",
+    "sample_id",
+    "namespace_version",
+    "stage_r"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string"
+    },
+    "sample_id": {
+      "type": "string"
+    },
+    "namespace_version": {
+      "type": "string"
+    },
+    "stage_r": {
+      "$ref": "candidate_snapshot.schema.json"
+    },
+    "stage_a": {
+      "type": "object"
+    },
+    "stage_b": {
+      "type": "object"
+    },
+    "stage_c": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}
