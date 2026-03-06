@@ -606,6 +606,39 @@
         "接驳",
         "通勤"
       ]
+    },
+    {
+      "label": "docs.productivity.cn",
+      "phrases": [
+        "提纲",
+        "材料",
+        "文档",
+        "方案"
+      ]
+    },
+    {
+      "label": "restaurant.travel.cn",
+      "phrases": [
+        "门店",
+        "汉堡王",
+        "外卖"
+      ]
+    },
+    {
+      "label": "tax.finance.cn",
+      "phrases": [
+        "税务",
+        "税率",
+        "税务处理"
+      ]
+    },
+    {
+      "label": "risk.security.cn",
+      "phrases": [
+        "风险",
+        "风控",
+        "评估"
+      ]
     }
   ],
   "risk_flags": [

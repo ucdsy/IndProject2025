@@ -1,0 +1,12 @@
+{
+  "stage_a_version": "sa_v0_20260306",
+  "samples": 12,
+  "PrimaryAcc@1": 0.9167,
+  "AcceptablePrimary@1": 0.9167,
+  "RelatedRecall": 0.9,
+  "escalation_rate": 0.5833,
+  "error_buckets": {
+    "D2_secondary_bias": 1,
+    "D2b_related_miss": 1
+  }
+}

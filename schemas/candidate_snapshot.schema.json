@@ -5,6 +5,7 @@
   "type": "object",
   "required": [
     "id",
+    "namespace_version",
     "stage_r_version",
     "semantic_parse",
     "fqdn_candidates",
@@ -12,6 +13,9 @@
   ],
   "properties": {
     "id": {
+      "type": "string"
+    },
+    "namespace_version": {
       "type": "string"
     },
     "stage_r_version": {
@@ -46,6 +50,39 @@
           "score_r": {
             "type": "number"
           },
+          "node_kind": {
+            "type": "string"
+          },
+          "l1": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "l2": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "segment": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "parent_fqdn": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "fallback_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "source": {
             "type": "array",
             "items": {
@@ -73,4 +110,3 @@
   },
   "additionalProperties": true
 }
-

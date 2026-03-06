@@ -7,7 +7,10 @@
     "run_id",
     "sample_id",
     "namespace_version",
-    "stage_r"
+    "stage_r_version",
+    "stage_a_version",
+    "stage_r",
+    "stage_a"
   ],
   "properties": {
     "run_id": {
@@ -19,11 +22,74 @@
     "namespace_version": {
       "type": "string"
     },
+    "stage_r_version": {
+      "type": "string"
+    },
+    "stage_a_version": {
+      "type": "string"
+    },
     "stage_r": {
       "$ref": "candidate_snapshot.schema.json"
     },
     "stage_a": {
-      "type": "object"
+      "type": "object",
+      "required": [
+        "selected_primary_fqdn",
+        "selected_related_fqdns",
+        "confidence",
+        "margin",
+        "routing_top_k",
+        "constraint_check",
+        "escalate_to_stage_b",
+        "escalation_reasons"
+      ],
+      "properties": {
+        "selected_primary_fqdn": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "selected_related_fqdns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "confidence_temperature": {
+          "type": "number"
+        },
+        "margin": {
+          "type": "number"
+        },
+        "routing_top_k": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "constraint_check": {
+          "type": "object"
+        },
+        "escalate_to_stage_b": {
+          "type": "boolean"
+        },
+        "escalation_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "candidate_scores": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
     },
     "stage_b": {
       "type": "object"

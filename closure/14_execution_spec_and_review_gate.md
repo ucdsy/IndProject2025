@@ -3,6 +3,11 @@
 > 目的: 把“语义拆解、快慢路径决策、下一跳发现、实验门槛”压缩进一份可执行规格，避免你在多份文档里来回跳。
 > 定位: 这是开工前必须审的主文档。`closure/13_design_doc_agentdns_routing.md` 负责讲总设计，这份文档负责约束实现。
 
+当前实现状态修正:
+- 仓库中的现有 `Stage R` 与 `Stage A-only` 代码只可视为 `bootstrap baseline`，用于打通 contract / trace / eval 脚手架。
+- 当前最优先任务不是继续补算法功能，而是先完成正式数据集、blind split 与 freeze protocol。
+- 只有在这些前提冻结后，才允许重做 clean `Stage R` 与 clean `Stage A`。
+
 ## 1. 总体边界
 - 输入: `query`, `context`, `namespace_v1`, `agent_registry_snapshot`
 - 输出:
@@ -26,6 +31,16 @@
 - gold 数据集只定义 `query/context/ground_truth_fqdn/relevant_fqdns/acceptable_fqdns`
 - `fqdn_candidates` 是 Stage R 的运行时产物，不是金标样本字段
 - 为了公平比较，可导出固定版本的 `candidate snapshot`，供不同 Stage A/B 方法共用
+- canonical 化约束:
+  - gold 数据集中的 fqdn 字段必须已经是 canonical `routing_fqdn`
+  - descriptor 侧允许保留 `segments`，但工程消费一律通过 resolver 展开为 canonical catalog
+
+重建顺序（当前冻结）:
+1. 先冻结正式 gold schema、split 纪律、blind protocol
+2. 再冻结 descriptor/词典/行业术语表的独立来源
+3. 只在上述前提下重做 clean `Stage R`
+4. 基于冻结 snapshot 重做 clean `Stage A`
+5. `Stage C` 与 `Stage B` 后置
 
 ## 2. Stage R：命名空间召回与候选构造
 ### 2.1 职责
@@ -284,12 +299,16 @@ margin = p(top1) - p(top2)
 - 最多保留 `m_rel=3`
 - 候选需同时满足:
   - 不等于 `primary`
-  - 命中 `secondary_intents`、`acceptable_fqdns` 或 `S_coverage(c) >= tau_cov`
+  - 命中 `secondary_intents` 或 `S_coverage(c) >= tau_cov`
   - `p(c) >= tau_rel`
 - 默认:
   - `m_rel=3`
-  - `tau_rel=0.18`
+  - `tau_rel=0.12`
   - `tau_cov=0.50`
+
+说明:
+- `acceptable_fqdns` 是评测容错字段，不应在 Stage A 运行时直接参与打分，否则会泄漏金标。
+- Stage A bootstrap 当前采用单独的 `confidence_temperature=0.25` 做触发标定；排序本身仍基于候选内 deterministic scoring。
 
 ### 3.4 Trigger Policy
 触发 Stage B 的原因:
@@ -303,6 +322,12 @@ margin = p(top1) - p(top2)
 - `escalation_rate` 控在 15%-35%
 - 优先优化 `PrimaryAcc@1` 和 `ConstraintPassRate`
 - 不允许为了“看起来快”而压低必要升级
+
+bootstrap 配置（当前实现）:
+- `temperature=1.0`
+- `confidence_temperature=0.25`
+- `tau=0.30`
+- `delta=0.08`
 
 ### 3.5 Stage B 职责
 Stage B 只处理:

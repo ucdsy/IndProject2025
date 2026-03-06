@@ -32,6 +32,25 @@ v1 里把“命名空间/标签体系”和“具体 Agent 实例”分开，避
 - 主任务评测输出用 `routing_fqdn`（稳定、可标注、可复现）。
 - demo/工程扩展可进一步在 `routing_fqdn` 下做 agent discovery（从一组 `agent_fqdn` 里再选最终执行者）。
 
+## 2.2 canonical routing_fqdn 合同（v1 新增，防返工）
+v1 明确把 `l3` 的“数据维护形式”和“工程消费形式”分开:
+- descriptor 数据层:
+  - 只存 base row，例如 `invoice.finance.cn`、`compliance.security.cn`、`meeting.productivity.cn`
+  - `l3` 作为 `segments` 字典挂在 base row 下
+- 工程消费层:
+  - 一律通过 resolver 物化成 canonical `routing_fqdn`
+  - 规则固定为: `<segment>.<base_fqdn>`
+  - 示例:
+    - `verify.invoice.finance.cn`
+    - `data.compliance.security.cn`
+    - `schedule.meeting.productivity.cn`
+    - `yunnan.hotel.travel.cn`
+
+约束:
+- gold 数据集中的 `ground_truth_fqdn/relevant_fqdns/acceptable_fqdns` 必须已经使用 canonical 表示
+- Stage A 的 exact match、Stage C 的 registry 过滤、评测脚本的合法性检查，全部针对 canonical `routing_fqdn`
+- 不允许一部分地方用 `segments`，另一部分地方用展开后的 fqdn，避免后续 exact match 返工
+
 ## 3. L1 领域（domain）
 来自现有 AgentDNSDemo 的 domain 规划（保证与你半成品一致）:
 - `travel` 旅行出行

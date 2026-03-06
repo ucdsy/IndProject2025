@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdns.local/schemas/formal_dev_sample.schema.json",
+  "title": "FormalDevSample",
+  "type": "object",
+  "required": [
+    "id",
+    "family_id",
+    "namespace_version",
+    "query",
+    "constraints",
+    "ground_truth_fqdn",
+    "relevant_fqdns",
+    "acceptable_fqdns",
+    "difficulty_tags",
+    "intended_confusion_types"
+  ],
+  "properties": {
+    "id": {"type": "string"},
+    "family_id": {"type": "string"},
+    "namespace_version": {"type": "string"},
+    "query": {"type": "string"},
+    "context": {"type": "object"},
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "ground_truth_fqdn": {"type": "string", "pattern": "^(?:[a-z0-9-]+\\.){1,3}cn$"},
+    "relevant_fqdns": {"type": "array", "items": {"type": "string", "pattern": "^(?:[a-z0-9-]+\\.){1,3}cn$"}},
+    "acceptable_fqdns": {"type": "array", "items": {"type": "string", "pattern": "^(?:[a-z0-9-]+\\.){1,3}cn$"}},
+    "difficulty_tags": {"type": "array", "items": {"type": "string"}},
+    "intended_confusion_types": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

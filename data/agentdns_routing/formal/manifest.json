@@ -1,0 +1,99 @@
+{
+  "dataset_version": "formal_v1_1_20260306",
+  "namespace_version": "ns_v1_20260311",
+  "status": "formal_v1_1_seeded",
+  "bootstrap_seed_files": [
+    "data/agentdns_routing/dev.jsonl",
+    "data/agentdns_routing/test.jsonl"
+  ],
+  "formal_splits": {
+    "dev": {
+      "path": "data/agentdns_routing/formal/dev.jsonl",
+      "labeled": true,
+      "allowed_for_tuning": true,
+      "status": "seeded",
+      "samples": 50,
+      "miit_ratio": 0.66
+    },
+    "blind_input": {
+      "path": "data/agentdns_routing/formal/blind_input.jsonl",
+      "labeled": false,
+      "allowed_for_tuning": false,
+      "status": "seeded",
+      "samples": 35,
+      "miit_ratio": 0.5714
+    },
+    "blind_labels": {
+      "path": "data/agentdns_routing/formal/blind_labels.jsonl",
+      "labeled": true,
+      "allowed_for_tuning": false,
+      "status": "seeded",
+      "samples": 35
+    },
+    "challenge_input": {
+      "path": "data/agentdns_routing/formal/challenge_input.jsonl",
+      "labeled": false,
+      "allowed_for_tuning": false,
+      "status": "seeded",
+      "samples": 24,
+      "miit_ratio": 0.4167
+    },
+    "challenge_labels": {
+      "path": "data/agentdns_routing/formal/challenge_labels.jsonl",
+      "labeled": true,
+      "allowed_for_tuning": false,
+      "status": "seeded",
+      "samples": 24
+    }
+  },
+  "totals": {
+    "samples": 109,
+    "miit_ratio": 0.578
+  },
+  "freeze_protocol": {
+    "single_reveal": true,
+    "require_version_bump_after_reveal": true,
+    "family_must_not_cross_splits": true
+  },
+  "namespace_version_note": "ns_v1_20260311 表示命名空间计划冻结日期（2026-03-11），不是 formal_v1_1_20260306 的数据构建日期；formal 数据可在该冻结日前后扩表，但 canonical contract 不应回改。",
+  "targets": {
+    "dev_min": 50,
+    "blind_min": 30,
+    "challenge_min": 20,
+    "total_min": 100,
+    "miit_ratio_range": [
+      0.55,
+      0.65
+    ],
+    "l3_ratio_range": [
+      0.2,
+      0.3
+    ],
+    "multi_intent_ratio_range": [
+      0.35,
+      0.6
+    ]
+  },
+  "current_stats": {
+    "split_sizes": {
+      "dev": 50,
+      "blind": 35,
+      "challenge": 24
+    },
+    "total_labeled": 109,
+    "miit_ratio": 0.578,
+    "l3_ratio": 0.2018,
+    "multi_intent_ratio": 0.4954,
+    "gt_base_coverage": {
+      "covered": 25,
+      "total_base_nodes": 25,
+      "ratio": 1.0
+    },
+    "blind_base_coverage": {
+      "covered": 25,
+      "total_base_nodes": 25,
+      "ratio": 1.0
+    }
+  },
+  "last_validation_report": "artifacts/dataset/formal_validation_report.json"
+}

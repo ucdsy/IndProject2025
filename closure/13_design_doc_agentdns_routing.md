@@ -6,6 +6,11 @@
 >
 > 补充: 本文现在承担“总设计说明”的角色。执行级规格与评审门槛统一收敛到:
 > - `closure/14_execution_spec_and_review_gate.md`
+>
+> 当前实现状态修正:
+> - 仓库中已经落地的 `Stage R` 与 `Stage A-only` 代码仅可视为 `bootstrap` 脚手架，用于验证 contract / trace / eval 链路。
+> - 它们不能作为正式方法、正式主表、或论文/结项的主证据直接继承。
+> - 当前阶段的正确顺序是: 先完成正式 gold 数据集与 blind protocol，再重做 clean Stage R / Stage A。
 
 ## 0. 结论先行（你最终交付什么）
 结项包最小闭环（任务书硬指标）:
@@ -74,6 +79,14 @@
 - `data/agentdns_routing/dev.jsonl`
 - `data/agentdns_routing/test.jsonl`
 - `data/agentdns_routing/labeling_guide.md`（标注指南）
+
+当前冻结的重建顺序:
+1. 保留 `namespace/canonical contract`
+2. 先完成正式 gold 数据集、blind split、challenge split
+3. 冻结“可用于算法的知识源”与“不可使用的金标泄漏源”
+4. 在冻结数据上重做 clean Stage R
+5. 在冻结 Stage R snapshot 上重做 clean Stage A
+6. Stage C 后置，Stage B 最后实现
 
 ### 3.2 每条样本（最小字段）
 - `id`, `namespace_version`, `query`, `context`(opt)

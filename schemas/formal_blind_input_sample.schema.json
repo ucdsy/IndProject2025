@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdns.local/schemas/formal_blind_input_sample.schema.json",
+  "title": "FormalBlindInputSample",
+  "type": "object",
+  "required": [
+    "id",
+    "namespace_version",
+    "query",
+    "constraints"
+  ],
+  "properties": {
+    "id": {"type": "string"},
+    "namespace_version": {"type": "string"},
+    "query": {"type": "string"},
+    "context": {"type": "object"},
+    "constraints": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

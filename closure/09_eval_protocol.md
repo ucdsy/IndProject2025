@@ -3,6 +3,10 @@
 > 目的: 把“不会每次都慢、可以实装”的质疑提前用指标回答掉。
 > 结项最小闭环: 3 张表（主表/消融/成本稳定性）+ 2 个可复现案例轨迹
 
+当前阶段修正:
+- 仓库里的现有 `Stage R` / `Stage A-only` 结果只算 `bootstrap` 自检，不进入正式主表。
+- 正式主表只能来自 `formal/dev + formal/blind + formal/challenge` 协议下重做后的 clean `Stage R/A`。
+
 ## 1. 系统分层（必须在 PPT 里画一张图）
 - Stage R（命名空间召回）:
   - 方式: 命名空间节点描述上的词法检索/元数据检索/向量检索（v1 可先用轻量 lexical+metadata，接口预留 dense）
@@ -27,6 +31,20 @@ Stage C（demo 必备，不进入主表评测）:
 - gold 数据集不手工提供 `fqdn_candidates`
 - `fqdn_candidates` 由 Stage R 在线生成
 - 若要公平比较多个决策器，可先运行固定版本 Stage R，再冻结一份 `candidate snapshot`
+
+split 与揭盲边界:
+- `formal/dev.jsonl`: 唯一允许用于调参与消融探索
+- `formal/blind_input.jsonl`: 开发阶段可读
+- `formal/blind_labels.jsonl`: 开发阶段禁读；只在版本冻结后单次揭盲评测
+- `formal/challenge_input.jsonl`: 用于附录鲁棒性
+- `formal/challenge_labels.jsonl`: 同样在冻结前禁读
+- `formal/family_ledger.csv`: 用于 family 粒度的 split 泄漏治理
+- `formal/coverage_plan.csv`: 用于扩表配额与覆盖度追踪
+
+如果单次揭盲后还要继续调参:
+- 必须升 `stage_r_version` / `stage_a_version`
+- 上一轮 blind 结果自动降级为 `exploratory`
+- 不得继续作为正式主表结论
 
 ## 2. 触发规则（Stage A -> Stage B）
 v1 用可解释的规则触发，便于答辩:
@@ -123,3 +141,27 @@ v1 用可解释的规则触发，便于答辩:
   - 模型版本、提示版本、参数（temperature/seed）
   - 输出: JSONL trace + 汇总表（CSV/Markdown）
 - 把“复现命令”写进结项包（评审看一眼就知道你不是 PPT 工程）
+
+## 7. 正式评测顺序（冻结）
+1. 在 `formal/dev` 上完成:
+   - 特征删减
+   - 规则修改
+   - 阈值选择
+   - descriptor/词典修订
+2. 冻结:
+   - `stage_r_version`
+   - `stage_a_version`
+   - descriptor 文件版本
+   - 词典/术语表版本
+3. 只用冻结版本跑:
+   - `formal/blind_input`
+   - `formal/challenge_input`
+4. 通过 label 文件 join，生成 blind/challenge summary
+5. 记录到执行日志；除非升版本，不得回写算法
+
+## 8. 不允许的做法
+- 看过 `blind/challenge` 标签后再回补词典、权重、heuristic
+- 在主表里混入 bootstrap_seed 结果
+- 把 challenge 结果当作主表替代
+- 把 `acceptable_fqdns` 当作运行时打分特征
+- 用同一 family 的 query 同时出现在 `dev` 与 `blind`

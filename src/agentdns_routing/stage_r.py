@@ -7,7 +7,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-FQDN_RE = re.compile(r"^(?:[a-z0-9-]+\.){1,3}cn$")
+from .namespace import NamespaceResolver, validate_fqdn
 
 
 def load_json(path: str | Path) -> Any:
@@ -60,6 +60,24 @@ def _match_spec_list(text: str, specs: list[dict[str, Any]], field_name: str) ->
     return _dedupe_keep_order(labels), spans
 
 
+def _match_first_label(text: str, specs: list[dict[str, Any]], field_name: str) -> tuple[str | None, list[dict[str, str]]]:
+    earliest_label: str | None = None
+    earliest_index: int | None = None
+    spans: list[dict[str, str]] = []
+    for spec in specs:
+        label = spec["label"]
+        for phrase in spec.get("phrases", []):
+            if not phrase:
+                continue
+            index = text.find(phrase.lower())
+            if index >= 0:
+                spans.append({"field": field_name, "label": label, "phrase": phrase})
+                if earliest_index is None or index < earliest_index:
+                    earliest_index = index
+                    earliest_label = label
+    return earliest_label, spans
+
+
 def parse_semantic_evidence(
     query: str,
     context: dict[str, Any] | None,
@@ -75,23 +93,26 @@ def parse_semantic_evidence(
     for field_name in (
         "primary_action",
         "target_object",
+        "industry_context",
+    ):
+        label, spans = _match_first_label(text, lexicon.get(field_name, []), field_name)
+        evidence_spans.extend(spans)
+        parsed[field_name] = label
+
+    for field_name in (
         "domain_hints",
         "capability_hints",
         "segment_hints",
         "secondary_intents",
         "risk_flags",
-        "industry_context",
     ):
         labels, spans = _match_spec_list(text, lexicon.get(field_name, []), field_name)
         evidence_spans.extend(spans)
-        if field_name in {"primary_action", "target_object", "industry_context"}:
-            parsed[field_name] = labels[0] if labels else None
-        else:
-            parsed[field_name] = labels
+        parsed[field_name] = labels
 
     parsed["evidence_spans"] = evidence_spans
     parsed["query_markers"] = {
-        "has_multi_intent_marker": any(marker in text for marker in ("并", "同时", "顺便", "以及", "并且")),
+        "has_multi_intent_marker": any(marker in text for marker in ("并", "同时", "顺便", "顺手", "以及", "并且", "再看", "再看看")),
         "has_question_marker": any(marker in text for marker in ("哪些", "需要", "怎么", "如何", "帮我")),
     }
     return parsed
@@ -242,6 +263,7 @@ def _score_segment_candidate(
     semantic_parse: dict[str, Any],
     descriptor: dict[str, Any],
     base_score: float,
+    resolver: NamespaceResolver,
 ) -> list[dict[str, Any]]:
     text = query.lower()
     candidates: list[dict[str, Any]] = []
@@ -254,14 +276,18 @@ def _score_segment_candidate(
             continue
 
         specificity_boost = 0.10 + min(hit_count, 2) * 0.05 + (0.05 if matched_by_hint else 0.0)
-        fqdn = f"{segment}.{descriptor['fqdn']}"
+        fqdn = resolver.canonicalize_segment(descriptor["fqdn"], segment)
+        node = resolver.get_node(fqdn)
         candidates.append(
             {
                 "fqdn": fqdn,
                 "score_r": round(base_score + specificity_boost, 6),
-                "l1": descriptor["l1"],
-                "l2": descriptor.get("l2"),
-                "segment": segment,
+                "node_kind": node.node_kind if node else "segment",
+                "l1": node.l1 if node else descriptor["l1"],
+                "l2": node.l2 if node else descriptor.get("l2"),
+                "segment": node.segment if node else segment,
+                "parent_fqdn": node.parent_fqdn if node else descriptor["fqdn"],
+                "fallback_to": node.fallback_to if node else descriptor["fqdn"],
                 "components": {
                     "segment_match": round(_safe_sigmoid(hit_count + (1 if matched_by_hint else 0)) - 0.5, 6),
                     "specificity_boost": round(specificity_boost, 6),
@@ -312,6 +338,7 @@ def build_candidate_snapshot(
 ) -> dict[str, Any]:
     query = sample["query"]
     semantic_parse = parse_semantic_evidence(query, sample.get("context"), lexicon)
+    resolver = NamespaceResolver(descriptors)
 
     scored_descriptors = [score_descriptor(query, semantic_parse, descriptor) for descriptor in descriptors]
     descriptor_by_fqdn = {descriptor["fqdn"]: descriptor for descriptor in descriptors}
@@ -335,6 +362,12 @@ def build_candidate_snapshot(
             {
                 "fqdn": scored["fqdn"],
                 "score_r": scored["score_r"],
+                "node_kind": "base",
+                "l1": descriptor["l1"],
+                "l2": descriptor.get("l2"),
+                "segment": None,
+                "parent_fqdn": None,
+                "fallback_to": descriptor.get("fallback_to"),
                 "source": sources or ["baseline"],
             }
         )
@@ -344,6 +377,7 @@ def build_candidate_snapshot(
                 semantic_parse=semantic_parse,
                 descriptor=descriptor,
                 base_score=scored["score_r"],
+                resolver=resolver,
             )
         )
 
@@ -366,6 +400,7 @@ def build_candidate_snapshot(
 
     return {
         "id": sample["id"],
+        "namespace_version": sample["namespace_version"],
         "stage_r_version": stage_r_version,
         "semantic_parse": semantic_parse,
         "descriptor_scores": sorted(
@@ -397,8 +432,3 @@ def build_candidate_snapshot(
             ],
         },
     }
-
-
-def validate_fqdn(value: str) -> bool:
-    return bool(FQDN_RE.match(value))
-

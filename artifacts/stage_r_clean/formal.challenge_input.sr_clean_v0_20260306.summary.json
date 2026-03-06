@@ -1,0 +1,7 @@
+{
+  "input": "data/agentdns_routing/formal/challenge_input.jsonl",
+  "samples": 24,
+  "top_k": 10,
+  "stage": "stage_r_clean",
+  "labels_available": false
+}

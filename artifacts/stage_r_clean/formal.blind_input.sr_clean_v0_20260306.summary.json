@@ -1,0 +1,7 @@
+{
+  "input": "data/agentdns_routing/formal/blind_input.jsonl",
+  "samples": 35,
+  "top_k": 10,
+  "stage": "stage_r_clean",
+  "labels_available": false
+}

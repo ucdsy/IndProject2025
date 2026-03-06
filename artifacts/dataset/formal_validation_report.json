@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "stats": {
+    "split_sizes": {
+      "dev": 50,
+      "blind": 35,
+      "challenge": 24
+    },
+    "total_labeled": 109,
+    "miit_ratio": 0.578,
+    "l3_ratio": 0.2018,
+    "multi_intent_ratio": 0.4954,
+    "gt_base_coverage": {
+      "covered": 25,
+      "total_base_nodes": 25,
+      "ratio": 1.0
+    },
+    "blind_base_coverage": {
+      "covered": 25,
+      "total_base_nodes": 25,
+      "ratio": 1.0,
+      "missing_bases": []
+    },
+    "split_prefix_bias": {
+      "dev": {
+        "top_prefix": "我们正",
+        "count": 9,
+        "ratio": 0.18
+      },
+      "blind_input": {
+        "top_prefix": "接下来",
+        "count": 6,
+        "ratio": 0.1714
+      },
+      "challenge_input": {
+        "top_prefix": "围绕“",
+        "count": 8,
+        "ratio": 0.3333
+      }
+    }
+  },
+  "coverage_deficit_count": 0,
+  "top_coverage_deficits": []
+}

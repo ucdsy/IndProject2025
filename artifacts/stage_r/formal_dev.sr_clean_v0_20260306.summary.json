@@ -1,0 +1,9 @@
+{
+  "input": "data/agentdns_routing/formal/dev.jsonl",
+  "samples": 50,
+  "top_k": 10,
+  "stage": "stage_r_clean",
+  "labels_available": true,
+  "PrimaryRecall@K": 0.96,
+  "RelatedCoverage@K": 0.7742
+}
