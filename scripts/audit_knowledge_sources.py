@@ -38,7 +38,7 @@ def main() -> None:
             queries.append({"id": row["id"], "query": row["query"], "split": path.stem})
 
     descriptors = load_jsonl(DESCRIPTORS)
-    lexicon = json.loads(LEXICON.read_text(encoding="utf-8"))
+    lexicon = json.loads(LEXICON.read_text(encoding="utf-8")) if LEXICON.exists() else {}
 
     descriptor_phrase_bank: set[str] = set()
     descriptor_alias_hits: list[dict[str, Any]] = []
@@ -151,7 +151,7 @@ def main() -> None:
             ],
             "exclude_from_clean_stage_r": [
                 "descriptor examples 不进入 clean Stage R 主索引",
-                "当前 evidence_lexicon.json 整体降级为 bootstrap 资源，不直接进入 clean Stage R",
+                "旧 bootstrap 词典已从主干清理，不直接进入 clean Stage R",
             ],
         },
     }
@@ -174,7 +174,7 @@ def main() -> None:
         "## 2. 结论",
         "- `namespace/canonical contract` 可以保留。",
         "- `descriptor examples` 已出现与 formal query 的直接重叠，不应进入 clean `Stage R` 主索引。",
-        "- 当前 `evidence_lexicon.json` 中存在一批不在 descriptor/contract 内、但又直接命中 formal query 的短语；它不能直接进入 clean `Stage R`。",
+        "- 旧 bootstrap 词典已从主干清理；如果未来重新引入词典，必须来自独立术语表并重跑本审计。",
         "- descriptor 中部分短且高频的 alias/segment alias 不构成直接泄漏，但只能做低权重 sidecar，不能作为主召回锚点。",
         "",
         "## 3. 核心统计",
@@ -211,10 +211,13 @@ def main() -> None:
             "## 6. 必须移出 clean Stage R 的 lexicon 条目（节选）",
         ]
     )
-    for item in top_lexicon:
-        lines.append(
-            f"- `{item['section']}/{item['label']}`: `{item['phrase']}`，命中 `{item['hits']}` 条，样本示例 `{', '.join(item['sample_ids'])}`"
-        )
+    if top_lexicon:
+        for item in top_lexicon:
+            lines.append(
+                f"- `{item['section']}/{item['label']}`: `{item['phrase']}`，命中 `{item['hits']}` 条，样本示例 `{', '.join(item['sample_ids'])}`"
+            )
+    else:
+        lines.append("- 当前仓库已无 bootstrap 词典文件，本节保留作审计占位。")
 
     lines.extend(
         [
@@ -222,8 +225,8 @@ def main() -> None:
             "## 7. clean Stage R 输入边界（冻结建议）",
             "- 保留: namespace/canonical contract、descriptor 中与节点命名直接绑定的 aliases、segment canonical 规则、fallback chain。",
             "- 低权重 sidecar: descriptor 中短且泛化强的 alias，例如 `安排`、`日志`、`要点`、`北京/成都/杭州` 之外的通用短词。",
-            "- 排除: descriptor examples、当前整份 `evidence_lexicon.json`。",
-            "- 若后续需要恢复 lexicon，必须从独立术语表重新生成，并重新跑本审计脚本。",
+            "- 排除: descriptor examples、任何直接由 gold query 反推出来的 bootstrap 词典。",
+            "- 若后续需要恢复词典，必须从独立术语表重新生成，并重新跑本审计脚本。",
         ]
     )
     MD_OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")

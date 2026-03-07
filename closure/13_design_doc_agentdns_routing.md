@@ -8,7 +8,7 @@
 > - `closure/14_execution_spec_and_review_gate.md`
 >
 > 当前实现状态修正:
-> - 仓库中已经落地的 `Stage R` 与 `Stage A-only` 代码仅可视为 `bootstrap` 脚手架，用于验证 contract / trace / eval 链路。
+> - 仓库中旧 `bootstrap Stage R/A` 代码已从主干清理；历史结果只保留为过程记录，不再作为可运行入口。
 > - 它们不能作为正式方法、正式主表、或论文/结项的主证据直接继承。
 > - 当前阶段的正确顺序是: 先完成正式 gold 数据集与 blind protocol，再重做 clean Stage R / Stage A。
 

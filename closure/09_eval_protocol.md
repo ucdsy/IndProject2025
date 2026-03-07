@@ -4,7 +4,7 @@
 > 结项最小闭环: 3 张表（主表/消融/成本稳定性）+ 2 个可复现案例轨迹
 
 当前阶段修正:
-- 仓库里的现有 `Stage R` / `Stage A-only` 结果只算 `bootstrap` 自检，不进入正式主表。
+- 仓库里旧 `bootstrap Stage R/A` 的可运行代码已清理，只保留执行日志中的历史结果说明，不进入正式主表。
 - 正式主表只能来自 `formal/dev + formal/blind + formal/challenge` 协议下重做后的 clean `Stage R/A`。
 
 ## 1. 系统分层（必须在 PPT 里画一张图）

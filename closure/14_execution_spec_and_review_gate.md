@@ -4,7 +4,7 @@
 > 定位: 这是开工前必须审的主文档。`closure/13_design_doc_agentdns_routing.md` 负责讲总设计，这份文档负责约束实现。
 
 当前实现状态修正:
-- 仓库中的现有 `Stage R` 与 `Stage A-only` 代码只可视为 `bootstrap baseline`，用于打通 contract / trace / eval 脚手架。
+- 仓库中的旧 `bootstrap Stage R/A` 代码已从主干清理；历史结果只保留作过程记录。
 - 当前最优先任务不是继续补算法功能，而是先完成正式数据集、blind split 与 freeze protocol。
 - 只有在这些前提冻结后，才允许重做 clean `Stage R` 与 clean `Stage A`。
 

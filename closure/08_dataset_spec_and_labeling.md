@@ -223,7 +223,7 @@ ground truth 标注的是“应该路由到的能力/地址”，不是最终业
 当前审计结论（2026-03-06）:
 - `artifacts/dataset/knowledge_source_audit.md` / `.json` 已生成
 - descriptor `examples` 已出现与 formal query 的直接重叠，因此不进入 clean `Stage R` 主索引
-- 当前整份 `data/agentdns_routing/evidence_lexicon.json` 降级为 bootstrap 资源，不直接进入 clean `Stage R`
+- 旧 bootstrap 词典与对应代码已从主干清理，不再作为 clean `Stage R/A` 的默认输入
 - descriptor 中短且高频的 alias/segment alias（如 `安排`、`日志`、`要点` 一类）只允许低权重 sidecar 使用，不得主导主召回
 
 这样好处:

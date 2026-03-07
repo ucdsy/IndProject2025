@@ -15,8 +15,11 @@
   - `closure/08_dataset_spec_and_labeling.md`
   - `closure/09_eval_protocol.md`
   - `closure/10_demo_runbook.md`
+  - `closure/15_stage_r_clean_guardrails.md`
 - 命名/注册发现（把命名讲清楚，方便接真实平台）:
   - `closure/11_agent_registry_and_naming.md`
+- clean Stage R 护栏（防过拟合 / 防伪 clean）:
+  - `closure/15_stage_r_clean_guardrails.md`
 - 材料复用（只取加速结项的部分）:
   - `closure/12_materials_reuse_notes.md`
 - 论文/专利主线:
@@ -40,7 +43,7 @@
 ## 4. 执行入口（已落地）
 说明:
 - 下面这些“已落地”内容目前只表示 `contract/schema/脚手架` 已跑通。
-- 其中 `Stage R` 与 `Stage A-only` 的当前实现已降级为 `bootstrap baseline`，不得作为正式方法或主表证据直接复用。
+- 旧 `bootstrap Stage R/A` 代码与默认入口已清理出主干，只保留历史执行日志与少量结论说明，不再作为可运行入口。
 - 接下来按“先数据集与 blind protocol，后 clean Stage R/A”的顺序重做算法实现。
 
 - 数据与标注底座:
@@ -54,9 +57,6 @@
   - `data/agentdns_routing/formal/coverage_plan.csv`
   - `data/agentdns_routing/formal/README.md`
   - `data/agentdns_routing/labeling_guide.md`
-- Stage R 脚手架:
-  - `src/agentdns_routing/stage_r.py`
-  - `scripts/run_stage_r_snapshot.py`
 - clean Stage R（descriptor-only baseline）:
   - `src/agentdns_routing/stage_r_clean.py`
   - `scripts/run_stage_r_clean_snapshot.py`
@@ -68,10 +68,6 @@
   - `src/agentdns_routing/namespace.py`
   - `scripts/export_routing_catalog.py`
   - `artifacts/namespace/routing_catalog.ns_v1_20260311.jsonl`
-- Stage A-only 基线:
-  - `src/agentdns_routing/stage_a.py`
-  - `scripts/run_stage_a_eval.py`
-  - `tests/test_stage_a.py`
 - Schema:
   - `schemas/namespace_descriptor.schema.json`
   - `schemas/gold_routing_sample.schema.json`
@@ -84,20 +80,13 @@
   - `schemas/routing_run_trace.schema.json`
 - 数据校验入口:
   - `scripts/validate_formal_dataset.py`
-- 已生成的候选快照:
-  - `artifacts/stage_r/dev.sr_v0_20260306.jsonl`
-  - `artifacts/stage_r/test.sr_v0_20260306.jsonl`
-- 已生成的 Stage A 评测产物:
-  - `artifacts/stage_a/dev.sa_v0_20260306.jsonl`
-  - `artifacts/stage_a/dev.sa_v0_20260306.summary.json`
-  - `artifacts/stage_a/test.sa_v0_20260306.jsonl`
-  - `artifacts/stage_a/test.sa_v0_20260306.summary.json`
+- 历史 bootstrap 结果:
+  - 只保留在 `research-project/04_execution-log.md` 作为过程记录，不再提供默认运行入口
 
 ## 5. 当前放行边界
 - 已完成:
   - canonical `routing_fqdn` contract
-  - Stage R snapshot
-  - Stage A-only 排序/trace/eval
+  - clean `Stage R` snapshot
 - 但当前状态仅代表:
   - schema、trace、resolver、脚手架已通
   - 不代表 Stage R/A 方法已经成立
@@ -111,6 +100,6 @@
 ## 6. 重建顺序（当前冻结）
 1. 先保留 `namespace/canonical contract`，不再继续沿现有 `Stage R/A` 补功能。
 2. 先完成正式 gold 数据集、blind split、freeze protocol。
-3. 只允许使用独立于 gold query 的命名空间知识源，重建 clean `Stage R`（当前 `descriptor examples` 与 `evidence_lexicon.json` 已被排除出 clean baseline 输入）。
+3. 只允许使用独立于 gold query 的命名空间知识源，重建 clean `Stage R`（当前 `descriptor examples` 与旧 bootstrap 词典均已排除出 clean baseline 输入）。
 4. 在冻结的 Stage R snapshot 上重建 clean `Stage A`。
 5. 通过 blind test 后，再进入 Stage C；Stage B 最后做。
