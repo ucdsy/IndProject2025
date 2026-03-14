@@ -16,7 +16,7 @@ from .stage_a_clean import (
     StageACleanConfig,
     _chain_members,
     _clip,
-    _has_explicit_meeting_schedule_cues,
+    _has_required_cues,
     analyze_stage_a,
 )
 
@@ -647,10 +647,14 @@ def calibrate_llm_decision(
             selected_primary = deterministic_primary
         elif (
             selected_node
-            and selected_node.l2 == "meeting"
-            and selected_node.segment == "schedule"
-            and set(selected_primary_hits) <= {"安排", "安排会议"}
-            and not _has_explicit_meeting_schedule_cues(sample.get("query", ""))
+            and selected_node.routing_constraints.get("requires_explicit_primary_cues")
+            and selected_node.routing_constraints.get("generic_trigger_aliases")
+            and bool(selected_primary_hits)
+            and set(selected_primary_hits) <= set(selected_node.routing_constraints.get("generic_trigger_aliases", []))
+            and not _has_required_cues(
+                sample.get("query", ""),
+                tuple(selected_node.routing_constraints.get("requires_explicit_primary_cues", [])),
+            )
             and det_primary_norm.get(deterministic_primary, 0.0) >= 0.9
         ):
             selected_primary = deterministic_primary

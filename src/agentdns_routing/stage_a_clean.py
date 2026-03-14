@@ -30,7 +30,7 @@ class StageACleanConfig:
     weak_segment_penalty: float = 0.12
     scene_only_segment_penalty: float = 0.14
     segment_parent_guard_penalty: float = 0.22
-    generic_meeting_schedule_penalty: float = 0.26
+    explicit_cue_guard_penalty: float = 0.26
     segment_secondary_only_multiplier: float = 1.6
     fallback_penalty: float = 0.16
     fallback_relief_child_primary_threshold: float = 0.20
@@ -87,29 +87,11 @@ def _dedupe_texts(items: list[str]) -> list[str]:
     return ordered
 
 
-def _has_explicit_meeting_schedule_cues(text: str) -> bool:
+def _has_required_cues(text: str, required_cues: tuple[str, ...] | list[str]) -> bool:
     normalized = normalize_text(text)
     if not normalized:
         return False
-    return any(
-        cue in normalized
-        for cue in (
-            "时间",
-            "会场",
-            "会议室",
-            "地点",
-            "排期",
-            "日程",
-            "日历",
-            "下周",
-            "本周",
-            "明天",
-            "后天",
-            "几点",
-            "几号",
-            "何时",
-        )
-    )
+    return any(normalize_text(cue) in normalized for cue in required_cues if normalize_text(cue))
 
 
 def build_query_packet(query: str) -> dict[str, Any]:
@@ -302,6 +284,7 @@ def analyze_stage_a(
             "primary_hits": primary_hits,
             "secondary_hits": secondary_hits,
             "scene_hits": scene_hits,
+            "routing_constraints": dict(node.routing_constraints),
         }
         records.append(record)
         if record["parent_fqdn"]:
@@ -348,13 +331,17 @@ def analyze_stage_a(
                 and parent_primary_proxy >= 0.35
                 else 0.0
             )
-            generic_meeting_schedule_penalty = (
-                config.generic_meeting_schedule_penalty
-                if record.get("l2") == "meeting"
-                and record.get("segment") == "schedule"
+            routing_constraints = record.get("routing_constraints", {})
+            required_cues = tuple(routing_constraints.get("requires_explicit_primary_cues", []))
+            generic_trigger_aliases = set(routing_constraints.get("generic_trigger_aliases", []))
+            explicit_cue_guard_penalty = (
+                config.explicit_cue_guard_penalty
+                if required_cues
+                and generic_trigger_aliases
                 and primary_alias_norm > 0.0
-                and set(record.get("primary_hits", [])) <= {"安排", "安排会议"}
-                and not _has_explicit_meeting_schedule_cues(query_packet["primary_request_text"])
+                and bool(record.get("primary_hits"))
+                and set(record.get("primary_hits", [])) <= generic_trigger_aliases
+                and not _has_required_cues(query_packet["primary_request_text"], required_cues)
                 and parent_primary_proxy >= 0.35
                 else 0.0
             )
@@ -369,7 +356,7 @@ def analyze_stage_a(
             weak_segment_penalty = 0.0
             scene_only_segment_penalty = 0.0
             segment_parent_guard_penalty = 0.0
-            generic_meeting_schedule_penalty = 0.0
+            explicit_cue_guard_penalty = 0.0
             record["child_primary_support"] = child_primary_support
             record["child_secondary_support"] = child_secondary_support
 
@@ -403,7 +390,7 @@ def analyze_stage_a(
             - weak_segment_penalty
             - scene_only_segment_penalty
             - segment_parent_guard_penalty
-            - generic_meeting_schedule_penalty
+            - explicit_cue_guard_penalty
             - fallback_penalty
         )
 
@@ -418,7 +405,7 @@ def analyze_stage_a(
                 "weak_segment_penalty": weak_segment_penalty,
                 "scene_only_segment_penalty": scene_only_segment_penalty,
                 "segment_parent_guard_penalty": segment_parent_guard_penalty,
-                "generic_meeting_schedule_penalty": generic_meeting_schedule_penalty,
+                "explicit_cue_guard_penalty": explicit_cue_guard_penalty,
                 "fallback_penalty": fallback_penalty,
                 "score_a": round(score_a, 6),
             }
@@ -560,7 +547,7 @@ def analyze_stage_a(
                     "weak_segment_penalty": round(record["weak_segment_penalty"], 6),
                     "scene_only_segment_penalty": round(record["scene_only_segment_penalty"], 6),
                     "segment_parent_guard_penalty": round(record["segment_parent_guard_penalty"], 6),
-                    "generic_meeting_schedule_penalty": round(record["generic_meeting_schedule_penalty"], 6),
+                    "explicit_cue_guard_penalty": round(record["explicit_cue_guard_penalty"], 6),
                     "fallback_penalty": round(record["fallback_penalty"], 6),
                     "relationship_bonus": round(record["relationship_bonus"], 6),
                 },

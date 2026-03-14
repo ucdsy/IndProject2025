@@ -428,3 +428,36 @@
     1. 用 `sa_clean_v3_20260314` 作为新的 deterministic 基线
     2. 再择机做一次完整真实 provider 复跑
     3. 把精力转到 `decision_related_miss` 和 `stage_r_related_miss`
+
+### 10.10 2026-03-14 深夜硬编码清洗
+- 已将 `meeting/schedule` 的业务硬编码从引擎层抽离到 namespace schema
+  - `namespace_descriptors.jsonl` 中，`schedule.meeting.productivity.cn` 现在通过 `routing_constraints` 声明:
+    - `requires_explicit_primary_cues`
+    - `generic_trigger_aliases`
+  - `stage_a_clean.py` 与 `stage_a_llm.py` 不再出现 `l2 == "meeting"` / `segment == "schedule"` 这类领域判断
+  - 当前 guard 语义改写为通用的 `schema-injected explicit cue guard`
+
+- 抽象化后复跑结果保持稳定:
+  - `Stage A clean` 全量 (`sa_clean_v4_20260314`):
+    - `PrimaryAcc@1 = 1.0`
+    - `AcceptablePrimary@1 = 1.0`
+    - `RelatedRecall = 0.7931`
+    - `RelatedRecall@Covered = 0.92`
+    - `RelatedPrecision = 0.9583`
+    - `related_overpredict_rate = 0.02`
+    - `escalation_rate = 0.60`
+  - `target4` 真实 provider 对照 (`sa_llm_v1_20260314_tight5_target4`):
+    - `formal_dev_000025 -> meeting.productivity.cn`
+    - `formal_dev_000026 -> schedule.meeting.productivity.cn`
+    - `formal_dev_000036 -> itinerary.travel.cn`
+    - `formal_dev_000037 -> xian.itinerary.travel.cn`
+    - `PrimaryAcc@1 = 1.0`
+    - `AcceptablePrimary@1 = 1.0`
+
+- 当前执行判断进一步更新:
+  - `sibling_competition` 的主路由修正已从“经验性补丁”升级为“schema-driven constraints”
+  - 这意味着 `primary routing` 线现在不仅实证上成立，而且表达上也更适合答辩/论文
+  - 下一步可正式把重点切到:
+    1. `decision_related_miss`
+    2. `stage_r_related_miss`
+    3. `Stage B` 设计与升级策略

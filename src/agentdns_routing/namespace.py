@@ -55,6 +55,7 @@ class RoutingNode:
     action_tags: tuple[str, ...]
     object_tags: tuple[str, ...]
     allowed_l3: tuple[str, ...]
+    routing_constraints: dict[str, Any]
 
     @property
     def depth(self) -> int:
@@ -104,6 +105,7 @@ class NamespaceResolver:
                 action_tags=tuple(descriptor.get("action_tags", [])),
                 object_tags=tuple(descriptor.get("object_tags", [])),
                 allowed_l3=tuple(descriptor.get("allowed_l3", [])),
+                routing_constraints=dict(descriptor.get("routing_constraints", {})),
             )
             self._nodes[base_fqdn] = base_node
 
@@ -128,6 +130,7 @@ class NamespaceResolver:
                     action_tags=tuple(descriptor.get("action_tags", [])),
                     object_tags=tuple(descriptor.get("object_tags", [])),
                     allowed_l3=tuple(),
+                    routing_constraints=dict(meta.get("routing_constraints", {})),
                 )
             self._base_to_segments[base_fqdn] = segment_fqdns
 
