@@ -1,0 +1,690 @@
+from __future__ import annotations
+
+import json
+import math
+import os
+import uuid
+from dataclasses import dataclass
+from typing import Any, Protocol
+
+from openai import OpenAI
+
+from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
+from .stage_a_clean import (
+    RISK_L1,
+    StageACleanConfig,
+    _chain_members,
+    _clip,
+    analyze_stage_a,
+    build_query_packet,
+)
+
+
+@dataclass(frozen=True)
+class StageALLMConfig:
+    stage_a_version: str = "sa_llm_v0_20260311"
+    prompt_candidate_limit: int = 8
+    routing_top_k: int = 5
+    max_related: int = 3
+    llm_temperature: float = 0.0
+    llm_max_tokens: int = 1400
+    score_temperature: float = 0.45
+    confidence_threshold: float = 0.62
+    llm_confidence_relief_threshold: float = 0.82
+    margin_threshold: float = 0.08
+    high_risk_margin_threshold: float = 0.14
+    base_primary_weight: float = 0.55
+    stage_r_weight: float = 0.15
+    llm_task_weight: float = 0.15
+    llm_primary_weight: float = 0.10
+    llm_primary_bonus: float = 0.05
+    llm_specificity_fit_bonus: float = 0.05
+    llm_specificity_coarse_penalty: float = 0.05
+    llm_specificity_specific_penalty: float = 0.07
+    llm_risk_penalty: float = 0.08
+    base_related_weight: float = 0.50
+    llm_related_weight: float = 0.30
+    llm_related_selected_bonus: float = 0.12
+    llm_task_related_weight: float = 0.08
+    related_min_score: float = 0.42
+    deterministic_related_anchor_threshold: float = 0.80
+
+
+class StageALLMClient(Protocol):
+    provider: str
+    model: str
+
+    def adjudicate(self, packet: dict[str, Any], config: StageALLMConfig) -> tuple[dict[str, Any], str]:
+        raise NotImplementedError
+
+
+class MockStageALLMClient:
+    provider = "mock"
+    model = "mock-stage-a"
+
+    def adjudicate(self, packet: dict[str, Any], config: StageALLMConfig) -> tuple[dict[str, Any], str]:
+        ranked = sorted(
+            packet["candidates"],
+            key=lambda row: (
+                1 if row.get("primary_hits") else 0,
+                1 if row.get("node_kind") == "segment" and row.get("primary_hits") else 0,
+                row.get("score_r", 0.0),
+            ),
+            reverse=True,
+        )
+        primary = ranked[0]["fqdn"] if ranked else None
+        related: list[str] = []
+        judgements: list[dict[str, Any]] = []
+        for candidate in packet["candidates"]:
+            explicit_primary = bool(candidate.get("primary_hits"))
+            explicit_secondary = bool(candidate.get("secondary_hits"))
+            task_fit = 0.9 if explicit_primary else 0.7 if explicit_secondary else 0.2
+            primary_fit = 0.95 if candidate["fqdn"] == primary else 0.15
+            related_fit = 0.8 if explicit_secondary and candidate["fqdn"] != primary else 0.0
+            if explicit_secondary and candidate["fqdn"] != primary:
+                related.append(candidate["fqdn"])
+            judgements.append(
+                {
+                    "fqdn": candidate["fqdn"],
+                    "task_fit": task_fit,
+                    "primary_fit": primary_fit,
+                    "related_fit": related_fit,
+                    "specificity_judgement": "fit",
+                    "risk_mismatch": False,
+                    "evidence_for": candidate.get("primary_hits", [])[:2] or candidate.get("secondary_hits", [])[:2],
+                    "evidence_against": [],
+                }
+            )
+        decision = {
+            "selected_primary_fqdn": primary,
+            "selected_related_fqdns": related[: config.max_related],
+            "candidate_judgements": judgements,
+            "confidence": 0.72,
+            "escalate_to_stage_b": False,
+            "escalation_reasons": [],
+            "notes": ["mock_decision"],
+        }
+        return decision, json.dumps(decision, ensure_ascii=False)
+
+
+class OpenAICompatibleStageALLMClient:
+    def __init__(
+        self,
+        provider: str,
+        model: str,
+        api_key: str,
+        base_url: str | None = None,
+        timeout: float = 45.0,
+    ) -> None:
+        self.provider = provider
+        self.model = model
+        self._client = OpenAI(api_key=api_key, base_url=base_url, timeout=timeout, max_retries=1)
+
+    def adjudicate(self, packet: dict[str, Any], config: StageALLMConfig) -> tuple[dict[str, Any], str]:
+        messages = [
+            {"role": "system", "content": _system_prompt()},
+            {"role": "user", "content": _user_prompt(packet)},
+        ]
+        response = self._client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            temperature=config.llm_temperature,
+            max_tokens=config.llm_max_tokens,
+        )
+        content = response.choices[0].message.content or ""
+        decision = _load_json_object(content)
+        return decision, content
+
+
+def make_llm_client(provider: str, model: str | None = None) -> StageALLMClient:
+    provider = provider.lower()
+    if provider == "mock":
+        return MockStageALLMClient()
+    if provider == "deepseek":
+        api_key = os.getenv("DEEPSEEK_API_KEY")
+        if not api_key:
+            raise EnvironmentError("DEEPSEEK_API_KEY is not set")
+        return OpenAICompatibleStageALLMClient(
+            provider="deepseek",
+            model=model or "deepseek-chat",
+            api_key=api_key,
+            base_url="https://api.deepseek.com/v1",
+            timeout=45.0,
+        )
+    if provider == "openai":
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise EnvironmentError("OPENAI_API_KEY is not set")
+        return OpenAICompatibleStageALLMClient(
+            provider="openai",
+            model=model or "gpt-5.4",
+            api_key=api_key,
+            timeout=45.0,
+        )
+    raise ValueError(f"Unsupported provider: {provider}")
+
+
+def _system_prompt() -> str:
+    return (
+        "你是 AgentDNS Stage A 的单智能体裁决器。"
+        "你只能在给定候选集合内做结构化裁决，不能发明新 fqdn。"
+        "你必须区分 primary 和 related；若不确定，应请求升级到 Stage B。"
+        "confusion_sources 只是软提示，不是既定事实。"
+        "输出必须是单个 JSON 对象，不能附带散文解释。"
+    )
+
+
+def _user_prompt(packet: dict[str, Any]) -> str:
+    return (
+        "请基于下面的 decision packet 进行候选内裁决。\n"
+        "要求：\n"
+        "1. 只能从 candidates 中选 selected_primary_fqdn 和 selected_related_fqdns。\n"
+        "2. candidate_judgements 里至少覆盖所有 candidates。\n"
+        "3. task_fit / primary_fit / related_fit 都用 0 到 1 的数值。\n"
+        "4. specificity_judgement 只能取 too_coarse / fit / too_specific。\n"
+        "5. confidence 用 0 到 1。\n"
+        "6. 若低置信、样本高风险或 primary/related 拿不准，设置 escalate_to_stage_b=true。\n\n"
+        f"{json.dumps(packet, ensure_ascii=False, indent=2)}"
+    )
+
+
+def _load_json_object(text: str) -> dict[str, Any]:
+    stripped = text.strip()
+    if not stripped:
+        raise ValueError("Empty LLM response")
+    try:
+        return json.loads(stripped)
+    except json.JSONDecodeError:
+        start = stripped.find("{")
+        end = stripped.rfind("}")
+        if start < 0 or end <= start:
+            raise
+        return json.loads(stripped[start : end + 1])
+
+
+def _candidate_desc(node: RoutingNode | None) -> str:
+    if not node:
+        return ""
+    return node.desc
+
+
+def _truncate_aliases(node: RoutingNode | None, limit: int = 5) -> list[str]:
+    if not node:
+        return []
+    return list(node.aliases[:limit])
+
+
+def _minmax_norm(values: dict[str, float]) -> dict[str, float]:
+    if not values:
+        return {}
+    low = min(values.values())
+    high = max(values.values())
+    if math.isclose(low, high):
+        return {key: 1.0 for key in values}
+    return {key: _clip((value - low) / (high - low)) for key, value in values.items()}
+
+
+def _specificity_adjustment(label: str, config: StageALLMConfig) -> float:
+    if label == "fit":
+        return config.llm_specificity_fit_bonus
+    if label == "too_coarse":
+        return -config.llm_specificity_coarse_penalty
+    if label == "too_specific":
+        return -config.llm_specificity_specific_penalty
+    return 0.0
+
+
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return _clip(float(value))
+    except (TypeError, ValueError):
+        return default
+
+
+def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: set[str]) -> tuple[dict[str, Any], list[str]]:
+    issues: list[str] = []
+    selected_primary = raw.get("selected_primary_fqdn")
+    if selected_primary not in candidate_fqdns:
+        issues.append("llm_primary_not_in_candidates")
+        selected_primary = None
+
+    raw_selected_related = raw.get("selected_related_fqdns", [])
+    if not isinstance(raw_selected_related, list):
+        raw_selected_related = []
+        issues.append("llm_related_not_list")
+    selected_related = [fqdn for fqdn in raw_selected_related if fqdn in candidate_fqdns]
+    if len(selected_related) != len(raw_selected_related):
+        issues.append("llm_related_not_in_candidates")
+
+    raw_judgements = raw.get("candidate_judgements", [])
+    if not isinstance(raw_judgements, list):
+        raw_judgements = []
+        issues.append("llm_judgements_not_list")
+    judgements_by_fqdn = {}
+    for row in raw_judgements:
+        if not isinstance(row, dict):
+            issues.append("llm_judgement_not_object")
+            continue
+        fqdn = row.get("fqdn")
+        if fqdn in candidate_fqdns:
+            judgements_by_fqdn[fqdn] = row
+    candidate_judgements: list[dict[str, Any]] = []
+    for fqdn in candidate_fqdns:
+        row = judgements_by_fqdn.get(fqdn, {})
+        candidate_judgements.append(
+            {
+                "fqdn": fqdn,
+                "task_fit": _safe_float(row.get("task_fit", 0.0)),
+                "primary_fit": _safe_float(row.get("primary_fit", 0.0)),
+                "related_fit": _safe_float(row.get("related_fit", 0.0)),
+                "specificity_judgement": row.get("specificity_judgement", "fit"),
+                "risk_mismatch": bool(row.get("risk_mismatch", False)),
+                "confidence": _safe_float(row.get("confidence", 0.0)),
+                "evidence_for": list(row.get("evidence_for", []))[:3],
+                "evidence_against": list(row.get("evidence_against", []))[:3],
+            }
+        )
+
+    top_confidence = _safe_float(raw.get("confidence", 0.0))
+    if top_confidence == 0.0 and selected_primary:
+        primary_row = next((row for row in candidate_judgements if row["fqdn"] == selected_primary), None)
+        if primary_row:
+            top_confidence = max(
+                primary_row.get("confidence", 0.0),
+                0.6 * primary_row.get("task_fit", 0.0) + 0.4 * primary_row.get("primary_fit", 0.0),
+            )
+
+    raw_escalation_reasons = raw.get("escalation_reasons", [])
+    if isinstance(raw_escalation_reasons, str):
+        raw_escalation_reasons = [raw_escalation_reasons]
+    elif not isinstance(raw_escalation_reasons, list):
+        raw_escalation_reasons = []
+
+    raw_notes = raw.get("notes", [])
+    if isinstance(raw_notes, str):
+        raw_notes = [raw_notes]
+    elif not isinstance(raw_notes, list):
+        raw_notes = []
+
+    return (
+        {
+            "selected_primary_fqdn": selected_primary,
+            "selected_related_fqdns": selected_related,
+            "candidate_judgements": candidate_judgements,
+            "confidence": top_confidence,
+            "escalate_to_stage_b": bool(raw.get("escalate_to_stage_b", False)),
+            "escalation_reasons": list(raw_escalation_reasons),
+            "notes": list(raw_notes)[:5],
+        },
+        issues,
+    )
+
+
+def build_decision_packet(
+    sample: dict[str, Any],
+    snapshot: dict[str, Any],
+    resolver: NamespaceResolver,
+    base_stage_a: dict[str, Any],
+    config: StageALLMConfig | None = None,
+) -> dict[str, Any]:
+    config = config or StageALLMConfig()
+    query_packet = build_query_packet(sample.get("query", ""))
+    base_map = {row["fqdn"]: row for row in base_stage_a.get("candidate_scores", [])}
+    candidates_sorted = sorted(snapshot.get("fqdn_candidates", []), key=lambda row: row.get("score_r", 0.0), reverse=True)
+    top_candidates = candidates_sorted[: config.prompt_candidate_limit]
+    top1 = top_candidates[0]["fqdn"] if top_candidates else None
+    top2 = top_candidates[1]["fqdn"] if len(top_candidates) > 1 else None
+    top_gap = 0.0
+    if len(top_candidates) > 1:
+        top_gap = round(float(top_candidates[0].get("score_r", 0.0)) - float(top_candidates[1].get("score_r", 0.0)), 6)
+
+    packet_candidates: list[dict[str, Any]] = []
+    for row in top_candidates:
+        node = resolver.get_node(row["fqdn"])
+        base_row = base_map.get(row["fqdn"], {})
+        evidence = base_row.get("evidence_for", {})
+        packet_candidates.append(
+            {
+                "fqdn": row["fqdn"],
+                "score_r": round(float(row.get("score_r", 0.0)), 6),
+                "node_kind": row.get("node_kind"),
+                "l1": row.get("l1"),
+                "l2": row.get("l2"),
+                "segment": row.get("segment"),
+                "parent_fqdn": row.get("parent_fqdn"),
+                "fallback_to": row.get("fallback_to"),
+                "desc": _candidate_desc(node),
+                "aliases": _truncate_aliases(node),
+                "source": list(row.get("source", [])),
+                "matched_phrases": row.get("matched_phrases", {}),
+                "components": {
+                    key: round(float(value), 6) if isinstance(value, (int, float)) else value
+                    for key, value in row.get("components", {}).items()
+                },
+                "primary_hits": evidence.get("primary_hits", []),
+                "secondary_hits": evidence.get("secondary_hits", []),
+                "scene_hits": evidence.get("scene_hits", []),
+            }
+        )
+
+    return {
+        "sample_id": sample["id"],
+        "namespace_version": snapshot["namespace_version"],
+        "stage_r_version": snapshot["stage_r_version"],
+        "query": sample.get("query", ""),
+        "context": sample.get("context", {}),
+        "query_packet": {
+            "scene_text": query_packet["scene_text"],
+            "primary_request_text": query_packet["primary_request_text"],
+            "supplemental_texts": query_packet["supplemental_texts"],
+        },
+        "hard_rules": [
+            "只能从 candidates 中选 selected_primary_fqdn 和 selected_related_fqdns",
+            "primary 必须唯一",
+            "related 可以为空，但不能包含 primary",
+            "若不确定，可设置 escalate_to_stage_b=true",
+        ],
+        "soft_hints": {
+            "confusion_sources": snapshot.get("confusion_sources", []),
+            "selection_signals": snapshot.get("semantic_parse", {}).get("selection_signals", {}),
+            "top1_candidate_by_stage_r": top1,
+            "top2_candidate_by_stage_r": top2,
+            "top1_top2_gap": top_gap,
+        },
+        "candidates": packet_candidates,
+    }
+
+
+def _is_chain_duplicate(primary_fqdn: str, other_fqdn: str, resolver: NamespaceResolver) -> bool:
+    if primary_fqdn == other_fqdn:
+        return True
+    return other_fqdn in _chain_members(primary_fqdn, resolver) or primary_fqdn in _chain_members(other_fqdn, resolver)
+
+
+def _is_descendant(descendant_fqdn: str, ancestor_fqdn: str, resolver: NamespaceResolver) -> bool:
+    if descendant_fqdn == ancestor_fqdn:
+        return False
+    return ancestor_fqdn in _chain_members(descendant_fqdn, resolver)
+
+
+def _softmax_scores(scores: dict[str, float], temperature: float) -> dict[str, float]:
+    if not scores:
+        return {}
+    safe_temp = max(temperature, 1e-6)
+    shift = max(scores.values())
+    exps = {key: math.exp((value - shift) / safe_temp) for key, value in scores.items()}
+    total = sum(exps.values()) or 1.0
+    return {key: value / total for key, value in exps.items()}
+
+
+def calibrate_llm_decision(
+    sample: dict[str, Any],
+    snapshot: dict[str, Any],
+    resolver: NamespaceResolver,
+    base_stage_a: dict[str, Any],
+    llm_decision: dict[str, Any],
+    llm_issues: list[str],
+    raw_response: str,
+    client: StageALLMClient,
+    config: StageALLMConfig | None = None,
+) -> dict[str, Any]:
+    config = config or StageALLMConfig()
+    candidate_rows = snapshot.get("fqdn_candidates", [])
+    candidate_fqdns = [row["fqdn"] for row in candidate_rows]
+    candidate_set = set(candidate_fqdns)
+    base_map = {row["fqdn"]: row for row in base_stage_a.get("candidate_scores", [])}
+    llm_map = {row["fqdn"]: row for row in llm_decision.get("candidate_judgements", [])}
+
+    det_primary_scores = {fqdn: float(base_map[fqdn]["score_a"]) for fqdn in candidate_fqdns if fqdn in base_map}
+    det_related_scores = {fqdn: float(base_map[fqdn]["score_related"]) for fqdn in candidate_fqdns if fqdn in base_map}
+    det_primary_norm = _minmax_norm(det_primary_scores)
+    det_related_norm = _minmax_norm(det_related_scores)
+    stage_r_norm = {fqdn: float(base_map[fqdn]["score_breakdown"].get("score_r_norm", 0.0)) for fqdn in candidate_fqdns if fqdn in base_map}
+
+    primary_scores: dict[str, float] = {}
+    related_scores: dict[str, float] = {}
+    candidate_scores: list[dict[str, Any]] = []
+
+    llm_selected_primary = llm_decision.get("selected_primary_fqdn")
+    llm_selected_related = set(llm_decision.get("selected_related_fqdns", []))
+
+    for row in candidate_rows:
+        fqdn = row["fqdn"]
+        llm_row = llm_map.get(
+            fqdn,
+            {
+                "task_fit": 0.0,
+                "primary_fit": 0.0,
+                "related_fit": 0.0,
+                "specificity_judgement": "fit",
+                "risk_mismatch": False,
+                "evidence_for": [],
+                "evidence_against": [],
+            },
+        )
+        specificity_adjustment = _specificity_adjustment(llm_row.get("specificity_judgement", "fit"), config)
+        risk_penalty = config.llm_risk_penalty if llm_row.get("risk_mismatch") else 0.0
+        selected_primary_bonus = config.llm_primary_bonus if fqdn == llm_selected_primary else 0.0
+        selected_related_bonus = config.llm_related_selected_bonus if fqdn in llm_selected_related else 0.0
+
+        score_primary = (
+            config.base_primary_weight * det_primary_norm.get(fqdn, 0.0)
+            + config.stage_r_weight * stage_r_norm.get(fqdn, 0.0)
+            + config.llm_task_weight * _safe_float(llm_row.get("task_fit", 0.0))
+            + config.llm_primary_weight * _safe_float(llm_row.get("primary_fit", 0.0))
+            + selected_primary_bonus
+            + specificity_adjustment
+            - risk_penalty
+        )
+        score_related = (
+            config.base_related_weight * det_related_norm.get(fqdn, 0.0)
+            + config.llm_related_weight * _safe_float(llm_row.get("related_fit", 0.0))
+            + config.llm_task_related_weight * _safe_float(llm_row.get("task_fit", 0.0))
+            + selected_related_bonus
+        )
+        primary_scores[fqdn] = round(score_primary, 6)
+        related_scores[fqdn] = round(score_related, 6)
+        candidate_scores.append(
+            {
+                "fqdn": fqdn,
+                "score_a": round(score_primary, 6),
+                "score_related": round(score_related, 6),
+                "score_breakdown": {
+                    "det_primary_norm": round(det_primary_norm.get(fqdn, 0.0), 6),
+                    "det_related_norm": round(det_related_norm.get(fqdn, 0.0), 6),
+                    "stage_r_norm": round(stage_r_norm.get(fqdn, 0.0), 6),
+                    "llm_task_fit": round(_safe_float(llm_row.get("task_fit", 0.0)), 6),
+                    "llm_primary_fit": round(_safe_float(llm_row.get("primary_fit", 0.0)), 6),
+                    "llm_related_fit": round(_safe_float(llm_row.get("related_fit", 0.0)), 6),
+                    "llm_selected_primary_bonus": round(selected_primary_bonus, 6),
+                    "llm_selected_related_bonus": round(selected_related_bonus, 6),
+                    "specificity_adjustment": round(specificity_adjustment, 6),
+                    "risk_penalty": round(risk_penalty, 6),
+                },
+                "evidence_for": list(llm_row.get("evidence_for", []))[:3],
+                "evidence_against": list(llm_row.get("evidence_against", []))[:3],
+            }
+        )
+
+    ranked_primary = sorted(candidate_fqdns, key=lambda fqdn: (primary_scores[fqdn], related_scores[fqdn]), reverse=True)
+    selected_primary = ranked_primary[0] if ranked_primary else None
+    deterministic_primary = base_stage_a.get("selected_primary_fqdn")
+    if (
+        selected_primary
+        and deterministic_primary
+        and selected_primary != deterministic_primary
+        and _is_descendant(deterministic_primary, selected_primary, resolver)
+    ):
+        det_row = llm_map.get(deterministic_primary, {})
+        if det_primary_norm.get(deterministic_primary, 0.0) >= 0.85 and _safe_float(det_row.get("task_fit", 0.0)) >= 0.55:
+            selected_primary = deterministic_primary
+
+    ranked_related_candidates = sorted(
+        [fqdn for fqdn in candidate_fqdns if fqdn != selected_primary],
+        key=lambda fqdn: (related_scores[fqdn], primary_scores[fqdn], 1 if resolver.get_node(fqdn) and resolver.get_node(fqdn).node_kind == "segment" else 0),
+        reverse=True,
+    )
+    selected_related: list[str] = []
+    deterministic_related = set(base_stage_a.get("selected_related_fqdns", []))
+    for fqdn in ranked_related_candidates:
+        if _is_chain_duplicate(selected_primary, fqdn, resolver):
+            continue
+        llm_row = llm_map.get(fqdn, {})
+        has_related_signal = fqdn in llm_selected_related
+        has_deterministic_anchor = (
+            fqdn in deterministic_related and det_related_norm.get(fqdn, 0.0) >= config.deterministic_related_anchor_threshold
+        )
+        if not has_related_signal and has_deterministic_anchor:
+            has_related_signal = True
+        if not has_related_signal:
+            continue
+        if related_scores[fqdn] < config.related_min_score:
+            continue
+        if any(_is_chain_duplicate(existing, fqdn, resolver) for existing in selected_related):
+            continue
+        selected_related.append(fqdn)
+        if len(selected_related) >= config.max_related:
+            break
+
+    probability_scores = _softmax_scores(primary_scores, temperature=config.score_temperature)
+    top1_prob = probability_scores.get(selected_primary, 0.0) if selected_primary else 0.0
+    second_prob = sorted(probability_scores.values(), reverse=True)[1] if len(probability_scores) > 1 else 0.0
+    llm_confidence = _safe_float(llm_decision.get("confidence", 0.0))
+    confidence = _clip(0.55 * top1_prob + 0.45 * llm_confidence)
+    margin = _clip(top1_prob - second_prob)
+
+    routing_top_k: list[dict[str, Any]] = []
+    for fqdn in ranked_primary[: config.routing_top_k]:
+        row = next(item for item in candidate_rows if item["fqdn"] == fqdn)
+        if fqdn == selected_primary:
+            role = "primary"
+        elif fqdn in selected_related:
+            role = "related"
+        elif _is_chain_duplicate(selected_primary, fqdn, resolver):
+            role = "fallback"
+        else:
+            role = "distractor"
+        routing_top_k.append(
+            {
+                "fqdn": fqdn,
+                "score_a": primary_scores[fqdn],
+                "score_related": related_scores[fqdn],
+                "role": role,
+                "node_kind": row.get("node_kind"),
+                "l1": row.get("l1"),
+                "l2": row.get("l2"),
+                "segment": row.get("segment"),
+            }
+        )
+
+    constraint_reasons: list[str] = []
+    if not selected_primary or selected_primary not in candidate_set:
+        constraint_reasons.append("invalid_primary_after_calibration")
+    elif not validate_fqdn(selected_primary):
+        constraint_reasons.append("invalid_primary_fqdn")
+    invalid_related = [fqdn for fqdn in selected_related if fqdn not in candidate_set]
+    if invalid_related:
+        constraint_reasons.append("related_not_in_candidates")
+    constraint_reasons.extend(llm_issues)
+
+    selection_signals = snapshot.get("semantic_parse", {}).get("selection_signals", {})
+    confusion_sources = set(snapshot.get("confusion_sources", []))
+    escalation_reasons: list[str] = []
+    if confidence < config.confidence_threshold and llm_confidence < config.llm_confidence_relief_threshold:
+        escalation_reasons.append("low_confidence")
+    if margin < config.margin_threshold:
+        escalation_reasons.append("small_margin")
+    if llm_decision.get("escalate_to_stage_b"):
+        escalation_reasons.append("llm_requested")
+    escalation_reasons.extend(llm_decision.get("escalation_reasons", []))
+    if selected_primary and resolver.get_node(selected_primary) and resolver.get_node(selected_primary).l1 in RISK_L1:
+        if margin < config.high_risk_margin_threshold or "C4_governance_fallback" in confusion_sources:
+            escalation_reasons.append("high_risk")
+    if selection_signals.get("has_multi_intent_signal") and not selected_related:
+        escalation_reasons.append("multi_intent_conflict")
+    escalation_reasons.extend(constraint_reasons)
+
+    return {
+        "selected_primary_fqdn": selected_primary,
+        "selected_related_fqdns": selected_related,
+        "confidence": round(confidence, 6),
+        "margin": round(margin, 6),
+        "routing_top_k": routing_top_k,
+        "constraint_check": {"pass": not constraint_reasons, "reasons": sorted(set(constraint_reasons))},
+        "escalate_to_stage_b": bool(escalation_reasons),
+        "escalation_reasons": sorted(set(escalation_reasons)),
+        "candidate_scores": candidate_scores,
+        "score_breakdown": {
+            "primary_fqdn": selected_primary,
+            "primary_probability": round(top1_prob, 6),
+            "llm_confidence": round(llm_confidence, 6),
+            "base_stage_a_primary": base_stage_a.get("selected_primary_fqdn"),
+        },
+        "llm_provider": client.provider,
+        "llm_model": client.model,
+        "llm_decision": llm_decision,
+        "llm_raw_response": raw_response,
+    }
+
+
+def analyze_stage_a_llm(
+    sample: dict[str, Any],
+    snapshot: dict[str, Any],
+    resolver: NamespaceResolver,
+    client: StageALLMClient,
+    config: StageALLMConfig | None = None,
+) -> dict[str, Any]:
+    config = config or StageALLMConfig()
+    base_stage_a = analyze_stage_a(sample=sample, snapshot=snapshot, resolver=resolver, config=StageACleanConfig())
+    packet = build_decision_packet(sample=sample, snapshot=snapshot, resolver=resolver, base_stage_a=base_stage_a, config=config)
+    llm_raw = ""
+    llm_issues: list[str] = []
+    try:
+        llm_raw_decision, llm_raw = client.adjudicate(packet, config)
+        llm_decision, llm_issues = _sanitize_llm_decision(llm_raw_decision, {row["fqdn"] for row in snapshot.get("fqdn_candidates", [])})
+    except Exception as exc:  # pragma: no cover - exercised in integration/dry runs
+        llm_issues = [f"llm_error:{type(exc).__name__}"]
+        llm_decision = {
+            "selected_primary_fqdn": None,
+            "selected_related_fqdns": [],
+            "candidate_judgements": [],
+            "confidence": 0.0,
+            "escalate_to_stage_b": True,
+            "escalation_reasons": ["llm_error"],
+            "notes": [str(exc)],
+        }
+        llm_raw = str(exc)
+
+    stage_a = calibrate_llm_decision(
+        sample=sample,
+        snapshot=snapshot,
+        resolver=resolver,
+        base_stage_a=base_stage_a,
+        llm_decision=llm_decision,
+        llm_issues=llm_issues,
+        raw_response=llm_raw,
+        client=client,
+        config=config,
+    )
+    stage_a["decision_packet"] = packet
+    return stage_a
+
+
+def build_routing_run_trace(
+    sample: dict[str, Any],
+    snapshot: dict[str, Any],
+    resolver: NamespaceResolver,
+    client: StageALLMClient,
+    config: StageALLMConfig | None = None,
+) -> dict[str, Any]:
+    config = config or StageALLMConfig()
+    stage_a = analyze_stage_a_llm(sample=sample, snapshot=snapshot, resolver=resolver, client=client, config=config)
+    return {
+        "run_id": f"run_{config.stage_a_version}_{sample['id']}_{uuid.uuid4().hex[:8]}",
+        "sample_id": sample["id"],
+        "namespace_version": snapshot["namespace_version"],
+        "stage_r_version": snapshot["stage_r_version"],
+        "stage_a_version": config.stage_a_version,
+        "stage_r": snapshot,
+        "stage_a": stage_a,
+    }

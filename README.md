@@ -60,10 +60,10 @@
 - clean Stage R（descriptor-only baseline）:
   - `src/agentdns_routing/stage_r_clean.py`
   - `scripts/run_stage_r_clean_snapshot.py`
-  - `artifacts/stage_r/formal_dev.sr_clean_v0_20260306.jsonl`
-  - `artifacts/stage_r/formal_dev.sr_clean_v0_20260306.summary.json`
-  - `artifacts/stage_r/formal_blind_input.sr_clean_v0_20260306.jsonl`
-  - `artifacts/stage_r/formal_challenge_input.sr_clean_v0_20260306.jsonl`
+  - `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl`
+  - `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_summary.json`
+  - `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_report.md`
+  - `artifacts/stage_r_clean/dev.snapshot_freeze.json`
 - Canonical routing contract:
   - `src/agentdns_routing/namespace.py`
   - `scripts/export_routing_catalog.py`
@@ -103,3 +103,8 @@
 3. 只允许使用独立于 gold query 的命名空间知识源，重建 clean `Stage R`（当前 `descriptor examples` 与旧 bootstrap 词典均已排除出 clean baseline 输入）。
 4. 在冻结的 Stage R snapshot 上重建 clean `Stage A`。
 5. 通过 blind test 后，再进入 Stage C；Stage B 最后做。
+
+当前冻结结论:
+- `clean Stage A v1` 的 `dev` 输入版本固定为 `sr_clean_v1_20260307`
+- 冻结清单见 `artifacts/stage_r_clean/dev.snapshot_freeze.json`
+- 后续如继续迭代 `Stage R`，必须升新版本，不得覆盖当前冻结产物

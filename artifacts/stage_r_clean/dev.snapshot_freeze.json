@@ -1,0 +1,14 @@
+{
+  "freeze_date": "2026-03-10",
+  "split": "dev",
+  "frozen_stage_r_version": "sr_clean_v1_20260307",
+  "status": "frozen_for_stage_a",
+  "input_path": "data/agentdns_routing/formal/dev.jsonl",
+  "snapshot_path": "artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl",
+  "gate_summary_path": "artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_summary.json",
+  "gate_report_path": "artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_report.md",
+  "notes": [
+    "clean Stage A v1 只能消费该冻结版 dev snapshot，不得自行重跑并覆盖结论。",
+    "后续如需继续迭代 Stage R，必须升 stage_r_version，不得就地改写 sr_clean_v1_20260307 及其配套 gate 结果。"
+  ]
+}

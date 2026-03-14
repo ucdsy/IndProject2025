@@ -177,3 +177,12 @@
 - 默认拒绝“补词式修正”
 - 优先接受“机制式修正”
 - blind 版本冻结前，不允许因为追求更好 dev 分数而破坏 clean 性
+
+## 9. 当前冻结基线（2026-03-10）
+- 当前冻结的 `dev` snapshot 版本：`sr_clean_v1_20260307`
+- 冻结清单：`artifacts/stage_r_clean/dev.snapshot_freeze.json`
+- 冻结 snapshot：`artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl`
+- 对应 gate summary：`artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_summary.json`
+- 对应 gate report：`artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_report.md`
+- 从本条冻结开始，`clean Stage A v1` 只能消费该版本的 `dev` snapshot
+- 后续如需继续迭代 `Stage R`，必须升 `stage_r_version`，不得覆盖 `sr_clean_v1_20260307` 及其配套 gate 结论

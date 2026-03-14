@@ -15,6 +15,7 @@
 | 2026-03-06 | DATA-VALIDATE-03 | 在 patch 后重跑 formal validator；校验 split 级 schema、family ledger、manifest 回算一致性、blind coverage、template bias 与 travel l3 城市对齐 | `ok=true`，`warnings=[]`；`dev` 前缀最大占比 `0.18`，`blind` 最大占比 `0.1714`，`challenge` 最大占比 `0.3333` | 现在可以再说“formal 数据资产已完成第一版构建，并已收掉 blind coverage / 模板偏置这两个 blocker” |
 | 2026-03-06 | R-CLEAN-02 | 基于 `formal_v1_1_20260306` 重跑 clean `Stage R` snapshot；继续坚持 descriptor-only lexical+metadata recall，不读取 descriptor `examples`，不使用 `evidence_lexicon.json` | `formal/dev` 上 `PrimaryRecall@10=0.9800`、`RelatedCoverage@10=0.6897`；blind/challenge snapshot 已按新数据重导出 | `R-CLEAN-01` 对应旧版 formal 数据；后续主表与调参一律引用 patch 后 snapshot 与 summary |
 | 2026-03-06 | CLEANUP-01 | 清理旧 `bootstrap Stage R/A` 工程链；移除旧 `stage_r.py` / `stage_a.py`、对应脚本/测试、旧 snapshot 与 Stage A 产物；保留 `formal` 数据、clean `Stage R`、canonical contract 与执行日志 | 剩余可运行入口已收敛到 `scripts/validate_formal_dataset.py`、`scripts/audit_knowledge_sources.py`、`scripts/run_stage_r_clean_snapshot.py`；formal validator 复跑 `ok=true`，`warnings=[]` | 旧 bootstrap 结果只保留为历史记录，不再作为默认入口或误导性“可运行基线”继续存在 |
+| 2026-03-10 | R-FREEZE-01 | 冻结当前 `dev` snapshot 版本为 `sr_clean_v1_20260307`，新增机器可读 freeze 清单，并把 README / guardrails / execution log 同步为同一结论 | `clean Stage A v1` 只能消费 `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl`；后续若继续迭代 `Stage R`，必须升 `stage_r_version`，不得覆盖当前冻结基线 | 冻结清单：`artifacts/stage_r_clean/dev.snapshot_freeze.json` |
 | 2026-03-__ | R01 | baseline: single-agent |  |  |
 | 2026-03-__ | R02 | baseline: vote |  |  |
 | 2026-03-__ | R03 | baseline: debate |  |  |

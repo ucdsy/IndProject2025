@@ -1,0 +1,92 @@
+{
+  "labeled": true,
+  "samples": 3,
+  "PrimaryAcc@1": 1.0,
+  "AcceptablePrimary@1": 1.0,
+  "RelatedRecall": 0.0,
+  "RelatedRecall@Covered": 0.0,
+  "RelatedPrecision": 0.0,
+  "avg_extra_related": 0.0,
+  "related_overpredict_rate": 0.0,
+  "escalation_rate": 1.0,
+  "error_buckets": {
+    "OK": 1,
+    "stage_r_related_miss": 2
+  },
+  "per_sample": [
+    {
+      "id": "formal_dev_000001",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "selected_primary_fqdn": "permit.gov.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 1,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [
+        "policy.gov.cn"
+      ],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.402495,
+      "margin": 0.474273,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "low_confidence"
+      ],
+      "error_bucket": "stage_r_related_miss"
+    },
+    {
+      "id": "formal_dev_000002",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "selected_primary_fqdn": "permit.gov.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.387209,
+      "margin": 0.440908,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000003",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "selected_primary_fqdn": "permit.gov.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 1,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [
+        "policy.gov.cn"
+      ],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.402495,
+      "margin": 0.474273,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "low_confidence"
+      ],
+      "error_bucket": "stage_r_related_miss"
+    }
+  ],
+  "stage_a_version": "sa_llm_ds_smoke_20260311",
+  "stage_r_version": "sr_clean_v1_20260307",
+  "input_path": "data/agentdns_routing/formal/dev.jsonl",
+  "snapshot_path": "artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "trace_validation": {
+    "valid": true,
+    "errors": []
+  }
+}
