@@ -10,14 +10,13 @@ from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
 
 PUNCT_RE = re.compile(r"[，。！？；：、“”‘’（）()【】《》,.!?:;\"'`\-\[\]{}_/\\\s]+")
 CLAUSE_RE = re.compile(r"[。！？!?；;]")
-SUPPLEMENTAL_MARKERS = ("另外", "再", "顺便", "同时")
-PRIMARY_MARKERS = ("想先请你", "麻烦先", "请先", "先请你", "想先")
+QUOTE_RE = re.compile(r"[“\"「『](.*?)[”\"」』]")
 RISK_L1 = {"gov", "security"}
 
 
 @dataclass(frozen=True)
 class StageACleanConfig:
-    stage_a_version: str = "sa_clean_v1_20260311"
+    stage_a_version: str = "sa_clean_v2_20260314"
     routing_top_k: int = 5
     stage_r_weight: float = 0.40
     primary_fit_weight: float = 0.26
@@ -75,47 +74,46 @@ def _context_to_text(context: dict[str, Any] | None) -> str:
     return " ".join(str(value) for value in context.values() if value is not None)
 
 
+def _dedupe_texts(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for item in items:
+        normalized = item.strip("，。；; ")
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        ordered.append(normalized)
+    return ordered
+
+
 def build_query_packet(query: str) -> dict[str, Any]:
     text = query.strip()
-    primary_block = text
-    supplemental_parts: list[str] = []
+    clauses = [part.strip("，。；; ") for part in CLAUSE_RE.split(text) if part.strip("，。；; ")]
+    quoted_segments = _dedupe_texts([match.strip() for match in QUOTE_RE.findall(text) if match.strip()])
 
-    supplemental_positions: list[tuple[int, str]] = []
-    for marker in SUPPLEMENTAL_MARKERS:
-        pos = text.find(marker)
-        if pos > 0:
-            supplemental_positions.append((pos, marker))
-    if supplemental_positions:
-        supplemental_positions.sort(key=lambda item: item[0])
-        first_pos, _ = supplemental_positions[0]
-        primary_block = text[:first_pos]
-        tail = text[first_pos:]
-        for marker in SUPPLEMENTAL_MARKERS:
-            tail = tail.replace(marker, "\n", 1) if marker in tail else tail
-        supplemental_parts = [part.strip("，。；; ") for part in tail.split("\n") if part.strip("，。；; ")]
+    scene_parts: list[str] = []
+    if len(clauses) >= 2:
+        scene_parts.append(clauses[0])
+    if quoted_segments:
+        scene_parts.append(quoted_segments[0])
+    scene_text = " ".join(_dedupe_texts(scene_parts)).strip()
 
-    primary_request_text = primary_block
-    scene_text = ""
-    request_pos = len(primary_block)
-    request_marker = None
-    for marker in PRIMARY_MARKERS:
-        pos = primary_block.find(marker)
-        if pos >= 0 and pos < request_pos:
-            request_pos = pos
-            request_marker = marker
-    if request_marker is not None:
-        scene_text = primary_block[:request_pos].strip("，。；; ")
-        primary_request_text = primary_block[request_pos + len(request_marker) :].strip("，。；; ")
-    if not primary_request_text:
-        primary_request_text = primary_block.strip("，。；; ")
+    if len(clauses) >= 2:
+        primary_request_text = clauses[1]
+    elif clauses:
+        primary_request_text = clauses[0]
+    else:
+        primary_request_text = text
 
-    sentences = [part.strip() for part in CLAUSE_RE.split(text) if part.strip()]
+    supplemental_parts = _dedupe_texts(clauses[2:] + quoted_segments[1:])
     return {
         "full_text": text,
         "scene_text": scene_text,
         "primary_request_text": primary_request_text,
         "supplemental_texts": supplemental_parts,
-        "sentences": sentences,
+        "clauses": clauses,
+        "quoted_segments": quoted_segments,
+        "has_structural_multi_intent": len(clauses) >= 3 or len(quoted_segments) >= 2,
     }
 
 
@@ -178,12 +176,6 @@ def _relationship_bonus(record: dict[str, Any], primary_record: dict[str, Any], 
         return 0.0
     if record.get("parent_fqdn") and record.get("parent_fqdn") == primary_record.get("parent_fqdn"):
         return 0.9
-    if record.get("l1") != primary_record.get("l1") and (
-        selection_signals.get("has_cross_domain_competition") or "C5_cross_domain_overlap" in confusion_sources
-    ):
-        return 0.8
-    if selection_signals.get("has_multi_intent_signal"):
-        return 0.65
     if "C4_governance_fallback" in confusion_sources and record.get("l1") in RISK_L1:
         return 0.55
     return 0.0
@@ -220,7 +212,14 @@ def analyze_stage_a(
     top_stage_r = max(candidate.get("score_r", 0.0) for candidate in candidates) or 1.0
     context_text = _context_to_text(sample.get("context"))
     selection_signals = snapshot.get("semantic_parse", {}).get("selection_signals", {})
+    structural_multi_intent_signal = bool(
+        selection_signals.get("has_multi_intent_signal") or query_packet.get("has_structural_multi_intent")
+    )
     confusion_sources = set(snapshot.get("confusion_sources", []))
+    selection_signals = {
+        **selection_signals,
+        "has_multi_intent_signal": structural_multi_intent_signal,
+    }
 
     records: list[dict[str, Any]] = []
     by_parent: dict[str, list[dict[str, Any]]] = {}
@@ -393,8 +392,9 @@ def analyze_stage_a(
         record["relationship_bonus"] = _relationship_bonus(record, primary, selection_signals, confusion_sources)
         record["score_related"] = round(
             0.35 * record["score_r_norm"]
-            + 0.30 * max(record["secondary_support_norm"], 0.60 * record["primary_alias_norm"])
-            + 0.10 * record["context_norm"]
+            + 0.18 * max(record["secondary_alias_norm"], 0.60 * record["primary_alias_norm"])
+            + 0.14 * record["supplemental_desc_norm"]
+            + 0.08 * record["context_norm"]
             + 0.10 * record["evidence_diversity"]
             + 0.15 * record["relationship_bonus"]
             - (0.18 if _is_chain_duplicate(primary["fqdn"], record["fqdn"], resolver) and record["fqdn"] != primary["fqdn"] else 0.0),
@@ -410,7 +410,17 @@ def analyze_stage_a(
             parent_record = next((item for item in records if item["fqdn"] == record["parent_fqdn"]), None)
             if parent_record and parent_record["score_r_norm"] < 0.25 and parent_record["score_a"] < 0.25:
                 parent_related_support_ok = False
-        has_explicit_secondary_signal = bool(record["secondary_hits"])
+        has_explicit_secondary_signal = bool(record["secondary_hits"]) or (
+            structural_multi_intent_signal
+            and record["supplemental_desc_norm"] >= 0.55
+            and (
+                (
+                    record.get("l1") == primary.get("l1")
+                    and record.get("l2") != primary.get("l2")
+                )
+                or selection_signals.get("has_cross_domain_competition")
+            )
+        )
         if not has_explicit_secondary_signal or not parent_related_support_ok:
             continue
         if record["score_related"] < config.related_min_score and record["score_a"] < primary["score_a"] - config.related_gap:
@@ -445,7 +455,7 @@ def analyze_stage_a(
         escalation_reasons.append("close_score_delta")
     if primary.get("l1") in RISK_L1 and (margin < config.high_risk_margin_threshold or "C4_governance_fallback" in confusion_sources):
         escalation_reasons.append("high_risk")
-    if selection_signals.get("has_multi_intent_signal") and not related:
+    if structural_multi_intent_signal and not related:
         escalation_reasons.append("multi_intent_conflict")
 
     routing_top_k: list[dict[str, Any]] = []

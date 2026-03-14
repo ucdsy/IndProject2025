@@ -16,10 +16,13 @@
   - `closure/09_eval_protocol.md`
   - `closure/10_demo_runbook.md`
   - `closure/15_stage_r_clean_guardrails.md`
+  - `closure/16_stage_a_strategy_and_execution.md`
 - 命名/注册发现（把命名讲清楚，方便接真实平台）:
   - `closure/11_agent_registry_and_naming.md`
 - clean Stage R 护栏（防过拟合 / 防伪 clean）:
   - `closure/15_stage_r_clean_guardrails.md`
+- clean Stage A 方法与执行分工:
+  - `closure/16_stage_a_strategy_and_execution.md`
 - 材料复用（只取加速结项的部分）:
   - `closure/12_materials_reuse_notes.md`
 - 论文/专利主线:
@@ -64,6 +67,16 @@
   - `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_summary.json`
   - `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_report.md`
   - `artifacts/stage_r_clean/dev.snapshot_freeze.json`
+- clean Stage A（deterministic adjudicator）:
+  - `src/agentdns_routing/stage_a_clean.py`
+  - `scripts/run_stage_a_clean.py`
+  - `artifacts/stage_a_clean/dev.sa_clean_v2_20260314.jsonl`
+  - `artifacts/stage_a_clean/dev.sa_clean_v2_20260314.summary.json`
+- clean Stage A（structured LLM, mock）:
+  - `src/agentdns_routing/stage_a_llm.py`
+  - `scripts/run_stage_a_llm.py`
+  - `artifacts/stage_a_llm_mock/dev.sa_llm_v1_20260314.jsonl`
+  - `artifacts/stage_a_llm_mock/dev.sa_llm_v1_20260314.summary.json`
 - Canonical routing contract:
   - `src/agentdns_routing/namespace.py`
   - `scripts/export_routing_catalog.py`

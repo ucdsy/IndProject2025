@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 import uuid
 from dataclasses import dataclass
 from typing import Any, Protocol
@@ -16,13 +17,15 @@ from .stage_a_clean import (
     _chain_members,
     _clip,
     analyze_stage_a,
-    build_query_packet,
 )
+
+CLAUSE_RE = re.compile(r"[。！？!?；;]")
+QUOTE_RE = re.compile(r"[“\"「『](.*?)[”\"」』]")
 
 
 @dataclass(frozen=True)
 class StageALLMConfig:
-    stage_a_version: str = "sa_llm_v0_20260311"
+    stage_a_version: str = "sa_llm_v1_20260314"
     prompt_candidate_limit: int = 8
     routing_top_k: int = 5
     max_related: int = 3
@@ -67,8 +70,9 @@ class MockStageALLMClient:
             packet["candidates"],
             key=lambda row: (
                 1 if row.get("primary_hits") else 0,
-                1 if row.get("node_kind") == "segment" and row.get("primary_hits") else 0,
                 row.get("score_r", 0.0),
+                1 if row.get("node_kind") == "base" else 0,
+                1 if row.get("node_kind") == "segment" and row.get("scene_hits") else 0,
             ),
             reverse=True,
         )
@@ -96,6 +100,9 @@ class MockStageALLMClient:
                 }
             )
         decision = {
+            "scene_context": " / ".join(packet.get("query_view", {}).get("quoted_segments", [])[:2]),
+            "primary_intent": packet.get("query", ""),
+            "secondary_intents": list(packet.get("query_view", {}).get("clauses", [])[1:3]),
             "selected_primary_fqdn": primary,
             "selected_related_fqdns": related[: config.max_related],
             "candidate_judgements": judgements,
@@ -168,6 +175,7 @@ def _system_prompt() -> str:
     return (
         "你是 AgentDNS Stage A 的单智能体裁决器。"
         "你只能在给定候选集合内做结构化裁决，不能发明新 fqdn。"
+        "先理解 query 的 scene_context、primary_intent、secondary_intents，再在 candidates 内判断 primary/related。"
         "你必须区分 primary 和 related；若不确定，应请求升级到 Stage B。"
         "confusion_sources 只是软提示，不是既定事实。"
         "输出必须是单个 JSON 对象，不能附带散文解释。"
@@ -179,11 +187,12 @@ def _user_prompt(packet: dict[str, Any]) -> str:
         "请基于下面的 decision packet 进行候选内裁决。\n"
         "要求：\n"
         "1. 只能从 candidates 中选 selected_primary_fqdn 和 selected_related_fqdns。\n"
-        "2. candidate_judgements 里至少覆盖所有 candidates。\n"
-        "3. task_fit / primary_fit / related_fit 都用 0 到 1 的数值。\n"
-        "4. specificity_judgement 只能取 too_coarse / fit / too_specific。\n"
-        "5. confidence 用 0 到 1。\n"
-        "6. 若低置信、样本高风险或 primary/related 拿不准，设置 escalate_to_stage_b=true。\n\n"
+        "2. 先输出 scene_context、primary_intent、secondary_intents。\n"
+        "3. candidate_judgements 里至少覆盖所有 candidates。\n"
+        "4. task_fit / primary_fit / related_fit 都用 0 到 1 的数值。\n"
+        "5. specificity_judgement 只能取 too_coarse / fit / too_specific。\n"
+        "6. confidence 用 0 到 1，但这是模型自评，不会直接决定最终系统置信度。\n"
+        "7. 若低置信、样本高风险或 primary/related 拿不准，设置 escalate_to_stage_b=true。\n\n"
         f"{json.dumps(packet, ensure_ascii=False, indent=2)}"
     )
 
@@ -241,10 +250,22 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         return default
 
 
-def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: set[str]) -> tuple[dict[str, Any], list[str]]:
+def _build_prompt_query_view(query: str) -> dict[str, Any]:
+    text = (query or "").strip()
+    clauses = [part.strip("，。；; ") for part in CLAUSE_RE.split(text) if part.strip("，。；; ")]
+    quoted_segments = [match.strip() for match in QUOTE_RE.findall(text) if match.strip()]
+    return {
+        "full_text": text,
+        "clauses": clauses[:6],
+        "quoted_segments": quoted_segments[:3],
+    }
+
+
+def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: list[str]) -> tuple[dict[str, Any], list[str]]:
     issues: list[str] = []
+    candidate_set = set(candidate_fqdns)
     selected_primary = raw.get("selected_primary_fqdn")
-    if selected_primary not in candidate_fqdns:
+    if selected_primary not in candidate_set:
         issues.append("llm_primary_not_in_candidates")
         selected_primary = None
 
@@ -252,7 +273,7 @@ def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: set[str]) -> tu
     if not isinstance(raw_selected_related, list):
         raw_selected_related = []
         issues.append("llm_related_not_list")
-    selected_related = [fqdn for fqdn in raw_selected_related if fqdn in candidate_fqdns]
+    selected_related = [fqdn for fqdn in raw_selected_related if fqdn in candidate_set]
     if len(selected_related) != len(raw_selected_related):
         issues.append("llm_related_not_in_candidates")
 
@@ -266,7 +287,7 @@ def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: set[str]) -> tu
             issues.append("llm_judgement_not_object")
             continue
         fqdn = row.get("fqdn")
-        if fqdn in candidate_fqdns:
+        if fqdn in candidate_set:
             judgements_by_fqdn[fqdn] = row
     candidate_judgements: list[dict[str, Any]] = []
     for fqdn in candidate_fqdns:
@@ -308,6 +329,11 @@ def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: set[str]) -> tu
 
     return (
         {
+            "scene_context": str(raw.get("scene_context", ""))[:200],
+            "primary_intent": str(raw.get("primary_intent", ""))[:200],
+            "secondary_intents": [str(item)[:120] for item in raw.get("secondary_intents", []) if item][:5]
+            if isinstance(raw.get("secondary_intents", []), list)
+            else [],
             "selected_primary_fqdn": selected_primary,
             "selected_related_fqdns": selected_related,
             "candidate_judgements": candidate_judgements,
@@ -328,7 +354,6 @@ def build_decision_packet(
     config: StageALLMConfig | None = None,
 ) -> dict[str, Any]:
     config = config or StageALLMConfig()
-    query_packet = build_query_packet(sample.get("query", ""))
     base_map = {row["fqdn"]: row for row in base_stage_a.get("candidate_scores", [])}
     candidates_sorted = sorted(snapshot.get("fqdn_candidates", []), key=lambda row: row.get("score_r", 0.0), reverse=True)
     top_candidates = candidates_sorted[: config.prompt_candidate_limit]
@@ -373,11 +398,7 @@ def build_decision_packet(
         "stage_r_version": snapshot["stage_r_version"],
         "query": sample.get("query", ""),
         "context": sample.get("context", {}),
-        "query_packet": {
-            "scene_text": query_packet["scene_text"],
-            "primary_request_text": query_packet["primary_request_text"],
-            "supplemental_texts": query_packet["supplemental_texts"],
-        },
+        "query_view": _build_prompt_query_view(sample.get("query", "")),
         "hard_rules": [
             "只能从 candidates 中选 selected_primary_fqdn 和 selected_related_fqdns",
             "primary 必须唯一",
@@ -415,6 +436,26 @@ def _softmax_scores(scores: dict[str, float], temperature: float) -> dict[str, f
     exps = {key: math.exp((value - shift) / safe_temp) for key, value in scores.items()}
     total = sum(exps.values()) or 1.0
     return {key: value / total for key, value in exps.items()}
+
+
+def _agreement_score(selected_primary: str | None, deterministic_primary: str | None, resolver: NamespaceResolver) -> float:
+    if not selected_primary or not deterministic_primary:
+        return 0.0
+    if selected_primary == deterministic_primary:
+        return 1.0
+    if _is_chain_duplicate(selected_primary, deterministic_primary, resolver):
+        return 0.6
+    return 0.0
+
+
+def _llm_evidence_support(llm_row: dict[str, Any]) -> float:
+    specificity = str(llm_row.get("specificity_judgement", "fit"))
+    specificity_support = 1.0 if specificity == "fit" else 0.6 if specificity == "too_coarse" else 0.4
+    return _clip(
+        0.55 * _safe_float(llm_row.get("task_fit", 0.0))
+        + 0.35 * _safe_float(llm_row.get("primary_fit", 0.0))
+        + 0.10 * specificity_support
+    )
 
 
 def calibrate_llm_decision(
@@ -550,8 +591,17 @@ def calibrate_llm_decision(
     top1_prob = probability_scores.get(selected_primary, 0.0) if selected_primary else 0.0
     second_prob = sorted(probability_scores.values(), reverse=True)[1] if len(probability_scores) > 1 else 0.0
     llm_confidence = _safe_float(llm_decision.get("confidence", 0.0))
-    confidence = _clip(0.55 * top1_prob + 0.45 * llm_confidence)
     margin = _clip(top1_prob - second_prob)
+    margin_support = _clip(margin / max(config.margin_threshold, 1e-6))
+    primary_llm_row = llm_map.get(selected_primary, {}) if selected_primary else {}
+    evidence_support = _llm_evidence_support(primary_llm_row)
+    agreement_support = _agreement_score(selected_primary, deterministic_primary, resolver)
+    confidence = _clip(
+        0.55 * top1_prob
+        + 0.20 * margin_support
+        + 0.15 * evidence_support
+        + 0.10 * agreement_support
+    )
 
     routing_top_k: list[dict[str, Any]] = []
     for fqdn in ranked_primary[: config.routing_top_k]:
@@ -590,7 +640,12 @@ def calibrate_llm_decision(
     selection_signals = snapshot.get("semantic_parse", {}).get("selection_signals", {})
     confusion_sources = set(snapshot.get("confusion_sources", []))
     escalation_reasons: list[str] = []
-    if confidence < config.confidence_threshold and llm_confidence < config.llm_confidence_relief_threshold:
+    has_llm_relief = (
+        llm_confidence >= config.llm_confidence_relief_threshold
+        and evidence_support >= 0.75
+        and agreement_support >= 0.6
+    )
+    if confidence < config.confidence_threshold and not has_llm_relief:
         escalation_reasons.append("low_confidence")
     if margin < config.margin_threshold:
         escalation_reasons.append("small_margin")
@@ -600,7 +655,7 @@ def calibrate_llm_decision(
     if selected_primary and resolver.get_node(selected_primary) and resolver.get_node(selected_primary).l1 in RISK_L1:
         if margin < config.high_risk_margin_threshold or "C4_governance_fallback" in confusion_sources:
             escalation_reasons.append("high_risk")
-    if selection_signals.get("has_multi_intent_signal") and not selected_related:
+    if (selection_signals.get("has_multi_intent_signal") or llm_decision.get("secondary_intents")) and not selected_related:
         escalation_reasons.append("multi_intent_conflict")
     escalation_reasons.extend(constraint_reasons)
 
@@ -617,7 +672,10 @@ def calibrate_llm_decision(
         "score_breakdown": {
             "primary_fqdn": selected_primary,
             "primary_probability": round(top1_prob, 6),
+            "primary_margin_probability": round(margin, 6),
             "llm_confidence": round(llm_confidence, 6),
+            "llm_evidence_support": round(evidence_support, 6),
+            "agreement_support": round(agreement_support, 6),
             "base_stage_a_primary": base_stage_a.get("selected_primary_fqdn"),
         },
         "llm_provider": client.provider,
@@ -641,7 +699,10 @@ def analyze_stage_a_llm(
     llm_issues: list[str] = []
     try:
         llm_raw_decision, llm_raw = client.adjudicate(packet, config)
-        llm_decision, llm_issues = _sanitize_llm_decision(llm_raw_decision, {row["fqdn"] for row in snapshot.get("fqdn_candidates", [])})
+        llm_decision, llm_issues = _sanitize_llm_decision(
+            llm_raw_decision,
+            [row["fqdn"] for row in snapshot.get("fqdn_candidates", [])],
+        )
     except Exception as exc:  # pragma: no cover - exercised in integration/dry runs
         llm_issues = [f"llm_error:{type(exc).__name__}"]
         llm_decision = {
