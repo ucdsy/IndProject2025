@@ -381,12 +381,14 @@
   - 当前 `related` 召回还有提升空间，但已经不再通过误挂来换 recall
 
 ### 10.9 2026-03-14 深夜 sibling 定向修正
-- 已对 `sibling_competition` 的两类残差补最后一层 guard:
-  - `stage_a_clean.py`: 对 `meeting/schedule` child 增加 `generic_meeting_schedule_penalty`
+- 这一节记录的是**当时的临时补丁阶段**，不是当前 live code 的最终表达。
+- 当时为压制 `sibling_competition` 的残差，先补了两类定向 guard:
+  - `stage_a_clean.py`: 针对 `meeting/schedule` child 的临时惩罚项
     - 若只有泛词 `安排/安排会议`，但 query 没有显式 `时间/会场/会议室/排期` 等排期证据，则不允许 `schedule.meeting.productivity.cn` 靠泛词越过 `meeting.productivity.cn`
   - `stage_a_llm.py`: 对两类 child 误抬增加后置回退
     - `scene-only city segment` 不允许越过强 base parent
     - `generic meeting schedule child` 不允许在 LLM 重新校准后再越过 `meeting.productivity.cn`
+- 后续在 `10.10` 中，上述 `meeting/schedule` 临时补丁已经改写为 schema-driven 的 `explicit cue guard`；因此这里的参数名和函数口径应视为**历史痕迹**，不代表当前源码仍保留同名实现。
 - 回归测试已扩到 `21` 个，全部通过
 
 - `Stage A clean` 全量复跑 (`sa_clean_v3_20260314`):
@@ -429,13 +431,14 @@
     2. 再择机做一次完整真实 provider 复跑
     3. 把精力转到 `decision_related_miss` 和 `stage_r_related_miss`
 
-### 10.10 2026-03-14 深夜硬编码清洗
-- 已将 `meeting/schedule` 的业务硬编码从引擎层抽离到 namespace schema
+### 10.10 2026-03-14 深夜 sibling 线硬编码清洗
+- 已将 `meeting/schedule` 这条 `sibling` 校准相关的业务硬编码从引擎层抽离到 namespace schema
   - `namespace_descriptors.jsonl` 中，`schedule.meeting.productivity.cn` 现在通过 `routing_constraints` 声明:
     - `requires_explicit_primary_cues`
     - `generic_trigger_aliases`
   - `stage_a_clean.py` 与 `stage_a_llm.py` 不再出现 `l2 == "meeting"` / `segment == "schedule"` 这类领域判断
   - 当前 guard 语义改写为通用的 `schema-injected explicit cue guard`
+- 这里的“硬编码清洗”**只覆盖 `meeting/schedule` 这条 sibling 线**，不应被解读为 `Stage A` 全部业务约束都已完成 schema 化。
 
 - 抽象化后复跑结果保持稳定:
   - `Stage A clean` 全量 (`sa_clean_v4_20260314`):
@@ -456,7 +459,7 @@
 
 - 当前执行判断进一步更新:
   - `sibling_competition` 的主路由修正已从“经验性补丁”升级为“schema-driven constraints”
-  - 这意味着 `primary routing` 线现在不仅实证上成立，而且表达上也更适合答辩/论文
+  - 这意味着 `sibling` 相关的 `primary routing` 修正不仅实证上成立，而且表达上也更适合答辩/论文
   - 下一步可正式把重点切到:
     1. `decision_related_miss`
     2. `stage_r_related_miss`
@@ -585,3 +588,19 @@
   - 当前最值得补的不是继续调 deterministic clean，而是：
     1. 选择是否对 `sr_clean_v2_related2 + Stage A clean v7` 做一轮真实 provider 全量复核
     2. 进入 `Stage B` 设计与升级样本池整理
+
+### 10.14 2026-03-14 执行日志勘误与口径清理
+- 本文件是按时间顺序追加的执行日志，因此会保留阶段性补丁、旧参数名和当时的判断；其中一部分已不再代表当前 live code。
+- 需要明确区分两类内容:
+  - 已完成 schema 化的部分:
+    - `meeting/schedule` 的 `sibling` 主路由修正
+    - 当前 live code 通过 `routing_constraints` + 通用 `explicit cue guard` 实现
+  - 尚未完成 schema 化的部分:
+    - 高风险治理场景的 `risk-aware gating`
+    - 当前 live code 仍使用 engine-side 的 `RISK_L1 = {"gov", "security"}` 作为高风险簇判定
+- 因此，`10.10` 中“硬编码清洗”的表述应理解为:
+  - **仅 sibling 线完成了 schema-driven constraints**
+  - **不代表 `Stage A` 全部业务约束都已去硬编码**
+- 对当前代码最准确的状态描述应为:
+  - `sibling` 相关的领域约束已完成从引擎硬编码到 schema 注入的迁移
+  - `high-risk` 相关约束仍有一部分停留在引擎侧，后续还需继续清理
