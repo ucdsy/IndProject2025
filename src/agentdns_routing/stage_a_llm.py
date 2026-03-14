@@ -16,6 +16,7 @@ from .stage_a_clean import (
     StageACleanConfig,
     _chain_members,
     _clip,
+    _has_explicit_meeting_schedule_cues,
     analyze_stage_a,
 )
 
@@ -36,6 +37,7 @@ class StageALLMConfig:
     llm_confidence_relief_threshold: float = 0.82
     margin_threshold: float = 0.08
     high_risk_margin_threshold: float = 0.14
+    minmax_spread_floor: float = 0.5
     base_primary_weight: float = 0.55
     stage_r_weight: float = 0.15
     llm_task_weight: float = 0.15
@@ -47,10 +49,11 @@ class StageALLMConfig:
     llm_risk_penalty: float = 0.08
     base_related_weight: float = 0.50
     llm_related_weight: float = 0.30
-    llm_related_selected_bonus: float = 0.12
+    llm_related_selected_bonus: float = 0.08
     llm_task_related_weight: float = 0.08
     related_min_score: float = 0.42
     deterministic_related_anchor_threshold: float = 0.80
+    scene_only_descendant_margin_threshold: float = 0.20
 
 
 class StageALLMClient(Protocol):
@@ -132,12 +135,21 @@ class OpenAICompatibleStageALLMClient:
             {"role": "system", "content": _system_prompt()},
             {"role": "user", "content": _user_prompt(packet)},
         ]
-        response = self._client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            temperature=config.llm_temperature,
-            max_tokens=config.llm_max_tokens,
-        )
+        request_kwargs = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": config.llm_temperature,
+            "max_tokens": config.llm_max_tokens,
+        }
+        try:
+            response = self._client.chat.completions.create(
+                **request_kwargs,
+                response_format={"type": "json_object"},
+            )
+        except Exception as exc:
+            if not _should_retry_without_json_mode(exc):
+                raise
+            response = self._client.chat.completions.create(**request_kwargs)
         content = response.choices[0].message.content or ""
         decision = _load_json_object(content)
         return decision, content
@@ -188,11 +200,14 @@ def _user_prompt(packet: dict[str, Any]) -> str:
         "要求：\n"
         "1. 只能从 candidates 中选 selected_primary_fqdn 和 selected_related_fqdns。\n"
         "2. 先输出 scene_context、primary_intent、secondary_intents。\n"
-        "3. candidate_judgements 里至少覆盖所有 candidates。\n"
-        "4. task_fit / primary_fit / related_fit 都用 0 到 1 的数值。\n"
-        "5. specificity_judgement 只能取 too_coarse / fit / too_specific。\n"
-        "6. confidence 用 0 到 1，但这是模型自评，不会直接决定最终系统置信度。\n"
-        "7. 若低置信、样本高风险或 primary/related 拿不准，设置 escalate_to_stage_b=true。\n\n"
+        "3. related 只在存在明确 secondary_intent 且候选直接承接该 secondary_intent 时才可填写；若无明确 secondary_intent，一般返回空列表。\n"
+        "4. 对每个 selected_related_fqdn，candidate_judgements.evidence_for 必须给出支持它的具体短语；不要因为“泛相关”就挂 related。\n"
+        "5. 在 governance/security 场景，不要把 sibling 节点默认当 related，除非 query 里存在独立次要诉求。\n"
+        "6. candidate_judgements 里至少覆盖所有 candidates。\n"
+        "7. task_fit / primary_fit / related_fit 都用 0 到 1 的数值。\n"
+        "8. specificity_judgement 只能取 too_coarse / fit / too_specific。\n"
+        "9. confidence 用 0 到 1，但这是模型自评，不会直接决定最终系统置信度。\n"
+        "10. 若低置信、样本高风险或 primary/related 拿不准，设置 escalate_to_stage_b=true。\n\n"
         f"{json.dumps(packet, ensure_ascii=False, indent=2)}"
     )
 
@@ -223,14 +238,32 @@ def _truncate_aliases(node: RoutingNode | None, limit: int = 5) -> list[str]:
     return list(node.aliases[:limit])
 
 
-def _minmax_norm(values: dict[str, float]) -> dict[str, float]:
+def _should_retry_without_json_mode(exc: Exception) -> bool:
+    message = str(exc).lower()
+    return isinstance(exc, TypeError) or any(
+        token in message
+        for token in (
+            "response_format",
+            "json_object",
+            "unexpected keyword",
+            "unknown parameter",
+            "not supported",
+            "unsupported",
+            "extra inputs are not permitted",
+        )
+    )
+
+
+def _minmax_norm(values: dict[str, float], spread_floor: float = 0.5) -> dict[str, float]:
     if not values:
         return {}
     low = min(values.values())
     high = max(values.values())
-    if math.isclose(low, high):
-        return {key: 1.0 for key in values}
-    return {key: _clip((value - low) / (high - low)) for key, value in values.items()}
+    spread = high - low
+    if math.isclose(spread, 0.0):
+        return {key: 0.0 for key in values}
+    denom = max(spread, spread_floor)
+    return {key: _clip((value - low) / denom) for key, value in values.items()}
 
 
 def _specificity_adjustment(label: str, config: StageALLMConfig) -> float:
@@ -248,6 +281,24 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         return _clip(float(value))
     except (TypeError, ValueError):
         return default
+
+
+def _coerce_text_list(value: Any, limit: int = 3) -> list[str]:
+    if isinstance(value, str):
+        text = value.strip()
+        return [text[:240]] if text else []
+    if not isinstance(value, list):
+        return []
+    items: list[str] = []
+    for item in value:
+        if not item:
+            continue
+        text = str(item).strip()
+        if text:
+            items.append(text[:240])
+        if len(items) >= limit:
+            break
+    return items
 
 
 def _build_prompt_query_view(query: str) -> dict[str, Any]:
@@ -278,7 +329,13 @@ def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: list[str]) -> t
         issues.append("llm_related_not_in_candidates")
 
     raw_judgements = raw.get("candidate_judgements", [])
-    if not isinstance(raw_judgements, list):
+    if isinstance(raw_judgements, dict):
+        raw_judgements = [
+            {"fqdn": fqdn, **row}
+            for fqdn, row in raw_judgements.items()
+            if isinstance(row, dict)
+        ]
+    elif not isinstance(raw_judgements, list):
         raw_judgements = []
         issues.append("llm_judgements_not_list")
     judgements_by_fqdn = {}
@@ -301,8 +358,8 @@ def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: list[str]) -> t
                 "specificity_judgement": row.get("specificity_judgement", "fit"),
                 "risk_mismatch": bool(row.get("risk_mismatch", False)),
                 "confidence": _safe_float(row.get("confidence", 0.0)),
-                "evidence_for": list(row.get("evidence_for", []))[:3],
-                "evidence_against": list(row.get("evidence_against", []))[:3],
+                "evidence_for": _coerce_text_list(row.get("evidence_for", []), limit=3),
+                "evidence_against": _coerce_text_list(row.get("evidence_against", []), limit=3),
             }
         )
 
@@ -428,6 +485,16 @@ def _is_descendant(descendant_fqdn: str, ancestor_fqdn: str, resolver: Namespace
     return ancestor_fqdn in _chain_members(descendant_fqdn, resolver)
 
 
+def _same_l1(left_fqdn: str | None, right_fqdn: str | None, resolver: NamespaceResolver) -> bool:
+    if not left_fqdn or not right_fqdn:
+        return False
+    left = resolver.get_node(left_fqdn)
+    right = resolver.get_node(right_fqdn)
+    if not left or not right:
+        return False
+    return left.l1 == right.l1
+
+
 def _softmax_scores(scores: dict[str, float], temperature: float) -> dict[str, float]:
     if not scores:
         return {}
@@ -478,8 +545,8 @@ def calibrate_llm_decision(
 
     det_primary_scores = {fqdn: float(base_map[fqdn]["score_a"]) for fqdn in candidate_fqdns if fqdn in base_map}
     det_related_scores = {fqdn: float(base_map[fqdn]["score_related"]) for fqdn in candidate_fqdns if fqdn in base_map}
-    det_primary_norm = _minmax_norm(det_primary_scores)
-    det_related_norm = _minmax_norm(det_related_scores)
+    det_primary_norm = _minmax_norm(det_primary_scores, spread_floor=config.minmax_spread_floor)
+    det_related_norm = _minmax_norm(det_related_scores, spread_floor=config.minmax_spread_floor)
     stage_r_norm = {fqdn: float(base_map[fqdn]["score_breakdown"].get("score_r_norm", 0.0)) for fqdn in candidate_fqdns if fqdn in base_map}
 
     primary_scores: dict[str, float] = {}
@@ -554,6 +621,43 @@ def calibrate_llm_decision(
         selected_primary
         and deterministic_primary
         and selected_primary != deterministic_primary
+        and _is_descendant(selected_primary, deterministic_primary, resolver)
+    ):
+        primary_gap = primary_scores[selected_primary] - primary_scores.get(deterministic_primary, 0.0)
+        selected_base_evidence = base_map.get(selected_primary, {}).get("evidence_for", {})
+        selected_primary_hits = selected_base_evidence.get("primary_hits", [])
+        selected_scene_hits = selected_base_evidence.get("scene_hits", [])
+        deterministic_llm_row = llm_map.get(deterministic_primary, {})
+        selected_node = resolver.get_node(selected_primary)
+        if (
+            det_primary_norm.get(deterministic_primary, 0.0) >= 0.85
+            and primary_gap <= config.margin_threshold
+            and not selected_primary_hits
+        ):
+            selected_primary = deterministic_primary
+        elif (
+            selected_node
+            and selected_node.node_kind == "segment"
+            and det_primary_norm.get(deterministic_primary, 0.0) >= 0.85
+            and primary_gap <= config.scene_only_descendant_margin_threshold
+            and not selected_primary_hits
+            and bool(selected_scene_hits)
+            and _safe_float(deterministic_llm_row.get("task_fit", 0.0)) >= 0.6
+        ):
+            selected_primary = deterministic_primary
+        elif (
+            selected_node
+            and selected_node.l2 == "meeting"
+            and selected_node.segment == "schedule"
+            and set(selected_primary_hits) <= {"安排", "安排会议"}
+            and not _has_explicit_meeting_schedule_cues(sample.get("query", ""))
+            and det_primary_norm.get(deterministic_primary, 0.0) >= 0.9
+        ):
+            selected_primary = deterministic_primary
+    if (
+        selected_primary
+        and deterministic_primary
+        and selected_primary != deterministic_primary
         and _is_descendant(deterministic_primary, selected_primary, resolver)
     ):
         det_row = llm_map.get(deterministic_primary, {})
@@ -567,10 +671,15 @@ def calibrate_llm_decision(
     )
     selected_related: list[str] = []
     deterministic_related = set(base_stage_a.get("selected_related_fqdns", []))
+    selection_signals = snapshot.get("semantic_parse", {}).get("selection_signals", {})
+    has_secondary_context = bool(selection_signals.get("has_multi_intent_signal") or llm_decision.get("secondary_intents"))
     for fqdn in ranked_related_candidates:
         if _is_chain_duplicate(selected_primary, fqdn, resolver):
             continue
         llm_row = llm_map.get(fqdn, {})
+        llm_evidence_for = [item for item in llm_row.get("evidence_for", []) if item]
+        base_evidence = base_map.get(fqdn, {}).get("evidence_for", {})
+        has_secondary_hits = bool(base_evidence.get("secondary_hits", []))
         has_related_signal = fqdn in llm_selected_related
         has_deterministic_anchor = (
             fqdn in deterministic_related and det_related_norm.get(fqdn, 0.0) >= config.deterministic_related_anchor_threshold
@@ -578,6 +687,12 @@ def calibrate_llm_decision(
         if not has_related_signal and has_deterministic_anchor:
             has_related_signal = True
         if not has_related_signal:
+            continue
+        if not has_deterministic_anchor and not has_secondary_context:
+            continue
+        if not has_deterministic_anchor and not (llm_evidence_for or has_secondary_hits):
+            continue
+        if not _same_l1(selected_primary, fqdn, resolver) and not has_deterministic_anchor:
             continue
         if related_scores[fqdn] < config.related_min_score:
             continue
@@ -637,7 +752,6 @@ def calibrate_llm_decision(
         constraint_reasons.append("related_not_in_candidates")
     constraint_reasons.extend(llm_issues)
 
-    selection_signals = snapshot.get("semantic_parse", {}).get("selection_signals", {})
     confusion_sources = set(snapshot.get("confusion_sources", []))
     escalation_reasons: list[str] = []
     has_llm_relief = (

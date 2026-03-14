@@ -3,17 +3,16 @@
   "samples": 50,
   "PrimaryAcc@1": 0.96,
   "AcceptablePrimary@1": 0.96,
-  "RelatedRecall": 0.7931,
-  "RelatedRecall@Covered": 0.92,
-  "RelatedPrecision": 0.9583,
-  "avg_extra_related": 0.02,
-  "related_overpredict_rate": 0.02,
-  "escalation_rate": 0.76,
+  "RelatedRecall": 0.7241,
+  "RelatedRecall@Covered": 0.84,
+  "RelatedPrecision": 1.0,
+  "avg_extra_related": 0.0,
+  "related_overpredict_rate": 0.0,
+  "escalation_rate": 0.78,
   "error_buckets": {
-    "OK": 41,
+    "OK": 40,
     "decision_primary_miss": 2,
-    "decision_related_miss": 2,
-    "decision_related_overpredict": 1,
+    "decision_related_miss": 4,
     "stage_r_related_miss": 4
   },
   "per_sample": [
@@ -210,25 +209,22 @@
       "id": "formal_dev_000010",
       "ground_truth_fqdn": "account.compliance.security.cn",
       "selected_primary_fqdn": "account.compliance.security.cn",
-      "selected_related_fqdns": [
-        "summary.meeting.productivity.cn"
-      ],
+      "selected_related_fqdns": [],
       "acceptable_hit": true,
       "related_hit_count": 0,
       "related_total": 0,
       "related_covered_by_stage_r": 0,
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
-      "extra_related_fqdns": [
-        "summary.meeting.productivity.cn"
-      ],
+      "extra_related_fqdns": [],
       "confidence": 0.651645,
       "margin": 0.234981,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
-        "high_risk"
+        "high_risk",
+        "multi_intent_conflict"
       ],
-      "error_bucket": "decision_related_overpredict"
+      "error_bucket": "OK"
     },
     {
       "id": "formal_dev_000011",
@@ -781,23 +777,24 @@
       "id": "formal_dev_000037",
       "ground_truth_fqdn": "xian.itinerary.travel.cn",
       "selected_primary_fqdn": "xian.itinerary.travel.cn",
-      "selected_related_fqdns": [
-        "weather.cn"
-      ],
+      "selected_related_fqdns": [],
       "acceptable_hit": true,
-      "related_hit_count": 1,
+      "related_hit_count": 0,
       "related_total": 1,
       "related_covered_by_stage_r": 1,
       "related_missing_stage_r": [],
-      "related_missing_stage_a": [],
+      "related_missing_stage_a": [
+        "weather.cn"
+      ],
       "extra_related_fqdns": [],
       "confidence": 0.618184,
       "margin": 0.16925,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
-        "low_confidence"
+        "low_confidence",
+        "multi_intent_conflict"
       ],
-      "error_bucket": "OK"
+      "error_bucket": "decision_related_miss"
     },
     {
       "id": "formal_dev_000038",
@@ -952,21 +949,23 @@
       "id": "formal_dev_000045",
       "ground_truth_fqdn": "weather.cn",
       "selected_primary_fqdn": "weather.cn",
-      "selected_related_fqdns": [
-        "itinerary.travel.cn"
-      ],
+      "selected_related_fqdns": [],
       "acceptable_hit": true,
-      "related_hit_count": 1,
+      "related_hit_count": 0,
       "related_total": 1,
       "related_covered_by_stage_r": 1,
       "related_missing_stage_r": [],
-      "related_missing_stage_a": [],
+      "related_missing_stage_a": [
+        "itinerary.travel.cn"
+      ],
       "extra_related_fqdns": [],
       "confidence": 0.623909,
       "margin": 0.18597,
-      "escalate_to_stage_b": false,
-      "escalation_reasons": [],
-      "error_bucket": "OK"
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "multi_intent_conflict"
+      ],
+      "error_bucket": "decision_related_miss"
     },
     {
       "id": "formal_dev_000046",
@@ -1071,7 +1070,7 @@
       "error_bucket": "OK"
     }
   ],
-  "stage_a_version": "sa_llm_v1_20260314",
+  "stage_a_version": "sa_llm_v1_20260314_tight1",
   "stage_r_version": "sr_clean_v1_20260307",
   "input_path": "data/agentdns_routing/formal/dev.jsonl",
   "snapshot_path": "artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl",

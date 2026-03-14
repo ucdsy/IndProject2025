@@ -1,0 +1,82 @@
+{
+  "cross_domain_overlap": {
+    "samples": 26,
+    "PrimaryAcc@1": 1.0,
+    "AcceptablePrimary@1": 1.0,
+    "RelatedRecall@Covered": 0.8235,
+    "RelatedRecall": 0.8235,
+    "escalation_rate": 0.2692,
+    "extra_related_case_rate": 0.0,
+    "error_buckets": {
+      "OK": 23,
+      "decision_related_miss": 3
+    }
+  },
+  "fallback": {
+    "samples": 7,
+    "PrimaryAcc@1": 1.0,
+    "AcceptablePrimary@1": 1.0,
+    "RelatedRecall@Covered": 1.0,
+    "RelatedRecall": 1.0,
+    "escalation_rate": 0.5714,
+    "extra_related_case_rate": 0.0,
+    "error_buckets": {
+      "OK": 7
+    }
+  },
+  "governance_fallback": {
+    "samples": 10,
+    "PrimaryAcc@1": 1.0,
+    "AcceptablePrimary@1": 1.0,
+    "RelatedRecall@Covered": 1.0,
+    "RelatedRecall": 0.6667,
+    "escalation_rate": 0.6,
+    "extra_related_case_rate": 0.0,
+    "error_buckets": {
+      "OK": 8,
+      "stage_r_related_miss": 2
+    }
+  },
+  "lexical_overlap": {
+    "samples": 6,
+    "PrimaryAcc@1": 1.0,
+    "AcceptablePrimary@1": 1.0,
+    "RelatedRecall@Covered": null,
+    "RelatedRecall": 0.0,
+    "escalation_rate": 0.3333,
+    "extra_related_case_rate": 0.0,
+    "error_buckets": {
+      "OK": 4,
+      "stage_r_related_miss": 2
+    }
+  },
+  "multi_intent": {
+    "samples": 34,
+    "PrimaryAcc@1": 1.0,
+    "AcceptablePrimary@1": 1.0,
+    "RelatedRecall@Covered": 0.88,
+    "RelatedRecall": 0.7586,
+    "escalation_rate": 0.4118,
+    "extra_related_case_rate": 0.0,
+    "error_buckets": {
+      "OK": 27,
+      "decision_related_miss": 3,
+      "stage_r_related_miss": 4
+    }
+  },
+  "sibling_competition": {
+    "samples": 19,
+    "PrimaryAcc@1": 0.8947,
+    "AcceptablePrimary@1": 0.8947,
+    "RelatedRecall@Covered": 0.8,
+    "RelatedRecall": 0.6667,
+    "escalation_rate": 0.3684,
+    "extra_related_case_rate": 0.0,
+    "error_buckets": {
+      "OK": 13,
+      "decision_primary_miss": 2,
+      "decision_related_miss": 2,
+      "stage_r_related_miss": 2
+    }
+  }
+}

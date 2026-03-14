@@ -40,6 +40,14 @@ class StageACleanTestCase(unittest.TestCase):
         self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "summary.meeting.productivity.cn")
         self.assertIn("action-items.meeting.productivity.cn", trace["stage_a"]["selected_related_fqdns"])
 
+    def test_generic_meeting_request_prefers_base_over_schedule_child(self) -> None:
+        trace = self._trace("formal_dev_000025")
+        self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "meeting.productivity.cn")
+
+    def test_explicit_meeting_schedule_request_keeps_schedule_child(self) -> None:
+        trace = self._trace("formal_dev_000026")
+        self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "schedule.meeting.productivity.cn")
+
     def test_generic_compliance_prefers_base_over_scene_only_segment(self) -> None:
         trace = self._trace("formal_dev_000008")
         self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "compliance.security.cn")

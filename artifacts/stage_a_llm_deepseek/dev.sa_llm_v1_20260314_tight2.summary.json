@@ -3,17 +3,16 @@
   "samples": 50,
   "PrimaryAcc@1": 0.96,
   "AcceptablePrimary@1": 0.96,
-  "RelatedRecall": 0.7931,
-  "RelatedRecall@Covered": 0.92,
-  "RelatedPrecision": 0.9583,
-  "avg_extra_related": 0.02,
-  "related_overpredict_rate": 0.02,
-  "escalation_rate": 0.76,
+  "RelatedRecall": 0.7586,
+  "RelatedRecall@Covered": 0.88,
+  "RelatedPrecision": 1.0,
+  "avg_extra_related": 0.0,
+  "related_overpredict_rate": 0.0,
+  "escalation_rate": 0.36,
   "error_buckets": {
     "OK": 41,
     "decision_primary_miss": 2,
-    "decision_related_miss": 2,
-    "decision_related_overpredict": 1,
+    "decision_related_miss": 3,
     "stage_r_related_miss": 4
   },
   "per_sample": [
@@ -31,12 +30,10 @@
       ],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.697854,
-      "margin": 0.408401,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.733511,
+      "margin": 0.473024,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "stage_r_related_miss"
     },
     {
@@ -51,12 +48,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.697854,
-      "margin": 0.408401,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.730817,
+      "margin": 0.468696,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -73,12 +68,10 @@
       ],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.697854,
-      "margin": 0.408401,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.726362,
+      "margin": 0.465071,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "stage_r_related_miss"
     },
     {
@@ -93,8 +86,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.672418,
-      "margin": 0.354885,
+      "confidence": 0.690756,
+      "margin": 0.372136,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "multi_intent_conflict"
@@ -113,12 +106,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.691382,
-      "margin": 0.375867,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.727828,
+      "margin": 0.457029,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -133,8 +124,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.686786,
-      "margin": 0.385546,
+      "confidence": 0.715537,
+      "margin": 0.43718,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "multi_intent_conflict"
@@ -155,8 +146,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.645696,
-      "margin": 0.215101,
+      "confidence": 0.676014,
+      "margin": 0.257103,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "high_risk"
@@ -175,12 +166,13 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.655509,
-      "margin": 0.251952,
+      "confidence": 0.405706,
+      "margin": 0.016074,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "high_risk",
-        "multi_intent_conflict"
+        "low_confidence",
+        "small_margin"
       ],
       "error_bucket": "OK"
     },
@@ -198,8 +190,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.6511,
-      "margin": 0.239903,
+      "confidence": 0.683206,
+      "margin": 0.296591,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "high_risk"
@@ -210,25 +202,22 @@
       "id": "formal_dev_000010",
       "ground_truth_fqdn": "account.compliance.security.cn",
       "selected_primary_fqdn": "account.compliance.security.cn",
-      "selected_related_fqdns": [
-        "summary.meeting.productivity.cn"
-      ],
+      "selected_related_fqdns": [],
       "acceptable_hit": true,
       "related_hit_count": 0,
       "related_total": 0,
       "related_covered_by_stage_r": 0,
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
-      "extra_related_fqdns": [
-        "summary.meeting.productivity.cn"
-      ],
-      "confidence": 0.651645,
-      "margin": 0.234981,
+      "extra_related_fqdns": [],
+      "confidence": 0.684256,
+      "margin": 0.29268,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
-        "high_risk"
+        "high_risk",
+        "multi_intent_conflict"
       ],
-      "error_bucket": "decision_related_overpredict"
+      "error_bucket": "OK"
     },
     {
       "id": "formal_dev_000011",
@@ -244,12 +233,11 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.61033,
-      "margin": 0.096486,
+      "confidence": 0.630785,
+      "margin": 0.090862,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
-        "high_risk",
-        "low_confidence"
+        "high_risk"
       ],
       "error_bucket": "OK"
     },
@@ -265,12 +253,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.683137,
-      "margin": 0.33009,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.711827,
+      "margin": 0.373063,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -287,12 +273,11 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.54594,
-      "margin": 0.057776,
+      "confidence": 0.539271,
+      "margin": 0.047041,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "high_risk",
-        "low_confidence",
         "small_margin"
       ],
       "error_bucket": "OK"
@@ -311,8 +296,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.686993,
-      "margin": 0.364688,
+      "confidence": 0.712581,
+      "margin": 0.405445,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -331,13 +316,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.333166,
-      "margin": 0.0,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "low_confidence",
-        "small_margin"
-      ],
+      "confidence": 0.644186,
+      "margin": 0.153519,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -352,12 +334,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.691331,
-      "margin": 0.389486,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.701116,
+      "margin": 0.418397,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -374,13 +354,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.342434,
-      "margin": 0.0,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "low_confidence",
-        "small_margin"
-      ],
+      "confidence": 0.656303,
+      "margin": 0.178569,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -395,8 +372,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.652407,
-      "margin": 0.225058,
+      "confidence": 0.678745,
+      "margin": 0.27744,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "multi_intent_conflict"
@@ -417,8 +394,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.661299,
-      "margin": 0.28053,
+      "confidence": 0.689531,
+      "margin": 0.320738,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -435,11 +412,14 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.683525,
-      "margin": 0.365854,
+      "confidence": 0.489471,
+      "margin": 0.222739,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
-        "multi_intent_conflict"
+        "llm_error",
+        "llm_error:APIConnectionError",
+        "llm_requested",
+        "low_confidence"
       ],
       "error_bucket": "OK"
     },
@@ -457,8 +437,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.680049,
-      "margin": 0.346068,
+      "confidence": 0.713663,
+      "margin": 0.401802,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -477,8 +457,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.684963,
-      "margin": 0.341454,
+      "confidence": 0.711838,
+      "margin": 0.382619,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -495,12 +475,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.696205,
-      "margin": 0.401175,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.729866,
+      "margin": 0.467097,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -517,7 +495,7 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.321137,
+      "confidence": 0.314159,
       "margin": 0.0,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
@@ -538,12 +516,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.65346,
-      "margin": 0.197019,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.677608,
+      "margin": 0.239618,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "decision_primary_miss"
     },
     {
@@ -558,14 +534,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.33918,
-      "margin": 0.0,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "low_confidence",
-        "multi_intent_conflict",
-        "small_margin"
-      ],
+      "confidence": 0.65015,
+      "margin": 0.153482,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -582,12 +554,13 @@
         "docs.productivity.cn"
       ],
       "extra_related_fqdns": [],
-      "confidence": 0.618759,
-      "margin": 0.149299,
+      "confidence": 0.320367,
+      "margin": 0.0,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "low_confidence",
-        "multi_intent_conflict"
+        "multi_intent_conflict",
+        "small_margin"
       ],
       "error_bucket": "decision_related_miss"
     },
@@ -603,13 +576,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.577556,
-      "margin": 0.279193,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "low_confidence",
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.693209,
+      "margin": 0.394976,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -624,12 +594,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.686777,
-      "margin": 0.357454,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.718027,
+      "margin": 0.433698,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -644,13 +612,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.610229,
-      "margin": 0.348153,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "low_confidence",
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.726996,
+      "margin": 0.467668,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -667,8 +632,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.651127,
-      "margin": 0.20248,
+      "confidence": 0.67097,
+      "margin": 0.221431,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -687,8 +652,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.667216,
-      "margin": 0.238408,
+      "confidence": 0.692212,
+      "margin": 0.255229,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -705,12 +670,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.699121,
-      "margin": 0.411583,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.724277,
+      "margin": 0.459721,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -727,8 +690,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.66801,
-      "margin": 0.239237,
+      "confidence": 0.685934,
+      "margin": 0.249702,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -747,8 +710,8 @@
       ],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.699704,
-      "margin": 0.41265,
+      "confidence": 0.738152,
+      "margin": 0.482089,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "multi_intent_conflict"
@@ -758,7 +721,7 @@
     {
       "id": "formal_dev_000036",
       "ground_truth_fqdn": "itinerary.travel.cn",
-      "selected_primary_fqdn": "schedule.meeting.productivity.cn",
+      "selected_primary_fqdn": "xian.itinerary.travel.cn",
       "selected_related_fqdns": [],
       "acceptable_hit": false,
       "related_hit_count": 0,
@@ -767,12 +730,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.443956,
-      "margin": 0.073318,
+      "confidence": 0.503086,
+      "margin": 0.070237,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
-        "low_confidence",
-        "multi_intent_conflict",
         "small_margin"
       ],
       "error_bucket": "decision_primary_miss"
@@ -781,23 +742,23 @@
       "id": "formal_dev_000037",
       "ground_truth_fqdn": "xian.itinerary.travel.cn",
       "selected_primary_fqdn": "xian.itinerary.travel.cn",
-      "selected_related_fqdns": [
-        "weather.cn"
-      ],
+      "selected_related_fqdns": [],
       "acceptable_hit": true,
-      "related_hit_count": 1,
+      "related_hit_count": 0,
       "related_total": 1,
       "related_covered_by_stage_r": 1,
       "related_missing_stage_r": [],
-      "related_missing_stage_a": [],
+      "related_missing_stage_a": [
+        "weather.cn"
+      ],
       "extra_related_fqdns": [],
-      "confidence": 0.618184,
-      "margin": 0.16925,
+      "confidence": 0.65175,
+      "margin": 0.249596,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
-        "low_confidence"
+        "multi_intent_conflict"
       ],
-      "error_bucket": "OK"
+      "error_bucket": "decision_related_miss"
     },
     {
       "id": "formal_dev_000038",
@@ -811,12 +772,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.659578,
-      "margin": 0.297649,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.594956,
+      "margin": 0.133242,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -833,12 +792,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.599462,
-      "margin": 0.13951,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "low_confidence"
-      ],
+      "confidence": 0.628473,
+      "margin": 0.177016,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -855,12 +812,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.614619,
-      "margin": 0.183431,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "low_confidence"
-      ],
+      "confidence": 0.640419,
+      "margin": 0.209351,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -877,8 +832,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.667216,
-      "margin": 0.238408,
+      "confidence": 0.692518,
+      "margin": 0.25554,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -897,12 +852,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.614619,
-      "margin": 0.183431,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "low_confidence"
-      ],
+      "confidence": 0.638508,
+      "margin": 0.207337,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -919,8 +872,8 @@
       ],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.642561,
-      "margin": 0.147866,
+      "confidence": 0.68874,
+      "margin": 0.280041,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
         "multi_intent_conflict"
@@ -939,11 +892,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.616648,
-      "margin": 0.214283,
+      "confidence": 0.66224,
+      "margin": 0.289806,
       "escalate_to_stage_b": true,
       "escalation_reasons": [
-        "low_confidence",
         "multi_intent_conflict"
       ],
       "error_bucket": "OK"
@@ -952,8 +904,30 @@
       "id": "formal_dev_000045",
       "ground_truth_fqdn": "weather.cn",
       "selected_primary_fqdn": "weather.cn",
-      "selected_related_fqdns": [
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [
         "itinerary.travel.cn"
+      ],
+      "extra_related_fqdns": [],
+      "confidence": 0.648586,
+      "margin": 0.202474,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "multi_intent_conflict"
+      ],
+      "error_bucket": "decision_related_miss"
+    },
+    {
+      "id": "formal_dev_000046",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "selected_primary_fqdn": "nutrition.health.cn",
+      "selected_related_fqdns": [
+        "fitness.health.cn"
       ],
       "acceptable_hit": true,
       "related_hit_count": 1,
@@ -962,33 +936,11 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.623909,
-      "margin": 0.18597,
+      "confidence": 0.667479,
+      "margin": 0.212351,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
-    },
-    {
-      "id": "formal_dev_000046",
-      "ground_truth_fqdn": "nutrition.health.cn",
-      "selected_primary_fqdn": "nutrition.health.cn",
-      "selected_related_fqdns": [],
-      "acceptable_hit": true,
-      "related_hit_count": 0,
-      "related_total": 1,
-      "related_covered_by_stage_r": 1,
-      "related_missing_stage_r": [],
-      "related_missing_stage_a": [
-        "fitness.health.cn"
-      ],
-      "extra_related_fqdns": [],
-      "confidence": 0.633573,
-      "margin": 0.092993,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
-      "error_bucket": "decision_related_miss"
     },
     {
       "id": "formal_dev_000047",
@@ -1002,12 +954,10 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.696646,
-      "margin": 0.403558,
-      "escalate_to_stage_b": true,
-      "escalation_reasons": [
-        "multi_intent_conflict"
-      ],
+      "confidence": 0.7244,
+      "margin": 0.463489,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
       "error_bucket": "OK"
     },
     {
@@ -1024,8 +974,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.684644,
-      "margin": 0.334989,
+      "confidence": 0.708716,
+      "margin": 0.371844,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -1044,8 +994,8 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.663726,
-      "margin": 0.237303,
+      "confidence": 0.686973,
+      "margin": 0.268054,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
@@ -1064,19 +1014,19 @@
       "related_missing_stage_r": [],
       "related_missing_stage_a": [],
       "extra_related_fqdns": [],
-      "confidence": 0.687674,
-      "margin": 0.349237,
+      "confidence": 0.717974,
+      "margin": 0.395588,
       "escalate_to_stage_b": false,
       "escalation_reasons": [],
       "error_bucket": "OK"
     }
   ],
-  "stage_a_version": "sa_llm_v1_20260314",
+  "stage_a_version": "sa_llm_v1_20260314_tight2",
   "stage_r_version": "sr_clean_v1_20260307",
   "input_path": "data/agentdns_routing/formal/dev.jsonl",
   "snapshot_path": "artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl",
-  "provider": "mock",
-  "model": "mock-stage-a",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
   "trace_validation": {
     "valid": true,
     "errors": []

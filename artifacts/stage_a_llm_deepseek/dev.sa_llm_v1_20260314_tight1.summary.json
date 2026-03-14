@@ -1,0 +1,487 @@
+{
+  "labeled": true,
+  "samples": 20,
+  "PrimaryAcc@1": 0.95,
+  "AcceptablePrimary@1": 0.95,
+  "RelatedRecall": 0.6,
+  "RelatedRecall@Covered": 0.75,
+  "RelatedPrecision": 1.0,
+  "avg_extra_related": 0.0,
+  "related_overpredict_rate": 0.0,
+  "escalation_rate": 1.0,
+  "error_buckets": {
+    "OK": 16,
+    "decision_primary_miss": 1,
+    "decision_related_miss": 1,
+    "stage_r_related_miss": 2
+  },
+  "per_sample": [
+    {
+      "id": "formal_dev_000001",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "selected_primary_fqdn": "permit.gov.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 1,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [
+        "policy.gov.cn"
+      ],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.516123,
+      "margin": 0.292958,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence",
+        "multi_intent_conflict"
+      ],
+      "error_bucket": "stage_r_related_miss"
+    },
+    {
+      "id": "formal_dev_000002",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "selected_primary_fqdn": "permit.gov.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.516123,
+      "margin": 0.292958,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000003",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "selected_primary_fqdn": "permit.gov.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 1,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [
+        "policy.gov.cn"
+      ],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.516123,
+      "margin": 0.292958,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "stage_r_related_miss"
+    },
+    {
+      "id": "formal_dev_000004",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "selected_primary_fqdn": "policy.gov.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.492749,
+      "margin": 0.24355,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence",
+        "multi_intent_conflict"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000005",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "selected_primary_fqdn": "policy.gov.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.51025,
+      "margin": 0.258345,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000006",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "selected_primary_fqdn": "policy.gov.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.505819,
+      "margin": 0.271689,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence",
+        "multi_intent_conflict"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000007",
+      "ground_truth_fqdn": "data.compliance.security.cn",
+      "selected_primary_fqdn": "data.compliance.security.cn",
+      "selected_related_fqdns": [
+        "risk.security.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.478745,
+      "margin": 0.145756,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "high_risk",
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000008",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "selected_primary_fqdn": "compliance.security.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.463204,
+      "margin": 0.086919,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "high_risk",
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000009",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "selected_primary_fqdn": "transaction.compliance.security.cn",
+      "selected_related_fqdns": [
+        "risk.security.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.485205,
+      "margin": 0.169898,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "high_risk",
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000010",
+      "ground_truth_fqdn": "account.compliance.security.cn",
+      "selected_primary_fqdn": "account.compliance.security.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.483227,
+      "margin": 0.162687,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "high_risk",
+        "llm_judgements_not_list",
+        "low_confidence",
+        "multi_intent_conflict"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000011",
+      "ground_truth_fqdn": "risk.security.cn",
+      "selected_primary_fqdn": "risk.security.cn",
+      "selected_related_fqdns": [
+        "data.compliance.security.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.320072,
+      "margin": 0.028776,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "high_risk",
+        "llm_judgements_not_list",
+        "low_confidence",
+        "small_margin"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000012",
+      "ground_truth_fqdn": "risk.security.cn",
+      "selected_primary_fqdn": "risk.security.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.502805,
+      "margin": 0.209609,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000013",
+      "ground_truth_fqdn": "risk.security.cn",
+      "selected_primary_fqdn": "data.compliance.security.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": false,
+      "related_hit_count": 0,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [
+        "data.compliance.security.cn"
+      ],
+      "extra_related_fqdns": [],
+      "confidence": 0.159989,
+      "margin": 0.006195,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "high_risk",
+        "llm_judgements_not_list",
+        "low_confidence",
+        "multi_intent_conflict",
+        "small_margin"
+      ],
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "formal_dev_000014",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "selected_primary_fqdn": "fraud.security.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [
+        "risk.security.cn"
+      ],
+      "extra_related_fqdns": [],
+      "confidence": 0.50918,
+      "margin": 0.267045,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence",
+        "multi_intent_conflict"
+      ],
+      "error_bucket": "decision_related_miss"
+    },
+    {
+      "id": "formal_dev_000015",
+      "ground_truth_fqdn": "verify.invoice.finance.cn",
+      "selected_primary_fqdn": "verify.invoice.finance.cn",
+      "selected_related_fqdns": [
+        "tax.finance.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.374,
+      "margin": 0.046248,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence",
+        "small_margin"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000016",
+      "ground_truth_fqdn": "invoice.finance.cn",
+      "selected_primary_fqdn": "invoice.finance.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.510027,
+      "margin": 0.274023,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000017",
+      "ground_truth_fqdn": "issue.invoice.finance.cn",
+      "selected_primary_fqdn": "issue.invoice.finance.cn",
+      "selected_related_fqdns": [
+        "tax.finance.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.440706,
+      "margin": 0.069506,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence",
+        "small_margin"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000018",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "selected_primary_fqdn": "reimburse.invoice.finance.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.481936,
+      "margin": 0.151373,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence",
+        "multi_intent_conflict"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000019",
+      "ground_truth_fqdn": "tax.finance.cn",
+      "selected_primary_fqdn": "tax.finance.cn",
+      "selected_related_fqdns": [
+        "issue.invoice.finance.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.491112,
+      "margin": 0.195278,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000020",
+      "ground_truth_fqdn": "tax.finance.cn",
+      "selected_primary_fqdn": "tax.finance.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.502967,
+      "margin": 0.250674,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "llm_judgements_not_list",
+        "low_confidence"
+      ],
+      "error_bucket": "OK"
+    }
+  ],
+  "stage_a_version": "sa_llm_v1_20260314_tight1",
+  "stage_r_version": "sr_clean_v1_20260307",
+  "input_path": "data/agentdns_routing/formal/dev.jsonl",
+  "snapshot_path": "artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "trace_validation": {
+    "valid": true,
+    "errors": []
+  }
+}

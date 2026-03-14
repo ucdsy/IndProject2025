@@ -265,3 +265,166 @@
 4. 之后再补:
    - `RRF` baseline
    - `BM25-only / dense-only` 论文对比基线
+
+## 10. 2026-03-14 实施更新
+
+### 10.1 已完成的工程硬化
+- `stage_a_llm.py` 已补 `min-max` spread floor，避免弱候选分盘被强行拉成 `1.0`
+- `OpenAICompatibleStageALLMClient` 已优先请求 `json_object` 输出；若 provider 不支持，再自动回退到普通文本 JSON 解析
+- 对应单测已补齐，当前 `tests/test_stage_a_clean.py` + `tests/test_stage_a_llm.py` 共 12 个测试通过
+
+### 10.2 当前 mock 结果
+- `mock dev` 结果维持稳定:
+  - `PrimaryAcc@1 = 0.96`
+  - `RelatedRecall@Covered = 0.92`
+  - `RelatedPrecision = 0.9583`
+  - `escalation_rate = 0.76`
+
+### 10.3 当前真实 provider smoke 结果
+- 已用 `deepseek-chat` 跑真实 provider smoke，不再只看 mock
+- 当前冻结结论以 `smoke20` 为准，而不是完整 `dev`
+- `smoke20` 结果:
+  - `PrimaryAcc@1 = 0.95`
+  - `RelatedRecall@Covered = 1.0`
+  - `RelatedPrecision = 0.6154`
+  - `related_overpredict_rate = 0.25`
+  - `escalation_rate = 0.45`
+
+### 10.4 当前暴露的问题
+- 真实 provider 相比 deterministic baseline 更激进地扩张 `related`
+- 过拟合样式不是 `Stage R` 漏召回，而是:
+  - `cross-domain` / `governance` 场景下误挂 related
+  - 治理簇内部出现个别 `primary` 误判
+- 当前典型样本:
+  - `formal_dev_000004`: `policy.gov.cn -> compliance.security.cn` 误挂 related
+  - `formal_dev_000006`: `policy.gov.cn -> compliance.security.cn` 误挂 related
+  - `formal_dev_000008`: `compliance.security.cn` 被误判到 `account.compliance.security.cn`
+  - `formal_dev_000010`: `account.compliance.security.cn -> summary.meeting.productivity.cn` 误挂 related
+  - `formal_dev_000012`: `risk.security.cn -> compliance.security.cn` 误挂 related
+
+### 10.5 当前执行判断
+- `Stage A` 架构保持冻结，不再改方法主线
+- 完整 `deepseek dev` 暂不继续，先停在 `smoke20`
+- 下一步优先级:
+  1. 收紧 prompt / calibration 中对 `related` 的放行条件
+  2. 重点检查 `sibling_competition` 与 `governance_fallback` 分桶
+  3. 重新跑真实 provider，再决定是否值得做完整 `dev`
+
+### 10.6 2026-03-14 晚间复跑结果
+- 已完成两轮针对性收口:
+  - `tight1`: 收紧 `related` 放行规则，压制 `cross-domain` / `governance` 误挂
+  - `tight2`: 修复真实 provider 把 `candidate_judgements` 返回成对象字典时的解析兼容性
+- `mock` 复跑结果 (`sa_llm_v1_20260314_tight1`):
+  - `PrimaryAcc@1 = 0.96`
+  - `RelatedRecall@Covered = 0.84`
+  - `RelatedPrecision = 1.0`
+  - `related_overpredict_rate = 0.0`
+  - `escalation_rate = 0.78`
+- `deepseek smoke20` 最新结果 (`sa_llm_v1_20260314_tight2`):
+  - `PrimaryAcc@1 = 1.0`
+  - `AcceptablePrimary@1 = 1.0`
+  - `RelatedRecall@Covered = 1.0`
+  - `RelatedPrecision = 1.0`
+  - `related_overpredict_rate = 0.0`
+  - `escalation_rate = 0.5`
+- 最新 `smoke20` 下，前一轮暴露的典型问题已被压住:
+  - `formal_dev_000004`: 不再误挂 `compliance.security.cn`
+  - `formal_dev_000006`: 不再误挂 `compliance.security.cn`
+  - `formal_dev_000008`: 主路由回到 `compliance.security.cn`
+  - `formal_dev_000010`: 不再误挂 `summary.meeting.productivity.cn`
+  - `formal_dev_000012`: 不再误挂 `compliance.security.cn`
+- 当前 `smoke20` 剩余问题主要是 `Stage R` 本身未覆盖的 related:
+  - `formal_dev_000001`
+  - `formal_dev_000003`
+
+### 10.7 完整 `deepseek dev` 结果
+- 已完成完整 `formal/dev` 50 条的 `deepseek-chat` 评测
+- 最终结果 (`sa_llm_v1_20260314_tight2`):
+  - `PrimaryAcc@1 = 0.96`
+  - `AcceptablePrimary@1 = 0.96`
+  - `RelatedRecall = 0.7586`
+  - `RelatedRecall@Covered = 0.88`
+  - `RelatedPrecision = 1.0`
+  - `related_overpredict_rate = 0.0`
+  - `escalation_rate = 0.36`
+- 主要剩余误差:
+  - `decision_primary_miss = 2`
+    - `formal_dev_000025`: `meeting.productivity.cn -> schedule.meeting.productivity.cn`
+    - `formal_dev_000036`: `itinerary.travel.cn -> xian.itinerary.travel.cn`
+  - `decision_related_miss = 3`
+    - `formal_dev_000027`: 漏掉 `docs.productivity.cn`
+    - `formal_dev_000037`: 漏掉 `weather.cn`
+    - `formal_dev_000045`: 漏掉 `itinerary.travel.cn`
+  - `stage_r_related_miss = 4`
+    - `formal_dev_000001`
+    - `formal_dev_000003`
+    - `formal_dev_000035`
+    - `formal_dev_000043`
+
+### 10.8 Confusion-Type 分桶观察
+- `cross_domain_overlap`:
+  - `PrimaryAcc@1 = 1.0`
+  - `RelatedRecall@Covered = 0.8235`
+  - `extra_related_case_rate = 0.0`
+- `governance_fallback`:
+  - `PrimaryAcc@1 = 1.0`
+  - `RelatedRecall@Covered = 1.0`
+  - `RelatedRecall = 0.6667`
+  - 剩余缺口主要来自 `Stage R` 未覆盖 related，而不是 Stage A 误挂
+- `sibling_competition`:
+  - `PrimaryAcc@1 = 0.8947`
+  - 是当前最明显的剩余短板
+  - 说明 `base` vs `city/child` 节点之间的主次校准仍需继续做
+- `multi_intent`:
+  - `PrimaryAcc@1 = 1.0`
+  - `RelatedRecall@Covered = 0.88`
+  - 当前 `related` 召回还有提升空间，但已经不再通过误挂来换 recall
+
+### 10.9 2026-03-14 深夜 sibling 定向修正
+- 已对 `sibling_competition` 的两类残差补最后一层 guard:
+  - `stage_a_clean.py`: 对 `meeting/schedule` child 增加 `generic_meeting_schedule_penalty`
+    - 若只有泛词 `安排/安排会议`，但 query 没有显式 `时间/会场/会议室/排期` 等排期证据，则不允许 `schedule.meeting.productivity.cn` 靠泛词越过 `meeting.productivity.cn`
+  - `stage_a_llm.py`: 对两类 child 误抬增加后置回退
+    - `scene-only city segment` 不允许越过强 base parent
+    - `generic meeting schedule child` 不允许在 LLM 重新校准后再越过 `meeting.productivity.cn`
+- 回归测试已扩到 `21` 个，全部通过
+
+- `Stage A clean` 全量复跑 (`sa_clean_v3_20260314`):
+  - `PrimaryAcc@1 = 1.0`
+  - `AcceptablePrimary@1 = 1.0`
+  - `RelatedRecall = 0.7931`
+  - `RelatedRecall@Covered = 0.92`
+  - `RelatedPrecision = 0.9583`
+  - `related_overpredict_rate = 0.02`
+  - `escalation_rate = 0.60`
+  - 当前 `decision_primary_miss = 0`
+
+- `sibling_competition` 子集的 deterministic 复跑 (`sa_clean_v3_20260314_sibling`):
+  - `samples = 19`
+  - `PrimaryAcc@1 = 1.0`
+  - `RelatedRecall@Covered = 0.90`
+  - `RelatedPrecision = 1.0`
+  - `related_overpredict_rate = 0.0`
+  - `escalation_rate = 0.6842`
+
+- 真实 provider 不再做新的全量 `deepseek dev` 长跑，而是先做 `target4` 正反对照验证 (`sa_llm_v1_20260314_tight4_target4`)
+  - `formal_dev_000025`: `meeting.productivity.cn`
+  - `formal_dev_000026`: `schedule.meeting.productivity.cn`
+  - `formal_dev_000036`: `itinerary.travel.cn`
+  - `formal_dev_000037`: `xian.itinerary.travel.cn`
+  - 结论:
+    - 两个坏例 (`000025`, `000036`) 已被拉回 base
+    - 两个正例 (`000026`, `000037`) 未被新 guard 误伤
+  - `target4` 汇总:
+    - `PrimaryAcc@1 = 1.0`
+    - `AcceptablePrimary@1 = 1.0`
+    - `escalation_rate = 0.75`
+    - 仅剩 `decision_related_miss = 1`
+
+- 当前执行判断更新:
+  - `sibling_competition` 的主路由误判已被定向命中
+  - 下一步不应继续大改主路由算法
+  - 更合理的下一步是:
+    1. 用 `sa_clean_v3_20260314` 作为新的 deterministic 基线
+    2. 再择机做一次完整真实 provider 复跑
+    3. 把精力转到 `decision_related_miss` 和 `stage_r_related_miss`
