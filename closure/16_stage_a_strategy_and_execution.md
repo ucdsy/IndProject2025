@@ -461,3 +461,127 @@
     1. `decision_related_miss`
     2. `stage_r_related_miss`
     3. `Stage B` 设计与升级策略
+
+### 10.11 2026-03-14 深夜 related 治理收口
+- 已围绕 `decision_related_miss` 做两轮 related 侧修正，保持 `primary routing` 不动:
+  - `docs.productivity.cn`
+    - 补充 `提纲 / 材料提纲 / 会议材料` descriptor 支持
+  - `fitness.health.cn`
+    - 补充 `运动 / 运动建议 / 训练建议` alias，避免 `运动建议` 只被弱 desc overlap 召回
+  - `stage_a_llm.py`
+    - 新增 `same-l1 deterministic secondary anchor`
+    - 允许同 `l1`、有 `secondary_hits`、且 deterministic related 分数足够的候选，在 LLM 未显式选中时仍可进入 related
+  - `stage_a_clean.py`
+    - 对 `RISK_L1` related 增加显式二级意图要求，不再让结构化多意图单独放行
+
+- 对应回归测试已扩到 `27` 个，全部通过
+
+- `Stage A clean` 全量复跑 (`sa_clean_v6_20260314_related2`):
+  - `PrimaryAcc@1 = 1.0`
+  - `AcceptablePrimary@1 = 1.0`
+  - `RelatedRecall = 0.8621`
+  - `RelatedRecall@Covered = 1.0`
+  - `RelatedPrecision = 1.0`
+  - `related_overpredict_rate = 0.0`
+  - `escalation_rate = 0.60`
+  - 当前只剩 `stage_r_related_miss = 4`
+
+- `Stage A llm mock` 全量复跑 (`sa_llm_v1_20260314_tight7_related2`):
+  - `PrimaryAcc@1 = 0.98`
+  - `AcceptablePrimary@1 = 0.98`
+  - `RelatedRecall = 0.8621`
+  - `RelatedRecall@Covered = 1.0`
+  - `RelatedPrecision = 1.0`
+  - `related_overpredict_rate = 0.0`
+  - `escalation_rate = 0.74`
+  - 当前只剩:
+    - `decision_primary_miss = 1` (`formal_dev_000036`)
+    - `stage_r_related_miss = 4`
+
+- 专项治理表已单开:
+  - `closure/17_related_miss_governance.md`
+
+### 10.12 当前 real-provider 复核进度
+- 已完成 `deepseek-chat` 的 related target 子集复跑 (`sa_llm_v1_20260314_tight7_related_target5`)
+- `target5` 汇总:
+  - `samples = 5`
+  - `PrimaryAcc@1 = 1.0`
+  - `AcceptablePrimary@1 = 1.0`
+  - `RelatedRecall = 1.0`
+  - `RelatedRecall@Covered = 1.0`
+  - `RelatedPrecision = 1.0`
+  - `related_overpredict_rate = 0.0`
+  - `escalation_rate = 0.4`
+  - `error_buckets = {"OK": 5}`
+- 已确认恢复的样本:
+  - `formal_dev_000009`
+    - `selected_related_fqdns = ["risk.security.cn"]`
+    - 不再误挂 `fraud.security.cn`
+  - `formal_dev_000027`
+    - `selected_related_fqdns = ["docs.productivity.cn"]`
+  - `formal_dev_000037`
+    - `selected_related_fqdns = ["weather.cn"]`
+  - `formal_dev_000045`
+    - `selected_primary_fqdn = "weather.cn"`
+    - `selected_related_fqdns = ["itinerary.travel.cn"]`
+  - `formal_dev_000046`
+    - `selected_primary_fqdn = "nutrition.health.cn"`
+    - `selected_related_fqdns = ["fitness.health.cn"]`
+- 另有 `target1` one-shot (`sa_llm_v1_20260314_tight7_related_target1`) 再次确认:
+  - `formal_dev_000046` 单样本结果为 `OK`
+  - `escalation_rate = 0.0`
+
+- 当前执行判断再次更新:
+  - 冻结 snapshot 上，`Stage A clean` 的 related 决策面已基本收口
+  - 后续主要误差来源已收敛到 `Stage R` 未覆盖 related
+  - 下一步主线应转为:
+    1. 完成剩余 real-provider 复核
+    2. 单开 `sr_clean_v2_related1`
+    3. 只处理 `stage_r_related_miss` 的 4 个样本
+
+### 10.13 2026-03-14 深夜 `Stage R v2` 低风险补召回
+- 已在不改 `Stage R` 主逻辑的前提下，只通过 schema/descriptor 补充完成 `stage_r_related_miss` 审计与修正
+- 本轮补充:
+  - `policy.gov.cn`
+    - 增加 `依据`
+  - `price.commerce.cn`
+    - 增加 `差价`
+  - `hotel.travel.cn`
+    - 增加 `住处`
+- 为避免新召回候选污染 `Stage A`：
+  - `docs.productivity.cn`
+    - 从 alias 中移除过宽的裸 `提纲`
+  - `Stage A clean`
+    - 增加通用的 `multi_intent_secondary_primary_penalty`
+    - secondary-only 候选可做 related，但不应轻易翻成 primary
+
+- 新 snapshot (`sr_clean_v2_20260314_related2`) gate 结果:
+  - `PrimaryRecall@10 = 1.0`
+  - `RelatedCoverage@10 = 1.0`
+  - `UnionCoverage@10 = 1.0`
+  - `L1Acc_top1cand = 0.96`
+  - `L2Acc_top1cand = 0.8333`
+  - gate 继续通过，`advance_recommendation = "advance_to_stage_a"`
+
+- 新 snapshot 接 `Stage A clean` (`sa_clean_v7_20260314_related3_on_sr_v2`)：
+  - `PrimaryAcc@1 = 1.0`
+  - `AcceptablePrimary@1 = 1.0`
+  - `RelatedRecall = 1.0`
+  - `RelatedRecall@Covered = 1.0`
+  - `RelatedPrecision = 1.0`
+  - `related_overpredict_rate = 0.0`
+  - `escalation_rate = 0.54`
+  - `error_buckets = {"OK": 50}`
+
+- `mock` 双轨对照 (`sa_llm_v1_20260314_tight8_related3_on_sr_v2`)：
+  - `PrimaryAcc@1 = 0.98`
+  - `RelatedRecall = 1.0`
+  - `RelatedPrecision = 1.0`
+  - `related_overpredict_rate = 0.0`
+  - 当前仅剩 `decision_primary_miss = 1`
+
+- 当前执行判断最终更新:
+  - `formal/dev` 上，clean 主线已完成 end-to-end 闭环
+  - 当前最值得补的不是继续调 deterministic clean，而是：
+    1. 选择是否对 `sr_clean_v2_related2 + Stage A clean v7` 做一轮真实 provider 全量复核
+    2. 进入 `Stage B` 设计与升级样本池整理

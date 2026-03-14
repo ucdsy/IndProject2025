@@ -53,6 +53,9 @@ class StageALLMConfig:
     llm_task_related_weight: float = 0.08
     related_min_score: float = 0.42
     deterministic_related_anchor_threshold: float = 0.80
+    same_l1_secondary_related_anchor_threshold: float = 0.55
+    same_l1_secondary_related_min_score: float = 0.30
+    cross_l1_secondary_related_min_score: float = 0.68
     scene_only_descendant_margin_threshold: float = 0.20
 
 
@@ -495,6 +498,15 @@ def _same_l1(left_fqdn: str | None, right_fqdn: str | None, resolver: NamespaceR
     return left.l1 == right.l1
 
 
+def _is_risk_l1(fqdn: str | None, resolver: NamespaceResolver) -> bool:
+    if not fqdn:
+        return False
+    node = resolver.get_node(fqdn)
+    if not node:
+        return False
+    return node.l1 in RISK_L1
+
+
 def _softmax_scores(scores: dict[str, float], temperature: float) -> dict[str, float]:
     if not scores:
         return {}
@@ -688,7 +700,14 @@ def calibrate_llm_decision(
         has_deterministic_anchor = (
             fqdn in deterministic_related and det_related_norm.get(fqdn, 0.0) >= config.deterministic_related_anchor_threshold
         )
-        if not has_related_signal and has_deterministic_anchor:
+        has_same_l1_secondary_anchor = (
+            _same_l1(selected_primary, fqdn, resolver)
+            and not _is_risk_l1(fqdn, resolver)
+            and fqdn in deterministic_related
+            and det_related_norm.get(fqdn, 0.0) >= config.same_l1_secondary_related_anchor_threshold
+            and has_secondary_hits
+        )
+        if not has_related_signal and (has_deterministic_anchor or has_same_l1_secondary_anchor):
             has_related_signal = True
         if not has_related_signal:
             continue
@@ -696,9 +715,22 @@ def calibrate_llm_decision(
             continue
         if not has_deterministic_anchor and not (llm_evidence_for or has_secondary_hits):
             continue
-        if not _same_l1(selected_primary, fqdn, resolver) and not has_deterministic_anchor:
+        allow_cross_l1_secondary = (
+            not _is_risk_l1(selected_primary, resolver)
+            and not _is_risk_l1(fqdn, resolver)
+            and fqdn in llm_selected_related
+            and has_secondary_context
+            and (llm_evidence_for or has_secondary_hits)
+            and related_scores[fqdn] >= config.cross_l1_secondary_related_min_score
+        )
+        if not _same_l1(selected_primary, fqdn, resolver) and not has_deterministic_anchor and not allow_cross_l1_secondary:
             continue
-        if related_scores[fqdn] < config.related_min_score:
+        min_related_score = (
+            config.same_l1_secondary_related_min_score
+            if has_same_l1_secondary_anchor
+            else config.related_min_score
+        )
+        if related_scores[fqdn] < min_related_score:
             continue
         if any(_is_chain_duplicate(existing, fqdn, resolver) for existing in selected_related):
             continue

@@ -1,0 +1,9 @@
+{
+  "input": "/Users/xizhuxizhu/Desktop/IndProj04/data/agentdns_routing/formal/dev.jsonl",
+  "samples": 50,
+  "top_k": 10,
+  "stage": "stage_r_clean",
+  "labels_available": true,
+  "PrimaryRecall@K": 1.0,
+  "RelatedCoverage@K": 1.0
+}

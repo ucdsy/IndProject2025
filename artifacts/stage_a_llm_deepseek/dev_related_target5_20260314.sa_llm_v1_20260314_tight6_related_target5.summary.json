@@ -1,0 +1,134 @@
+{
+  "labeled": true,
+  "samples": 5,
+  "PrimaryAcc@1": 1.0,
+  "AcceptablePrimary@1": 1.0,
+  "RelatedRecall": 0.8,
+  "RelatedRecall@Covered": 0.8,
+  "RelatedPrecision": 1.0,
+  "avg_extra_related": 0.0,
+  "related_overpredict_rate": 0.0,
+  "escalation_rate": 0.4,
+  "error_buckets": {
+    "OK": 4,
+    "decision_related_miss": 1
+  },
+  "per_sample": [
+    {
+      "id": "formal_dev_000009",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "selected_primary_fqdn": "transaction.compliance.security.cn",
+      "selected_related_fqdns": [
+        "risk.security.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.678874,
+      "margin": 0.286068,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "high_risk"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000027",
+      "ground_truth_fqdn": "action-items.meeting.productivity.cn",
+      "selected_primary_fqdn": "action-items.meeting.productivity.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [
+        "docs.productivity.cn"
+      ],
+      "extra_related_fqdns": [],
+      "confidence": 0.318857,
+      "margin": 0.0,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "low_confidence",
+        "multi_intent_conflict",
+        "small_margin"
+      ],
+      "error_bucket": "decision_related_miss"
+    },
+    {
+      "id": "formal_dev_000037",
+      "ground_truth_fqdn": "xian.itinerary.travel.cn",
+      "selected_primary_fqdn": "xian.itinerary.travel.cn",
+      "selected_related_fqdns": [
+        "weather.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.64966,
+      "margin": 0.245252,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000045",
+      "ground_truth_fqdn": "weather.cn",
+      "selected_primary_fqdn": "weather.cn",
+      "selected_related_fqdns": [
+        "itinerary.travel.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.648586,
+      "margin": 0.202474,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000046",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "selected_primary_fqdn": "nutrition.health.cn",
+      "selected_related_fqdns": [
+        "fitness.health.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 1,
+      "related_total": 1,
+      "related_covered_by_stage_r": 1,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.664914,
+      "margin": 0.20085,
+      "escalate_to_stage_b": false,
+      "escalation_reasons": [],
+      "error_bucket": "OK"
+    }
+  ],
+  "stage_a_version": "sa_llm_v1_20260314_tight6_related_target5",
+  "stage_r_version": "sr_clean_v1_20260307",
+  "input_path": "/Users/xizhuxizhu/Desktop/IndProj04/data/agentdns_routing/formal/dev_related_target5_20260314.jsonl",
+  "snapshot_path": "/Users/xizhuxizhu/Desktop/IndProj04/artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "trace_validation": {
+    "valid": true,
+    "errors": []
+  }
+}

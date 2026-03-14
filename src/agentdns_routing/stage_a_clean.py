@@ -27,6 +27,7 @@ class StageACleanConfig:
     node_type_weight: float = 0.05
     coarse_parent_penalty_weight: float = 0.26
     secondary_only_penalty: float = 0.10
+    multi_intent_secondary_primary_penalty: float = 0.12
     weak_segment_penalty: float = 0.12
     scene_only_segment_penalty: float = 0.14
     segment_parent_guard_penalty: float = 0.22
@@ -376,6 +377,11 @@ def analyze_stage_a(
             if primary_alias_norm == 0.0 and secondary_support_norm > 0.0
             else 0.0
         )
+        multi_intent_secondary_primary_penalty = (
+            config.multi_intent_secondary_primary_penalty
+            if structural_multi_intent_signal and primary_alias_norm == 0.0 and secondary_support_norm > 0.0
+            else 0.0
+        )
 
         score_a = (
             config.stage_r_weight * record["score_r_norm"]
@@ -387,6 +393,7 @@ def analyze_stage_a(
             + config.node_type_weight * node_type_fit
             - coarse_parent_penalty
             - secondary_only_penalty
+            - multi_intent_secondary_primary_penalty
             - weak_segment_penalty
             - scene_only_segment_penalty
             - segment_parent_guard_penalty
@@ -402,6 +409,7 @@ def analyze_stage_a(
                 "node_type_fit": node_type_fit,
                 "coarse_parent_penalty": coarse_parent_penalty,
                 "secondary_only_penalty": secondary_only_penalty,
+                "multi_intent_secondary_primary_penalty": multi_intent_secondary_primary_penalty,
                 "weak_segment_penalty": weak_segment_penalty,
                 "scene_only_segment_penalty": scene_only_segment_penalty,
                 "segment_parent_guard_penalty": segment_parent_guard_penalty,
@@ -447,6 +455,8 @@ def analyze_stage_a(
                 or selection_signals.get("has_cross_domain_competition")
             )
         )
+        if record.get("l1") in RISK_L1 and not record["secondary_hits"]:
+            has_explicit_secondary_signal = False
         if not has_explicit_secondary_signal or not parent_related_support_ok:
             continue
         if record["score_related"] < config.related_min_score and record["score_a"] < primary["score_a"] - config.related_gap:

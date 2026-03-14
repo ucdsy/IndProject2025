@@ -1,0 +1,260 @@
+{
+  "input": "/Users/xizhuxizhu/Desktop/IndProj04/data/agentdns_routing/formal/dev.jsonl",
+  "stage_r_version": "sr_clean_v2_20260314_related2",
+  "top_k": 10,
+  "snapshot_path": "/Users/xizhuxizhu/Desktop/IndProj04/artifacts/stage_r_clean/dev.sr_clean_v2_20260314_related2.jsonl",
+  "core_metrics": {
+    "samples": 50,
+    "PrimaryRecall@5": 1.0,
+    "PrimaryRecall@10": 1.0,
+    "RelatedCoverage@5": 1.0,
+    "RelatedCoverage@10": 1.0,
+    "UnionCoverage@10": 1.0,
+    "OraclePrimary@10": 1.0,
+    "MRR": 0.8067,
+    "L1Acc_top1cand": 0.96,
+    "L2Acc_top1cand": 0.8333,
+    "L3PrimaryRecall@10": 1.0,
+    "error_buckets": {
+      "E5_candidate_noise": 8,
+      "E6_unjustified_confusion": 33,
+      "OK": 9
+    }
+  },
+  "contract_checks": {
+    "SnapshotSchemaPassRate": 1.0,
+    "CandidateFormatPassRate": 1.0,
+    "TraceFieldPassRate": 1.0,
+    "ConfusionSourcePassRate": 1.0,
+    "schema_errors": []
+  },
+  "robustness": {
+    "all_passed": true,
+    "cases": [
+      {
+        "name": "empty_query",
+        "passed": true
+      },
+      {
+        "name": "null_context",
+        "passed": true
+      },
+      {
+        "name": "long_mixed_context",
+        "passed": true
+      }
+    ]
+  },
+  "confusion_type_breakdown": {
+    "cross_domain_overlap": {
+      "samples": 26,
+      "PrimaryRecall@3": 0.9615,
+      "PrimaryRecall@5": 1.0,
+      "PrimaryRecall@10": 1.0,
+      "RelatedCoverage@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8686
+    },
+    "fallback": {
+      "samples": 7,
+      "PrimaryRecall@3": 1.0,
+      "PrimaryRecall@5": 1.0,
+      "PrimaryRecall@10": 1.0,
+      "RelatedCoverage@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8571
+    },
+    "governance_fallback": {
+      "samples": 10,
+      "PrimaryRecall@3": 1.0,
+      "PrimaryRecall@5": 1.0,
+      "PrimaryRecall@10": 1.0,
+      "RelatedCoverage@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8167
+    },
+    "lexical_overlap": {
+      "samples": 6,
+      "PrimaryRecall@3": 1.0,
+      "PrimaryRecall@5": 1.0,
+      "PrimaryRecall@10": 1.0,
+      "RelatedCoverage@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 1.0
+    },
+    "multi_intent": {
+      "samples": 34,
+      "PrimaryRecall@3": 0.9412,
+      "PrimaryRecall@5": 1.0,
+      "PrimaryRecall@10": 1.0,
+      "RelatedCoverage@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.7941
+    },
+    "sibling_competition": {
+      "samples": 19,
+      "PrimaryRecall@3": 0.8947,
+      "PrimaryRecall@5": 1.0,
+      "PrimaryRecall@10": 1.0,
+      "RelatedCoverage@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.6754
+    }
+  },
+  "ablations": [
+    {
+      "variant": "full",
+      "config_overrides": {},
+      "PrimaryRecall@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8067,
+      "L1Acc_top1cand": 0.96,
+      "L2Acc_top1cand": 0.8333
+    },
+    {
+      "variant": "minus_hierarchy",
+      "config_overrides": {
+        "enable_hierarchy_rerank": false
+      },
+      "PrimaryRecall@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.7587,
+      "L1Acc_top1cand": 0.94,
+      "L2Acc_top1cand": 0.7708
+    },
+    {
+      "variant": "minus_context_facets",
+      "config_overrides": {
+        "enable_context_facet_match": false
+      },
+      "PrimaryRecall@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8083,
+      "L1Acc_top1cand": 0.96,
+      "L2Acc_top1cand": 0.8333
+    },
+    {
+      "variant": "minus_parent_fallback",
+      "config_overrides": {
+        "enable_parent_fallback": false
+      },
+      "PrimaryRecall@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8117,
+      "L1Acc_top1cand": 0.96,
+      "L2Acc_top1cand": 0.8333
+    }
+  ],
+  "sensitivity": [
+    {
+      "variant": "baseline",
+      "config_overrides": {},
+      "PrimaryRecall@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8067,
+      "L1Acc_top1cand": 0.96,
+      "L2Acc_top1cand": 0.8333
+    },
+    {
+      "variant": "alias_weight_minus15",
+      "config_overrides": {
+        "query_alias_weight": 0.493
+      },
+      "PrimaryRecall@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8067,
+      "L1Acc_top1cand": 0.96,
+      "L2Acc_top1cand": 0.8333
+    },
+    {
+      "variant": "alias_weight_plus15",
+      "config_overrides": {
+        "query_alias_weight": 0.667
+      },
+      "PrimaryRecall@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8067,
+      "L1Acc_top1cand": 0.96,
+      "L2Acc_top1cand": 0.8333
+    },
+    {
+      "variant": "context_weight_minus15",
+      "config_overrides": {
+        "context_match_weight": 0.1105
+      },
+      "PrimaryRecall@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.81,
+      "L1Acc_top1cand": 0.96,
+      "L2Acc_top1cand": 0.8333
+    },
+    {
+      "variant": "context_weight_plus15",
+      "config_overrides": {
+        "context_match_weight": 0.1495
+      },
+      "PrimaryRecall@10": 1.0,
+      "UnionCoverage@10": 1.0,
+      "MRR": 0.8067,
+      "L1Acc_top1cand": 0.96,
+      "L2Acc_top1cand": 0.8333
+    }
+  ],
+  "close_score_buckets": {
+    "delta_0_03_to_0_08": {
+      "samples": 9,
+      "Top1PrimaryRate": 0.5556,
+      "Top3PrimaryRate": 1.0,
+      "L1Acc_top1cand": 1.0,
+      "L2Acc_top1cand": 0.7778
+    },
+    "delta_ge_0_08": {
+      "samples": 21,
+      "Top1PrimaryRate": 0.6667,
+      "Top3PrimaryRate": 0.9048,
+      "L1Acc_top1cand": 1.0,
+      "L2Acc_top1cand": 0.8571
+    },
+    "delta_lt_0_03": {
+      "samples": 11,
+      "Top1PrimaryRate": 0.4545,
+      "Top3PrimaryRate": 1.0,
+      "L1Acc_top1cand": 0.8182,
+      "L2Acc_top1cand": 0.6667
+    },
+    "singleton_or_no_delta": {
+      "samples": 9,
+      "Top1PrimaryRate": 1.0,
+      "Top3PrimaryRate": 1.0,
+      "L1Acc_top1cand": 1.0,
+      "L2Acc_top1cand": 1.0
+    }
+  },
+  "gate_status": {
+    "gate_1_required": {
+      "passed": true,
+      "checks": {
+        "PrimaryRecall@10": true,
+        "UnionCoverage@10": true,
+        "L1Acc_top1cand": true,
+        "L2Acc_top1cand": true,
+        "L3PrimaryRecall@10": true,
+        "SnapshotSchemaPassRate": true,
+        "CandidateFormatPassRate": true,
+        "TraceFieldPassRate": true,
+        "ConfusionSourcePassRate": true,
+        "Robustness": true
+      }
+    },
+    "gate_2_recommended": {
+      "completed": true,
+      "items": [
+        "confusion_type_breakdown",
+        "module_ablations",
+        "weight_sensitivity",
+        "close_score_buckets"
+      ]
+    },
+    "advance_recommendation": "advance_to_stage_a"
+  }
+}

@@ -229,6 +229,129 @@ class StageALLMTestCase(unittest.TestCase):
         self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "policy.gov.cn")
         self.assertEqual(trace["stage_a"]["selected_related_fqdns"], [])
 
+    def test_non_risk_cross_l1_secondary_related_can_be_kept(self) -> None:
+        sample = self.samples["formal_dev_000037"]
+        snapshot = self.snapshots[sample["id"]]
+        client = _FixedClient(
+            {
+                "scene_context": "去西安待四天",
+                "primary_intent": "把西安这趟行程排出来",
+                "secondary_intents": ["看看那几天的天气"],
+                "selected_primary_fqdn": "xian.itinerary.travel.cn",
+                "selected_related_fqdns": ["weather.cn"],
+                "candidate_judgements": [
+                    {
+                        "fqdn": "xian.itinerary.travel.cn",
+                        "task_fit": 0.95,
+                        "primary_fit": 0.95,
+                        "related_fit": 0.0,
+                        "specificity_judgement": "fit",
+                        "risk_mismatch": False,
+                        "evidence_for": ["西安行程"],
+                        "evidence_against": [],
+                    },
+                    {
+                        "fqdn": "weather.cn",
+                        "task_fit": 0.8,
+                        "primary_fit": 0.0,
+                        "related_fit": 0.8,
+                        "specificity_judgement": "fit",
+                        "risk_mismatch": False,
+                        "evidence_for": ["天气"],
+                        "evidence_against": [],
+                    },
+                ],
+                "confidence": 0.9,
+                "escalate_to_stage_b": False,
+                "escalation_reasons": [],
+                "notes": [],
+            }
+        )
+        trace = build_routing_run_trace(sample=sample, snapshot=snapshot, resolver=self.resolver, client=client, config=self.config)
+        self.assertIn("weather.cn", trace["stage_a"]["selected_related_fqdns"])
+
+    def test_same_l1_deterministic_secondary_anchor_can_rescue_related(self) -> None:
+        sample = self.samples["formal_dev_000027"]
+        snapshot = self.snapshots[sample["id"]]
+        client = _FixedClient(
+            {
+                "scene_context": "安排工业平台上线前的评审会",
+                "primary_intent": "把会后的待办和责任项拉出来",
+                "secondary_intents": ["补会议材料提纲"],
+                "selected_primary_fqdn": "action-items.meeting.productivity.cn",
+                "selected_related_fqdns": ["action-items.meeting.productivity.cn"],
+                "candidate_judgements": [
+                    {
+                        "fqdn": "action-items.meeting.productivity.cn",
+                        "task_fit": 0.95,
+                        "primary_fit": 0.95,
+                        "related_fit": 0.0,
+                        "specificity_judgement": "fit",
+                        "risk_mismatch": False,
+                        "evidence_for": ["待办"],
+                        "evidence_against": [],
+                    },
+                    {
+                        "fqdn": "docs.productivity.cn",
+                        "task_fit": 0.2,
+                        "primary_fit": 0.0,
+                        "related_fit": 0.0,
+                        "specificity_judgement": "fit",
+                        "risk_mismatch": False,
+                        "evidence_for": [],
+                        "evidence_against": [],
+                    },
+                ],
+                "confidence": 0.82,
+                "escalate_to_stage_b": False,
+                "escalation_reasons": [],
+                "notes": [],
+            }
+        )
+        trace = build_routing_run_trace(sample=sample, snapshot=snapshot, resolver=self.resolver, client=client, config=self.config)
+        self.assertIn("docs.productivity.cn", trace["stage_a"]["selected_related_fqdns"])
+
+    def test_risk_cross_l1_secondary_related_remains_blocked(self) -> None:
+        sample = self.samples["formal_dev_000004"]
+        snapshot = self.snapshots[sample["id"]]
+        client = _FixedClient(
+            {
+                "scene_context": "工业互联网平台的数据接口要求",
+                "primary_intent": "查清规范要求",
+                "secondary_intents": ["列检查提纲"],
+                "selected_primary_fqdn": "policy.gov.cn",
+                "selected_related_fqdns": ["compliance.security.cn"],
+                "candidate_judgements": [
+                    {
+                        "fqdn": "policy.gov.cn",
+                        "task_fit": 0.9,
+                        "primary_fit": 0.9,
+                        "related_fit": 0.0,
+                        "specificity_judgement": "fit",
+                        "risk_mismatch": False,
+                        "evidence_for": ["规范要求"],
+                        "evidence_against": [],
+                    },
+                    {
+                        "fqdn": "compliance.security.cn",
+                        "task_fit": 0.7,
+                        "primary_fit": 0.3,
+                        "related_fit": 0.8,
+                        "specificity_judgement": "fit",
+                        "risk_mismatch": False,
+                        "evidence_for": ["检查提纲"],
+                        "evidence_against": [],
+                    },
+                ],
+                "confidence": 0.9,
+                "escalate_to_stage_b": False,
+                "escalation_reasons": [],
+                "notes": [],
+            }
+        )
+        trace = build_routing_run_trace(sample=sample, snapshot=snapshot, resolver=self.resolver, client=client, config=self.config)
+        self.assertEqual(trace["stage_a"]["selected_related_fqdns"], [])
+
     def test_descendant_primary_without_primary_hits_falls_back_to_parent(self) -> None:
         sample = self.samples["formal_dev_000008"]
         snapshot = self.snapshots[sample["id"]]

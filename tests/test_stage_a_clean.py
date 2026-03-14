@@ -40,6 +40,22 @@ class StageACleanTestCase(unittest.TestCase):
         self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "summary.meeting.productivity.cn")
         self.assertIn("action-items.meeting.productivity.cn", trace["stage_a"]["selected_related_fqdns"])
 
+    def test_meeting_materials_secondary_can_recover_docs_related(self) -> None:
+        trace = self._trace("formal_dev_000027")
+        self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "action-items.meeting.productivity.cn")
+        self.assertIn("docs.productivity.cn", trace["stage_a"]["selected_related_fqdns"])
+
+    def test_fitness_secondary_can_recover_exercise_related(self) -> None:
+        trace = self._trace("formal_dev_000046")
+        self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "nutrition.health.cn")
+        self.assertIn("fitness.health.cn", trace["stage_a"]["selected_related_fqdns"])
+
+    def test_high_risk_related_does_not_expand_without_explicit_secondary_hit(self) -> None:
+        trace = self._trace("formal_dev_000009")
+        self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "transaction.compliance.security.cn")
+        self.assertIn("risk.security.cn", trace["stage_a"]["selected_related_fqdns"])
+        self.assertNotIn("fraud.security.cn", trace["stage_a"]["selected_related_fqdns"])
+
     def test_generic_meeting_request_prefers_base_over_schedule_child(self) -> None:
         trace = self._trace("formal_dev_000025")
         self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "meeting.productivity.cn")
