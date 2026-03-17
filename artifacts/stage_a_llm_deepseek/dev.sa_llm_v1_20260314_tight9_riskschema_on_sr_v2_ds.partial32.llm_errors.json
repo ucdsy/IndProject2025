@@ -1,0 +1,95 @@
+[
+  {
+    "sample_id": "formal_dev_000006",
+    "selected_primary_fqdn": "policy.gov.cn",
+    "selected_related_fqdns": [],
+    "escalation_reasons": [
+      "llm_error",
+      "llm_error:APIConnectionError",
+      "llm_requested",
+      "low_confidence"
+    ]
+  },
+  {
+    "sample_id": "formal_dev_000007",
+    "selected_primary_fqdn": "data.compliance.security.cn",
+    "selected_related_fqdns": [
+      "risk.security.cn"
+    ],
+    "escalation_reasons": [
+      "high_risk",
+      "llm_error",
+      "llm_error:APITimeoutError",
+      "llm_requested",
+      "low_confidence"
+    ]
+  },
+  {
+    "sample_id": "formal_dev_000008",
+    "selected_primary_fqdn": "compliance.security.cn",
+    "selected_related_fqdns": [],
+    "escalation_reasons": [
+      "high_risk",
+      "llm_error",
+      "llm_error:APIConnectionError",
+      "llm_requested",
+      "low_confidence"
+    ]
+  },
+  {
+    "sample_id": "formal_dev_000009",
+    "selected_primary_fqdn": "transaction.compliance.security.cn",
+    "selected_related_fqdns": [
+      "risk.security.cn"
+    ],
+    "escalation_reasons": [
+      "high_risk",
+      "llm_error",
+      "llm_error:APIConnectionError",
+      "llm_requested",
+      "low_confidence"
+    ]
+  },
+  {
+    "sample_id": "formal_dev_000010",
+    "selected_primary_fqdn": "account.compliance.security.cn",
+    "selected_related_fqdns": [],
+    "escalation_reasons": [
+      "high_risk",
+      "llm_error",
+      "llm_error:APIConnectionError",
+      "llm_requested",
+      "low_confidence"
+    ]
+  },
+  {
+    "sample_id": "formal_dev_000011",
+    "selected_primary_fqdn": "risk.security.cn",
+    "selected_related_fqdns": [
+      "data.compliance.security.cn"
+    ],
+    "escalation_reasons": [
+      "high_risk",
+      "llm_error",
+      "llm_error:APITimeoutError",
+      "llm_requested",
+      "low_confidence",
+      "small_margin"
+    ]
+  },
+  {
+    "sample_id": "formal_dev_000013",
+    "selected_primary_fqdn": "risk.security.cn",
+    "selected_related_fqdns": [
+      "data.compliance.security.cn"
+    ],
+    "escalation_reasons": [
+      "high_risk",
+      "llm_error",
+      "llm_error:APIConnectionError",
+      "llm_requested",
+      "low_confidence",
+      "small_margin"
+    ]
+  }
+]

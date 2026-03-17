@@ -12,7 +12,6 @@ from openai import OpenAI
 
 from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
 from .stage_a_clean import (
-    RISK_L1,
     StageACleanConfig,
     _chain_members,
     _clip,
@@ -498,13 +497,13 @@ def _same_l1(left_fqdn: str | None, right_fqdn: str | None, resolver: NamespaceR
     return left.l1 == right.l1
 
 
-def _is_risk_l1(fqdn: str | None, resolver: NamespaceResolver) -> bool:
+def _is_high_risk_route(fqdn: str | None, resolver: NamespaceResolver) -> bool:
     if not fqdn:
         return False
     node = resolver.get_node(fqdn)
     if not node:
         return False
-    return node.l1 in RISK_L1
+    return bool(node.is_stage_a_high_risk)
 
 
 def _softmax_scores(scores: dict[str, float], temperature: float) -> dict[str, float]:
@@ -702,7 +701,7 @@ def calibrate_llm_decision(
         )
         has_same_l1_secondary_anchor = (
             _same_l1(selected_primary, fqdn, resolver)
-            and not _is_risk_l1(fqdn, resolver)
+            and not _is_high_risk_route(fqdn, resolver)
             and fqdn in deterministic_related
             and det_related_norm.get(fqdn, 0.0) >= config.same_l1_secondary_related_anchor_threshold
             and has_secondary_hits
@@ -716,8 +715,8 @@ def calibrate_llm_decision(
         if not has_deterministic_anchor and not (llm_evidence_for or has_secondary_hits):
             continue
         allow_cross_l1_secondary = (
-            not _is_risk_l1(selected_primary, resolver)
-            and not _is_risk_l1(fqdn, resolver)
+            not _is_high_risk_route(selected_primary, resolver)
+            and not _is_high_risk_route(fqdn, resolver)
             and fqdn in llm_selected_related
             and has_secondary_context
             and (llm_evidence_for or has_secondary_hits)
@@ -802,7 +801,7 @@ def calibrate_llm_decision(
     if llm_decision.get("escalate_to_stage_b"):
         escalation_reasons.append("llm_requested")
     escalation_reasons.extend(llm_decision.get("escalation_reasons", []))
-    if selected_primary and resolver.get_node(selected_primary) and resolver.get_node(selected_primary).l1 in RISK_L1:
+    if _is_high_risk_route(selected_primary, resolver):
         if margin < config.high_risk_margin_threshold or "C4_governance_fallback" in confusion_sources:
             escalation_reasons.append("high_risk")
     if (selection_signals.get("has_multi_intent_signal") or llm_decision.get("secondary_intents")) and not selected_related:

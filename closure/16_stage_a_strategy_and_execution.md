@@ -597,10 +597,170 @@
     - 当前 live code 通过 `routing_constraints` + 通用 `explicit cue guard` 实现
   - 尚未完成 schema 化的部分:
     - 高风险治理场景的 `risk-aware gating`
-    - 当前 live code 仍使用 engine-side 的 `RISK_L1 = {"gov", "security"}` 作为高风险簇判定
+    - 截至本节记录时，live code 仍使用 engine-side 的 `RISK_L1 = {"gov", "security"}` 作为高风险簇判定
 - 因此，`10.10` 中“硬编码清洗”的表述应理解为:
   - **仅 sibling 线完成了 schema-driven constraints**
   - **不代表 `Stage A` 全部业务约束都已去硬编码**
 - 对当前代码最准确的状态描述应为:
   - `sibling` 相关的领域约束已完成从引擎硬编码到 schema 注入的迁移
   - `high-risk` 相关约束仍有一部分停留在引擎侧，后续还需继续清理
+
+### 10.15 2026-03-14 深夜 `RISK_L1` 代码清理
+- 已将 `Stage A` 中残留的 `RISK_L1 = {"gov", "security"}` 从引擎侧删除，改为读取 namespace schema 中的显式约束位:
+  - `namespace_descriptors.jsonl` 中，相关 `gov/security` 节点现在声明 `routing_constraints.stage_a_high_risk = true`
+  - `namespace.py` 新增 `RoutingNode.is_stage_a_high_risk`
+  - segment 节点现在会继承 base descriptor 的 `routing_constraints`，因此如 `account.compliance.security.cn` 这类子节点也能自动继承高风险标记
+- `stage_a_clean.py` 与 `stage_a_llm.py` 的 high-risk 判断已统一改为读取 schema:
+  - 不再按 `l1 in {"gov", "security"}` 做引擎内分支
+  - `high-risk related suppression`、`governance fallback relationship bonus`、`high-risk escalation` 现在都依赖 schema 注入的高风险标记
+- 这一步的性质是**行为保持型重构**，目标是清除剩余 engine-side hardcoding，而不是改动评测目标或放松护栏
+- 已完成单元回归:
+  - `tests/test_stage_r_clean.py`
+  - `tests/test_stage_a_clean.py`
+  - `tests/test_stage_a_llm.py`
+  - 当前 `34` 个测试通过
+- 当前执行判断更新:
+  - `Stage A` 源码层面，`meeting/schedule` 的 sibling 约束和 `gov/security` 的 high-risk 约束都已完成 schema 化
+  - 若后续还需继续清理，重点不再是 `RISK_L1` 这类显式域名分簇硬编码，而是 provider 稳定性与 `Stage B` 升级策略
+
+### 10.16 2026-03-15 凌晨 `dev-set closure` 与泛化边界说明
+- 需要明确: 当前 `sr_clean_v2_related2 + sa_clean_v7/v8` 在 `formal/dev` 上出现的 `PrimaryAcc@1 = 1.0`、`RelatedRecall = 1.0`、`RelatedPrecision = 1.0`，应被解释为**开发集闭环 (`dev-set closure`)**，而不是对未知样本泛化能力的充分证明。
+- 原因不是当前 live code 仍保留大量赤裸引擎硬编码；更核心的原因是:
+  - 这一路结果是在同一份 `formal/dev` 上经过多轮误差分析、schema/descriptor 补充、gating 收口后得到的
+  - 因而其中包含显著的 **dev-driven manual tuning** 成分
+  - 这类调优即使已经从 engine-side `if/else` 迁移到 schema/descriptor，也仍然不应被表述为“纯泛化能力提升”
+- 因此，对当前结果最准确的研究口径应为:
+  - `clean Stage A` 已在固定 namespace、固定 schema、固定 snapshot、固定 `formal/dev` 开发集上完成工程闭环
+  - 当前证据支持“受约束裁决器在封闭候选路由任务中可被工程化收口”
+  - 当前证据**不直接支持**“该方法已被证明对未见 query family/未见语义变体具有强泛化能力”
+- 这也意味着，后续不宜再把继续追高 `formal/dev` 分数作为主目标；更有价值的下一步应是:
+  1. 冻结当前代码、schema 与 snapshot
+  2. 构造不参与本轮调参的 `blind holdout` / `family-split holdout`
+  3. 在 holdout 上同时报告 deterministic clean、mock provider、real provider 三条线结果
+  4. 将 `formal/dev` 成绩定位为“development closure evidence”，而非最终泛化结论
+
+### 10.17 2026-03-15 凌晨 `Stage A v1` 完成度判断
+- 对 `Stage A` 当前状态，需区分“实现完成”与“验证完成”两层口径:
+  - 若按 **`clean Stage A v1` 的方法实现、工程表达、与开发集闭环** 判断:
+    - 当前可视为**基本完成**
+    - 可冻结对象为:
+      - `sr_clean_v2_20260314_related2`
+      - `sa_clean_v8_20260314_riskschema_on_sr_v2`
+    - 当前已满足:
+      - 候选内裁决边界明确
+      - `sibling` 与 `high-risk` 约束完成 schema 化
+      - deterministic clean 链路在 `formal/dev` 上可回放、可归因、可复现
+  - 若按 **正式研究验证与对外泛化结论** 判断:
+    - 当前**尚未完成**
+    - 缺口主要不在算法功能，而在:
+      - 独立 holdout 证据尚未跑完
+      - real-provider 全量结果仍受 provider 稳定性影响
+      - `formal/dev` 高分仍只能解释为 `dev-set closure`
+- 因此，当前最合适的项目判断应为:
+  - `Stage A v1` 的**实现阶段**可以冻结
+  - `Stage A v1` 的**验证阶段**尚未收官
+  - 后续默认不再继续面向 `formal/dev` 增量调规则；若必须继续调参，必须升新版本并重置 blind 口径
+- 下一步执行重心也应同步切换:
+  1. 按 formal 协议完成 holdout 验证
+  2. 保留 `clean / mock / real-provider` 三轨对照
+  3. 将新增研发精力优先投向 `Stage B` 设计与 provider 稳定性，而不是继续堆 `Stage A dev` 分数
+
+### 10.18 2026-03-15 上午 holdout 主线已启动
+- 已按冻结版本在 `blind_input` 上启动 formal holdout 主线，但当前仍**未 join `blind_labels`**，因此尚未形成可宣称的 blind 质量结论。
+- 已完成的无标签执行产物:
+  - `Stage R blind snapshot`:
+    - `artifacts/stage_r_clean/blind.sr_clean_v2_20260314_related2.jsonl`
+    - `artifacts/stage_r_clean/blind.sr_clean_v2_20260314_related2.summary.json`
+    - 当前仅记录:
+      - `samples = 35`
+      - `labels_available = false`
+  - `Stage A clean blind trace`:
+    - `artifacts/stage_a_clean/blind_input.sa_clean_v8_20260314_riskschema_on_sr_v2.jsonl`
+    - `artifacts/stage_a_clean/blind_input.sa_clean_v8_20260314_riskschema_on_sr_v2.summary.json`
+    - 当前仅记录:
+      - `labeled = false`
+      - `trace_validation.valid = true`
+- 这一步的意义是:
+  - 证明冻结版本已经可以在 blind 输入上无标签执行
+  - 先把 holdout 所需 snapshot/trace 固化下来
+  - 在不破坏盲测纪律的前提下，把“计划”推进为“已执行到一半的 formal holdout pipeline”
+- 下一步最直接的动作是:
+  1. 在保持 freeze 不变的前提下，对 blind trace 与 `blind_labels` 做单次 join 评测
+  2. 再补 `Stage A llm mock blind`
+  3. 再视 provider 稳定性决定 `Stage A real-provider blind` 的执行窗口
+
+### 10.19 2026-03-15 上午 blind 单次揭盲结果
+- 已完成一次性 blind join 评测:
+  - `artifacts/dataset/blind_joined_20260315_once.jsonl`
+  - 当前 blind 结果若后续继续调参，应自动降级为 `exploratory`
+- `Stage R clean` blind 结果 (`blind_revealed_20260315_once.sr_clean_v2_20260314_related2.summary.json`):
+  - `samples = 35`
+  - `PrimaryRecall@10 = 0.9714`
+  - `RelatedCoverage@10 = 1.0`
+- `Stage A clean` blind 结果 (`blind_joined_20260315_once.sa_clean_v8_20260314_riskschema_on_sr_v2.summary.json`):
+  - `samples = 35`
+  - `PrimaryAcc@1 = 0.8286`
+  - `AcceptablePrimary@1 = 0.8571`
+  - `RelatedRecall = 0.8333`
+  - `RelatedRecall@Covered = 0.8333`
+  - `RelatedPrecision = 0.9091`
+  - `related_overpredict_rate = 0.0286`
+  - `escalation_rate = 0.4857`
+  - `error_buckets = {"OK": 30, "decision_primary_miss": 4, "stage_r_primary_miss": 1}`
+- 当前 blind 暴露的 5 个非 `OK` 样本:
+  - `formal_blind_000019`
+    - `summary.meeting.productivity.cn -> docs.productivity.cn`
+  - `formal_blind_000021`
+    - `docs.productivity.cn -> risk.security.cn`
+  - `formal_blind_000024`
+    - `xian.itinerary.travel.cn -> xian.hotel.travel.cn`
+  - `formal_blind_000026`
+    - `flight.travel.cn` 未被 `Stage R` 召回进主候选
+  - `formal_blind_000031`
+    - `nutrition.health.cn -> restaurant.travel.cn`
+- 当前执行判断发生实质更新:
+  - `formal/dev` 上的 `1.0` 结论已被 blind 结果明确打破
+  - 这进一步验证了 `10.16` 中对 `dev-set closure` 的判断是必要且正确的
+  - `Stage A v1` 目前**不能**按“验证完成”放行
+  - 当前最合理的后续动作不再是继续写 `Stage A 已完成` 的结论，而是:
+    1. 冻结并保留本轮 blind 结果作为第一份 holdout 证据
+    2. 对 5 个 blind 失败样本做 family/root-cause 复盘
+    3. 明确决定是升 `Stage A v2` 继续修订，还是把当前版本作为 `dev-closed but holdout-failed` 的中间态保留
+
+### 10.20 2026-03-17 `Stage A blind` 正式误差分析已落文档
+- 已将 blind 非 `OK` 样本的正式误差分析单开为:
+  - `closure/19_stage_a_blind_error_analysis.md`
+- 当前正式分桶:
+  - `ontology / descriptor blind spot`
+  - `primary-secondary disentanglement`
+  - `sibling tie`
+  - `stage_r recall miss`
+- 五个非 `OK` 样本中:
+  - `decision_primary_miss = 4`
+  - `stage_r_primary_miss = 1`
+- 最适合写入论文 Error Analysis 的典型样本:
+  - `formal_blind_000021`
+    - 文档主任务被显式 `风险` 词拉偏
+  - `formal_blind_000031`
+    - `nutrition` 与 `restaurant` 的跨域语义边界歧义
+- 当前执行判断进一步收敛为:
+  - `Stage A v1` 的 blind 证据已经足以支持“单裁决器存在明确理解上限”的叙事
+  - 后续不应再修改 `Stage A v1` 去追这 4 个 blind miss
+
+### 10.21 2026-03-17 `Stage B` 最小工程起步方案已落文档
+- 已确认当前仓库中:
+  - 存在 `Stage B` 文档设计与 schema 预留位
+  - 不存在 `Stage B` 代码、脚本、测试与样本池
+- 已将最小工程起步方案单开为:
+  - `closure/20_stage_b_bootstrap_plan.md`
+- 当前推荐的 `Stage B` 最小实现顺序:
+  1. 生成 `Stage B seed pool`
+     - 先用 blind 中全部 escalated 样本
+  2. 落 `Stage B harness`
+     - `input trace -> stage_b trace -> summary`
+  3. 再实现最小结构化多角色共识
+     - 不做开放 debate
+     - 只做候选内 structured consensus
+- 当前项目执行重心正式切换为:
+  - `Stage A` 封板
+  - `Stage B` 开工

@@ -1,0 +1,9 @@
+{
+  "input": "/Users/xizhuxizhu/Desktop/IndProj04/artifacts/dataset/blind_joined_20260315_once.jsonl",
+  "samples": 35,
+  "top_k": 10,
+  "stage": "stage_r_clean",
+  "labels_available": true,
+  "PrimaryRecall@K": 0.9714,
+  "RelatedCoverage@K": 1.0
+}

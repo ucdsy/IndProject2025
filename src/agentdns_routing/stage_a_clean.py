@@ -11,7 +11,6 @@ from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
 PUNCT_RE = re.compile(r"[，。！？；：、“”‘’（）()【】《》,.!?:;\"'`\-\[\]{}_/\\\s]+")
 CLAUSE_RE = re.compile(r"[。！？!?；;]")
 QUOTE_RE = re.compile(r"[“\"「『](.*?)[”\"」』]")
-RISK_L1 = {"gov", "security"}
 
 
 @dataclass(frozen=True)
@@ -185,7 +184,7 @@ def _relationship_bonus(record: dict[str, Any], primary_record: dict[str, Any], 
         return 0.0
     if record.get("parent_fqdn") and record.get("parent_fqdn") == primary_record.get("parent_fqdn"):
         return 0.9
-    if "C4_governance_fallback" in confusion_sources and record.get("l1") in RISK_L1:
+    if "C4_governance_fallback" in confusion_sources and record.get("is_high_risk"):
         return 0.55
     return 0.0
 
@@ -285,6 +284,7 @@ def analyze_stage_a(
             "primary_hits": primary_hits,
             "secondary_hits": secondary_hits,
             "scene_hits": scene_hits,
+            "is_high_risk": bool(node.is_stage_a_high_risk),
             "routing_constraints": dict(node.routing_constraints),
         }
         records.append(record)
@@ -455,7 +455,7 @@ def analyze_stage_a(
                 or selection_signals.get("has_cross_domain_competition")
             )
         )
-        if record.get("l1") in RISK_L1 and not record["secondary_hits"]:
+        if record.get("is_high_risk") and not record["secondary_hits"]:
             has_explicit_secondary_signal = False
         if not has_explicit_secondary_signal or not parent_related_support_ok:
             continue
@@ -489,7 +489,7 @@ def analyze_stage_a(
         escalation_reasons.append("small_margin")
     if selection_signals.get("head_score_delta") is not None and selection_signals["head_score_delta"] < config.head_delta_threshold:
         escalation_reasons.append("close_score_delta")
-    if primary.get("l1") in RISK_L1 and (margin < config.high_risk_margin_threshold or "C4_governance_fallback" in confusion_sources):
+    if primary.get("is_high_risk") and (margin < config.high_risk_margin_threshold or "C4_governance_fallback" in confusion_sources):
         escalation_reasons.append("high_risk")
     if structural_multi_intent_signal and not related:
         escalation_reasons.append("multi_intent_conflict")

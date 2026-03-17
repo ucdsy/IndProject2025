@@ -65,6 +65,10 @@ class RoutingNode:
             return 2
         return 1
 
+    @property
+    def is_stage_a_high_risk(self) -> bool:
+        return bool(self.routing_constraints.get("stage_a_high_risk", False))
+
     def to_dict(self) -> dict[str, Any]:
         row = asdict(self)
         row["depth"] = self.depth
@@ -88,6 +92,7 @@ class NamespaceResolver:
     def _materialize_catalog(self) -> None:
         for descriptor in self._descriptors:
             base_fqdn = normalize_fqdn(descriptor["fqdn"])
+            base_routing_constraints = dict(descriptor.get("routing_constraints", {}))
             base_node = RoutingNode(
                 namespace_version=descriptor["namespace_version"],
                 fqdn=base_fqdn,
@@ -105,7 +110,7 @@ class NamespaceResolver:
                 action_tags=tuple(descriptor.get("action_tags", [])),
                 object_tags=tuple(descriptor.get("object_tags", [])),
                 allowed_l3=tuple(descriptor.get("allowed_l3", [])),
-                routing_constraints=dict(descriptor.get("routing_constraints", {})),
+                routing_constraints=base_routing_constraints,
             )
             self._nodes[base_fqdn] = base_node
 
@@ -113,6 +118,10 @@ class NamespaceResolver:
             for segment, meta in descriptor.get("segments", {}).items():
                 segment_fqdn = self.canonicalize_segment(base_fqdn, segment)
                 segment_fqdns.append(segment_fqdn)
+                segment_routing_constraints = {
+                    **base_routing_constraints,
+                    **dict(meta.get("routing_constraints", {})),
+                }
                 self._nodes[segment_fqdn] = RoutingNode(
                     namespace_version=descriptor["namespace_version"],
                     fqdn=segment_fqdn,
@@ -130,7 +139,7 @@ class NamespaceResolver:
                     action_tags=tuple(descriptor.get("action_tags", [])),
                     object_tags=tuple(descriptor.get("object_tags", [])),
                     allowed_l3=tuple(),
-                    routing_constraints=dict(meta.get("routing_constraints", {})),
+                    routing_constraints=segment_routing_constraints,
                 )
             self._base_to_segments[base_fqdn] = segment_fqdns
 

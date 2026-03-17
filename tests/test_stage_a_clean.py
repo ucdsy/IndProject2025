@@ -56,6 +56,12 @@ class StageACleanTestCase(unittest.TestCase):
         self.assertIn("risk.security.cn", trace["stage_a"]["selected_related_fqdns"])
         self.assertNotIn("fraud.security.cn", trace["stage_a"]["selected_related_fqdns"])
 
+    def test_high_risk_flag_is_schema_driven_and_inherited_to_segments(self) -> None:
+        self.assertTrue(self.resolver.get_node("policy.gov.cn").is_stage_a_high_risk)
+        self.assertTrue(self.resolver.get_node("account.compliance.security.cn").is_stage_a_high_risk)
+        self.assertTrue(self.resolver.get_node("fraud.security.cn").is_stage_a_high_risk)
+        self.assertFalse(self.resolver.get_node("tax.finance.cn").is_stage_a_high_risk)
+
     def test_generic_meeting_request_prefers_base_over_schedule_child(self) -> None:
         trace = self._trace("formal_dev_000025")
         self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "meeting.productivity.cn")

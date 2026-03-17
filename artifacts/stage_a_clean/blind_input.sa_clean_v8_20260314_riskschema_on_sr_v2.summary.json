@@ -1,0 +1,11 @@
+{
+  "labeled": false,
+  "stage_a_version": "sa_clean_v8_20260314_riskschema_on_sr_v2",
+  "stage_r_version": "sr_clean_v2_20260314_related2",
+  "input_path": "/Users/xizhuxizhu/Desktop/IndProj04/data/agentdns_routing/formal/blind_input.jsonl",
+  "snapshot_path": "/Users/xizhuxizhu/Desktop/IndProj04/artifacts/stage_r_clean/blind.sr_clean_v2_20260314_related2.jsonl",
+  "trace_validation": {
+    "valid": true,
+    "errors": []
+  }
+}
