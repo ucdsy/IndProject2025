@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
+from .routing_chain import attach_stage_a_final_fields
 
 PUNCT_RE = re.compile(r"[，。！？；：、“”‘’（）()【】《》,.!?:;\"'`\-\[\]{}_/\\\s]+")
 CLAUSE_RE = re.compile(r"[。！？!?；;]")
@@ -588,7 +589,7 @@ def build_routing_run_trace(
 ) -> dict[str, Any]:
     config = config or StageACleanConfig()
     stage_a = analyze_stage_a(sample=sample, snapshot=snapshot, resolver=resolver, config=config)
-    return {
+    trace = {
         "run_id": f"run_{config.stage_a_version}_{sample['id']}_{uuid.uuid4().hex[:8]}",
         "sample_id": sample["id"],
         "namespace_version": snapshot["namespace_version"],
@@ -597,3 +598,4 @@ def build_routing_run_trace(
         "stage_r": snapshot,
         "stage_a": stage_a,
     }
+    return attach_stage_a_final_fields(trace, source="stage_a_clean")

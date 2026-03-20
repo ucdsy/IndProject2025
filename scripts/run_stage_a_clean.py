@@ -55,6 +55,7 @@ def main() -> None:
 
     dump_jsonl(trace_path, traces)
     summary = evaluate_traces(samples, traces)
+    summary["method"] = "stage_a_clean"
     summary["stage_a_version"] = config.stage_a_version
     summary["stage_r_version"] = traces[0]["stage_r_version"] if traces else None
     summary["input_path"] = args.input

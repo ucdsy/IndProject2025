@@ -91,6 +91,24 @@
         }
       }
     },
+    "final_primary_fqdn": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "final_related_fqdns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "final_decision_source": {
+      "type": "string"
+    },
+    "entered_stage_b": {
+      "type": "boolean"
+    },
     "stage_b": {
       "type": "object"
     },

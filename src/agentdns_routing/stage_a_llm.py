@@ -11,6 +11,7 @@ from typing import Any, Protocol
 from openai import OpenAI
 
 from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
+from .routing_chain import attach_stage_a_final_fields
 from .stage_a_clean import (
     StageACleanConfig,
     _chain_members,
@@ -26,6 +27,8 @@ QUOTE_RE = re.compile(r"[“\"「『](.*?)[”\"」』]")
 @dataclass(frozen=True)
 class StageALLMConfig:
     stage_a_version: str = "sa_llm_v1_20260314"
+    prompt_version: str = "stage_a_prompt_v1_20260317"
+    base_stage_a_version: str = StageACleanConfig().stage_a_version
     prompt_candidate_limit: int = 8
     routing_top_k: int = 5
     max_related: int = 3
@@ -842,7 +845,12 @@ def analyze_stage_a_llm(
     config: StageALLMConfig | None = None,
 ) -> dict[str, Any]:
     config = config or StageALLMConfig()
-    base_stage_a = analyze_stage_a(sample=sample, snapshot=snapshot, resolver=resolver, config=StageACleanConfig())
+    base_stage_a = analyze_stage_a(
+        sample=sample,
+        snapshot=snapshot,
+        resolver=resolver,
+        config=StageACleanConfig(stage_a_version=config.base_stage_a_version),
+    )
     packet = build_decision_packet(sample=sample, snapshot=snapshot, resolver=resolver, base_stage_a=base_stage_a, config=config)
     llm_raw = ""
     llm_issues: list[str] = []
@@ -877,6 +885,10 @@ def analyze_stage_a_llm(
         config=config,
     )
     stage_a["decision_packet"] = packet
+    stage_a["query_packet"] = base_stage_a.get("query_packet", {})
+    stage_a["base_stage_a_version"] = config.base_stage_a_version
+    stage_a["prompt_version"] = config.prompt_version
+    stage_a["decision_mode"] = "single_agent_llm_v1"
     return stage_a
 
 
@@ -889,7 +901,7 @@ def build_routing_run_trace(
 ) -> dict[str, Any]:
     config = config or StageALLMConfig()
     stage_a = analyze_stage_a_llm(sample=sample, snapshot=snapshot, resolver=resolver, client=client, config=config)
-    return {
+    trace = {
         "run_id": f"run_{config.stage_a_version}_{sample['id']}_{uuid.uuid4().hex[:8]}",
         "sample_id": sample["id"],
         "namespace_version": snapshot["namespace_version"],
@@ -898,3 +910,4 @@ def build_routing_run_trace(
         "stage_r": snapshot,
         "stage_a": stage_a,
     }
+    return attach_stage_a_final_fields(trace, source="stage_a_llm")

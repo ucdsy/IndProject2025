@@ -43,6 +43,20 @@
 - 不做 bandit/RL 排序作为 v1 必需项（可作为 v2/附录）
 - 不追求生产可用的高可用/多租户/权限系统（原型验证为主）
 
+### 1.3 研发纪律（硬约束）
+- 明确禁止 `hardcoding + 面向测试集 overfit`
+- 这里的“禁止”包括:
+  - 针对单个已知错例补 `if/else`
+  - 针对具体 `fqdn` / query family 写特判逻辑
+  - 根据已揭盲 `blind / holdout / hard-case` 样本反复调到“看起来过了”
+- 允许的调整只能是:
+  - 与具体样本无关的通用决策协议
+  - 候选内约束、置信度协议、共识终止条件、provider 稳定性等方法级改动
+- 一旦某版本开始根据已揭盲 holdout / blind 继续调整:
+  - 该版本的研究口径必须自动降级为 `exploratory`
+  - 不得再把该批结果表述为干净验证
+  - 若要主张泛化改进，必须补新的未参与调参 split
+
 ## 2. 概念与数据对象（必须在 PPT 一张图讲清楚）
 ### 2.1 命名空间（namespace）与两类 fqdn
 参见 `closure/07_namespace_v1.md`、`closure/11_agent_registry_and_naming.md`，本 doc 复述关键点:

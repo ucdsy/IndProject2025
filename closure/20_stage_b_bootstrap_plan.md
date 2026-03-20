@@ -166,3 +166,158 @@
 一句话:
 - `Stage A` 现在负责“快路径裁决 + 不确定性探测”
 - `Stage B` 接下来负责“慢路径共识 + 难例修复 + 可信轨迹”
+
+## 9. 2026-03-17 执行进展
+
+### 9.1 已落地
+- `scripts/build_stage_b_seed_pool.py`
+- `data/agentdns_routing/formal/stage_b_seed_pool.jsonl`
+- `src/agentdns_routing/stage_b_consensus.py`
+- `src/agentdns_routing/stage_b_eval.py`
+- `scripts/run_stage_b.py`
+- `tests/test_stage_b.py`
+
+### 9.2 当前 `v0` 的真实定位
+- 当前 `Stage B v0` 已不是“未开工”
+- 但它也不是正式的 `Stage B v1` 共识算法
+- 当前更准确的定位是:
+  - `seed pool + harness + trace writer + evaluator`
+  - 默认保守，不主动推翻 `Stage A primary`
+  - 用于把慢路径工程接口先跑通
+
+### 9.3 当前已验证
+- `tests/test_stage_b.py`
+  - `4` 个测试通过
+- `seed pool` 试跑产物:
+  - `artifacts/stage_b/stage_b_seed_pool.stage_b_v0_20260317.jsonl`
+  - `artifacts/stage_b/stage_b_seed_pool.stage_b_v0_20260317.summary.json`
+- 当前 `summary`:
+  - `samples = 17`
+  - `stage_b_applied = 17`
+  - `stage_b_changed_primary = 0`
+  - `StageBPrimaryAcc@1 = 0.7059`
+  - `StageBRelatedRecall = 0.7143`
+  - `StageBRelatedPrecision = 0.8333`
+  - `trace_validation.valid = true`
+
+### 9.4 因此，下一步不再是“先补文件”
+- 文件和评测骨架已经有了
+- 下一步应是:
+  1. 单开 `Stage B v1` 的真正共识策略
+  2. 目标性验证能否修复 blind 中的 `decision_primary_miss`
+  3. 再决定是否接 `mock / real-provider` 多角色实现
+
+## 10. 2026-03-17 对齐 13 号设计文档的实现更新
+
+### 10.1 已实现的核心变化
+- `Stage B` 不再只有 deterministic `v0 harness`
+- 当前 live code 已在同一文件内支持两种路径:
+  - deterministic `v0`
+  - `mock / deepseek / openai` 的 `LLM multi-role consensus v1`
+- 对应实现文件:
+  - `src/agentdns_routing/stage_b_consensus.py`
+  - `src/agentdns_routing/stage_b_eval.py`
+  - `src/agentdns_routing/routing_chain.py`
+- 当前 `Stage A` 也已完成双轨 formalization:
+  - `A_clean`
+  - `A_llm`
+  - 二者都会输出统一的:
+    - `final_primary_fqdn`
+    - `final_related_fqdns`
+    - `final_decision_source`
+    - `entered_stage_b`
+
+### 10.2 当前统一 runner
+- 已新增:
+  - `scripts/run_routing_ab_experiment.py`
+- 当前 runner 可以在同一份 frozen `Stage R snapshot` 上直接产出四条链路:
+  - `R -> A_clean`
+  - `R -> A_llm`
+  - `R -> A_clean -> B`
+  - `R -> A_llm -> B`
+- 这一步解决了此前“看起来所有样本都进了 `Stage B`”的误解:
+  - 现在完整 split 会先跑 `Stage A`
+  - 只有 `escalate_to_stage_b = true` 的样本才真正进入 `Stage B`
+
+### 10.3 当前 `mock` 全量对照
+- 已生成:
+  - `artifacts/routing_ab/dev_compare_mock_20260317/`
+- 这批结果的意义是:
+  - 证明四条链路已经都能端到端跑通
+  - 证明 summary/trace/schema/评测契约已经打通
+  - 不是证明 `Stage B mock` 已优于 `Stage A`
+- 当前最准确的状态判断:
+  - `Stage B v1` 的工程底座和 provider 接口已建立
+  - `Stage B` 的真实能力验证还需要 `deepseek` 等 real-provider smoke
+
+### 10.4 当前下一步
+- 先不再补新的 deterministic 规则
+- 下一步应转为:
+  1. 用 `deepseek` 在 hard-case / blind escalated 子集做 `Stage B` provider smoke
+  2. 校准 `Stage B` 的角色 prompt、feedback aggregation、override policy
+  3. 再决定是否做全量 blind `R -> A_llm -> B`
+
+## 11. 2026-03-17 `Stage B + deepseek` 首轮 hard-case smoke 结果
+
+### 11.1 已执行
+- 当前已生成 `dev hard-case` 子集:
+  - `data/agentdns_routing/formal/dev_stage_b_hard13_20260317.jsonl`
+- 当前已完成:
+  - `A_llm(mock) -> B(deepseek)` on `hard13`
+- 产物:
+  - `artifacts/routing_ab/dev_stage_b_hard13_a_llm_to_b_deepseek_20260317/`
+
+### 11.2 当前结论
+- 这轮结果证明:
+  - `Stage B` 的 real-provider 接口已经打通
+  - `candidate-internal` 约束、trace、summary 都能在真实 provider 下落地
+- 但这轮结果也明确说明:
+  - 当前 `Stage B` 的 `override policy` 还不成熟
+  - 真实 provider 当前过于激进地翻动 `Stage A primary`
+
+### 11.3 当前结果摘要
+- `A_llm(mock)` baseline:
+  - `PrimaryAcc@1 = 0.9231`
+  - `RelatedRecall = 0.8571`
+  - `RelatedPrecision = 1.0`
+- `A_llm(mock) -> B(deepseek)`:
+  - `PrimaryAcc@1 = 0.6923`
+  - `AcceptablePrimary@1 = 0.7692`
+  - `RelatedRecall = 0.7143`
+  - `RelatedPrecision = 0.7143`
+  - `stage_b_changed_primary = 4`
+  - `stage_b_regressed_primary = 3`
+  - `stage_b_fixed_primary = 0`
+
+### 11.4 因此
+- 当前不应直接扩 full `dev`
+- 下一步应先做:
+  1. 收紧 `Stage B` 的 primary override 门槛
+  2. 给 `sibling` / `high-risk` 加更明确的角色级约束
+  3. 再重跑 `hard13`
+
+## 12. 2026-03-18 `Stage B` 实验纪律补充
+
+### 12.1 明确禁止
+- 明确禁止 `hardcoding + 面向测试集 overfit`
+- 对 `Stage B` 来说，以下行为都视为违规:
+  - 根据 `hard13` 或已揭盲 blind 个案补 `fqdn` 特判
+  - 根据某个已知失败样本追加 node-specific / family-specific 补丁
+  - 以“把当前已看见样本做对”为主目标来迭代 prompt 或规则
+
+### 12.2 允许的改动边界
+- 只允许:
+  - 通用 `override protocol` 调整
+  - 通用共识终止条件
+  - 与具体样本无关的抽象约束
+  - provider 稳定性与 trace/evaluator 工程修复
+- 不允许:
+  - case-level patch
+  - fqdn-level patch
+  - sample-id-level patch
+
+### 12.3 结果口径
+- 从本节开始，任何基于已揭盲 `blind / hard-case` 继续调出来的 `Stage B` 新版本:
+  - 默认标记为 `exploratory`
+  - 不得作为干净 holdout 结论
+  - 若后续要声称泛化改进，必须再上新的未参与调参 split

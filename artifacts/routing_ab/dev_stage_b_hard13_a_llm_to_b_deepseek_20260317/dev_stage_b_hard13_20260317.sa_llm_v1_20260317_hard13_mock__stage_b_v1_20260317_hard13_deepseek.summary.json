@@ -1,0 +1,202 @@
+{
+  "labeled": true,
+  "samples": 13,
+  "stage_b_applied": 13,
+  "stage_b_changed_primary": 4,
+  "stage_b_fixed_primary": 0,
+  "stage_b_regressed_primary": 3,
+  "StageBPrimaryAcc@1": 0.6923,
+  "StageBAcceptablePrimary@1": 0.7692,
+  "StageBRelatedRecall": 0.7143,
+  "StageBRelatedPrecision": 0.7143,
+  "error_buckets": {
+    "OK": 7,
+    "decision_primary_miss": 3,
+    "decision_related_miss": 2,
+    "decision_related_overpredict": 1
+  },
+  "per_sample": [
+    {
+      "id": "formal_dev_000007",
+      "ground_truth_fqdn": "data.compliance.security.cn",
+      "stage_a_primary_fqdn": "data.compliance.security.cn",
+      "stage_b_primary_fqdn": "data.compliance.security.cn",
+      "stage_b_related_fqdns": [
+        "risk.security.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000008",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "account.compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": true,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "formal_dev_000009",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "stage_a_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_related_fqdns": [
+        "risk.security.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000010",
+      "ground_truth_fqdn": "account.compliance.security.cn",
+      "stage_a_primary_fqdn": "account.compliance.security.cn",
+      "stage_b_primary_fqdn": "account.compliance.security.cn",
+      "stage_b_related_fqdns": [
+        "summary.meeting.productivity.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "formal_dev_000015",
+      "ground_truth_fqdn": "verify.invoice.finance.cn",
+      "stage_a_primary_fqdn": "verify.invoice.finance.cn",
+      "stage_b_primary_fqdn": "verify.invoice.finance.cn",
+      "stage_b_related_fqdns": [
+        "tax.finance.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000016",
+      "ground_truth_fqdn": "invoice.finance.cn",
+      "stage_a_primary_fqdn": "invoice.finance.cn",
+      "stage_b_primary_fqdn": "invoice.finance.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000024",
+      "ground_truth_fqdn": "summary.meeting.productivity.cn",
+      "stage_a_primary_fqdn": "summary.meeting.productivity.cn",
+      "stage_b_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": true,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_miss"
+    },
+    {
+      "id": "formal_dev_000025",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "stage_a_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_primary_fqdn": "schedule.meeting.productivity.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": true,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "formal_dev_000026",
+      "ground_truth_fqdn": "schedule.meeting.productivity.cn",
+      "stage_a_primary_fqdn": "schedule.meeting.productivity.cn",
+      "stage_b_primary_fqdn": "schedule.meeting.productivity.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000027",
+      "ground_truth_fqdn": "action-items.meeting.productivity.cn",
+      "stage_a_primary_fqdn": "action-items.meeting.productivity.cn",
+      "stage_b_primary_fqdn": "action-items.meeting.productivity.cn",
+      "stage_b_related_fqdns": [
+        "docs.productivity.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000036",
+      "ground_truth_fqdn": "itinerary.travel.cn",
+      "stage_a_primary_fqdn": "schedule.meeting.productivity.cn",
+      "stage_b_primary_fqdn": "xian.itinerary.travel.cn",
+      "stage_b_related_fqdns": [
+        "xian.hotel.travel.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": true,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "formal_dev_000039",
+      "ground_truth_fqdn": "chengdu.hotel.travel.cn",
+      "stage_a_primary_fqdn": "chengdu.hotel.travel.cn",
+      "stage_b_primary_fqdn": "chengdu.hotel.travel.cn",
+      "stage_b_related_fqdns": [
+        "transport.travel.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000043",
+      "ground_truth_fqdn": "transport.travel.cn",
+      "stage_a_primary_fqdn": "transport.travel.cn",
+      "stage_b_primary_fqdn": "transport.travel.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_miss"
+    }
+  ],
+  "PrimaryAcc@1": 0.6923,
+  "AcceptablePrimary@1": 0.7692,
+  "RelatedRecall": 0.7143,
+  "RelatedPrecision": 0.7143,
+  "fast_path_rate": 0.0,
+  "slow_path_rate": 1.0,
+  "escalation_rate": 1.0,
+  "final_decision_source_counts": {
+    "stage_b": 13
+  },
+  "method": "stage_a_llm_to_stage_b",
+  "stage_a_version": "sa_llm_v1_20260317_hard13_mock",
+  "stage_b_version": "stage_b_v1_20260317_hard13_deepseek",
+  "prompt_version": "stage_b_prompt_v1_20260317",
+  "stage_r_version": "sr_clean_v1_20260307",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "input_path": "data/agentdns_routing/formal/dev_stage_b_hard13_20260317.jsonl",
+  "snapshot_path": "artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl",
+  "blind_mode": false,
+  "exploratory": false,
+  "trace_validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -87,6 +87,13 @@ class StageACleanTestCase(unittest.TestCase):
         self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "data.compliance.security.cn")
         self.assertTrue(trace["stage_a"]["escalate_to_stage_b"])
 
+    def test_clean_trace_exposes_fast_path_final_fields(self) -> None:
+        trace = self._trace("formal_dev_000016")
+        self.assertFalse(trace["entered_stage_b"])
+        self.assertEqual(trace["final_decision_source"], "stage_a_clean")
+        self.assertEqual(trace["final_primary_fqdn"], trace["stage_a"]["selected_primary_fqdn"])
+        self.assertEqual(trace["final_related_fqdns"], trace["stage_a"]["selected_related_fqdns"])
+
 
 
 def _load_jsonl(path: Path) -> list[dict]:

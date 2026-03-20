@@ -31,11 +31,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--provider", choices=["mock", "deepseek", "openai"], default="mock")
     parser.add_argument("--model", default=None, help="LLM model name.")
     parser.add_argument("--stage-a-version", default=StageALLMConfig().stage_a_version)
+    parser.add_argument("--prompt-version", default=StageALLMConfig().prompt_version)
+    parser.add_argument("--base-stage-a-version", default=StageALLMConfig().base_stage_a_version)
     parser.add_argument("--max-samples", type=int, default=None, help="Optional limit for smoke runs.")
     parser.add_argument(
         "--no-resume",
         action="store_true",
         help="Do not reuse existing trace file for the same stage_a_version.",
+    )
+    parser.add_argument(
+        "--blind-mode",
+        action="store_true",
+        help="Force no-resume and record blind-run protocol metadata.",
+    )
+    parser.add_argument(
+        "--exploratory",
+        action="store_true",
+        help="Tag this run as exploratory, e.g. after blind labels have been revealed.",
     )
     return parser.parse_args()
 
@@ -47,7 +59,12 @@ def main() -> None:
         samples = samples[: args.max_samples]
     snapshots = {row["id"]: row for row in load_jsonl(args.snapshot)}
     resolver = NamespaceResolver.from_jsonl(args.descriptors)
-    config = StageALLMConfig(stage_a_version=args.stage_a_version)
+    no_resume = args.no_resume or args.blind_mode
+    config = StageALLMConfig(
+        stage_a_version=args.stage_a_version,
+        prompt_version=args.prompt_version,
+        base_stage_a_version=args.base_stage_a_version,
+    )
     client = make_llm_client(provider=args.provider, model=args.model)
 
     split_name = Path(args.input).stem
@@ -57,7 +74,7 @@ def main() -> None:
     summary_path = output_dir / f"{split_name}.{config.stage_a_version}.summary.json"
 
     existing_trace_map: dict[str, dict[str, Any]] = {}
-    if trace_path.exists() and not args.no_resume:
+    if trace_path.exists() and not no_resume:
         existing_rows = load_jsonl(trace_path)
         existing_trace_map = {row["sample_id"]: row for row in existing_rows}
 
@@ -75,12 +92,18 @@ def main() -> None:
 
     traces = [existing_trace_map[sample["id"]] for sample in samples if sample["id"] in existing_trace_map]
     summary = evaluate_traces(samples, traces)
+    summary["method"] = "stage_a_llm"
     summary["stage_a_version"] = config.stage_a_version
+    summary["prompt_version"] = config.prompt_version
+    summary["base_stage_a_version"] = config.base_stage_a_version
     summary["stage_r_version"] = traces[0]["stage_r_version"] if traces else None
     summary["input_path"] = args.input
     summary["snapshot_path"] = args.snapshot
     summary["provider"] = client.provider
     summary["model"] = client.model
+    summary["blind_mode"] = bool(args.blind_mode)
+    summary["exploratory"] = bool(args.exploratory)
+    summary["no_resume"] = bool(no_resume)
     summary["trace_validation"] = validate_traces(traces, ROOT)
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
 

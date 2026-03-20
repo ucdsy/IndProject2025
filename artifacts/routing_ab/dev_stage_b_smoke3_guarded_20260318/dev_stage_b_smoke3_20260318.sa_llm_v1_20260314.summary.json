@@ -1,0 +1,98 @@
+{
+  "labeled": true,
+  "samples": 3,
+  "PrimaryAcc@1": 0.6667,
+  "AcceptablePrimary@1": 0.6667,
+  "RelatedRecall": 0.0,
+  "RelatedRecall@Covered": 0.0,
+  "RelatedPrecision": 0.0,
+  "avg_extra_related": 0.0,
+  "related_overpredict_rate": 0.0,
+  "escalation_rate": 1.0,
+  "error_buckets": {
+    "OK": 2,
+    "decision_primary_miss": 1
+  },
+  "per_sample": [
+    {
+      "id": "formal_dev_000008",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "selected_primary_fqdn": "compliance.security.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.655509,
+      "margin": 0.251952,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "high_risk",
+        "multi_intent_conflict"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000025",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "selected_primary_fqdn": "meeting.productivity.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.338647,
+      "margin": 0.0,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "low_confidence",
+        "multi_intent_conflict",
+        "small_margin"
+      ],
+      "error_bucket": "OK"
+    },
+    {
+      "id": "formal_dev_000036",
+      "ground_truth_fqdn": "itinerary.travel.cn",
+      "selected_primary_fqdn": "schedule.meeting.productivity.cn",
+      "selected_related_fqdns": [],
+      "acceptable_hit": false,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [],
+      "confidence": 0.443956,
+      "margin": 0.073318,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "low_confidence",
+        "multi_intent_conflict",
+        "small_margin"
+      ],
+      "error_bucket": "decision_primary_miss"
+    }
+  ],
+  "method": "stage_a_llm",
+  "stage_a_version": "sa_llm_v1_20260314",
+  "prompt_version": "stage_a_prompt_v1_20260317",
+  "base_stage_a_version": "sa_clean_v2_20260314",
+  "stage_r_version": "sr_clean_v2_20260314_related2",
+  "input_path": "/tmp/dev_stage_b_smoke3_20260318.jsonl",
+  "snapshot_path": "artifacts/stage_r_clean/dev.sr_clean_v2_20260314_related2.jsonl",
+  "provider": "mock",
+  "model": "mock-stage-a",
+  "blind_mode": false,
+  "exploratory": false,
+  "trace_validation": {
+    "valid": true,
+    "errors": []
+  }
+}

@@ -131,6 +131,17 @@ class StageALLMTestCase(unittest.TestCase):
         self.assertEqual(trace["stage_a"]["llm_provider"], "mock")
         self.assertEqual(trace["stage_a"]["selected_primary_fqdn"], "verify.invoice.finance.cn")
 
+    def test_llm_trace_records_fast_path_provenance_and_final_fields(self) -> None:
+        sample = self.samples["formal_dev_000015"]
+        snapshot = self.snapshots[sample["id"]]
+        trace = build_routing_run_trace(sample=sample, snapshot=snapshot, resolver=self.resolver, client=MockStageALLMClient(), config=self.config)
+        self.assertFalse(trace["entered_stage_b"])
+        self.assertEqual(trace["final_decision_source"], "stage_a_llm")
+        self.assertEqual(trace["final_primary_fqdn"], trace["stage_a"]["selected_primary_fqdn"])
+        self.assertEqual(trace["stage_a"]["base_stage_a_version"], self.config.base_stage_a_version)
+        self.assertEqual(trace["stage_a"]["prompt_version"], self.config.prompt_version)
+        self.assertIn("query_packet", trace["stage_a"])
+
     def test_minmax_norm_uses_spread_floor(self) -> None:
         normed = _minmax_norm({"a": 0.05, "b": 0.15}, spread_floor=0.5)
         self.assertAlmostEqual(normed["a"], 0.0)

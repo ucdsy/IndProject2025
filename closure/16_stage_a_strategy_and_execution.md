@@ -764,3 +764,184 @@
 - 当前项目执行重心正式切换为:
   - `Stage A` 封板
   - `Stage B` 开工
+
+### 10.22 2026-03-17 `Stage B v0` 种子池与最小 harness 已落地
+- 已新增正式 `Stage B` 种子池构建脚本:
+  - `scripts/build_stage_b_seed_pool.py`
+- 已生成正式 `Stage B` 种子池:
+  - `data/agentdns_routing/formal/stage_b_seed_pool.jsonl`
+  - 当前样本数:
+    - `17`
+  - 当前重点 hard cases:
+    - `formal_blind_000019`
+    - `formal_blind_000021`
+    - `formal_blind_000024`
+    - `formal_blind_000026`
+    - `formal_blind_000031`
+- 已新增最小 `Stage B` 工程文件:
+  - `src/agentdns_routing/stage_b_consensus.py`
+  - `src/agentdns_routing/stage_b_eval.py`
+  - `scripts/run_stage_b.py`
+  - `tests/test_stage_b.py`
+- 当前 `Stage B v0` 的定位必须明确为:
+  - **工程 harness / trace writer / evaluator**
+  - **不是已经开始追 blind 修复率的正式共识算法**
+- 当前 `Stage B v0` 的行为策略:
+  - 只处理 `Stage A` 已触发 escalation 的样本
+  - 默认保守，不主动推翻 `Stage A primary`
+  - 先保证:
+    - 输入输出接口稳定
+    - `stage_b` trace 可写入
+    - evaluator 可运行
+    - schema 校验通过
+- 当前已完成验证:
+  - `tests/test_stage_b.py`
+    - `4` 个测试通过
+  - `Stage B seed pool` 试跑:
+    - `artifacts/stage_b/stage_b_seed_pool.stage_b_v0_20260317.jsonl`
+    - `artifacts/stage_b/stage_b_seed_pool.stage_b_v0_20260317.summary.json`
+  - 当前汇总:
+    - `samples = 17`
+    - `stage_b_applied = 17`
+    - `stage_b_changed_primary = 0`
+    - `StageBPrimaryAcc@1 = 0.7059`
+    - `StageBRelatedRecall = 0.7143`
+    - `StageBRelatedPrecision = 0.8333`
+    - `trace_validation.valid = true`
+- 当前执行判断更新:
+  - `Stage B` 已从“纯文档阶段”进入“代码脚手架已起步”阶段
+  - 但当前完成的是 `v0 harness`，不是 `v1 consensus`
+  - 下一步主线应是:
+    1. 在不破坏当前 harness 的前提下，单开 `Stage B v1` 共识策略
+    2. 先在 `17` 条 seed pool 上验证是否能修复 `4` 个 `decision_primary_miss`
+    3. 再决定是否接 `mock / real-provider` 多角色实现
+
+### 10.23 2026-03-17 `R/A/B` 已按 13 号设计文档完成一轮代码对齐
+- 已新增统一链路结果层:
+  - `final_primary_fqdn`
+  - `final_related_fqdns`
+  - `final_decision_source`
+  - `entered_stage_b`
+- 当前 `Stage A` 已明确分成两条正式快路径:
+  - `A_clean`
+    - `src/agentdns_routing/stage_a_clean.py`
+  - `A_llm`
+    - `src/agentdns_routing/stage_a_llm.py`
+    - 当前已补:
+      - `prompt_version`
+      - `base_stage_a_version`
+      - `query_packet` 对齐
+- 当前 `Stage B` 已从单纯 deterministic harness 升级为同文件双模实现:
+  - deterministic `v0` 保留
+  - `mock / deepseek / openai` 的多角色 LLM 共识已接入:
+    - `src/agentdns_routing/stage_b_consensus.py`
+- 已新增统一四链路实验 runner:
+  - `scripts/run_routing_ab_experiment.py`
+  - 当前可直接生成:
+    - `R -> A_clean`
+    - `R -> A_llm`
+    - `R -> A_clean -> B`
+    - `R -> A_llm -> B`
+- 当前对应评测与 schema 也已补齐:
+  - `src/agentdns_routing/routing_chain.py`
+  - `src/agentdns_routing/stage_b_eval.py`
+  - `schemas/routing_run_trace.schema.json`
+- 单元回归已更新为:
+  - `tests/test_stage_r_clean.py`
+  - `tests/test_stage_a_clean.py`
+  - `tests/test_stage_a_llm.py`
+  - `tests/test_stage_b.py`
+  - 当前 `41` 个测试通过
+
+### 10.24 2026-03-17 `mock` 四链路全量对照已生成
+- 已生成正式 `dev` 对照产物:
+  - `artifacts/routing_ab/dev_compare_mock_20260317/`
+- 当前四条链路结果:
+  - `R -> A_clean`
+    - `PrimaryAcc@1 = 1.0`
+    - `RelatedRecall = 0.8621`
+    - `RelatedPrecision = 1.0`
+    - `escalation_rate = 0.58`
+  - `R -> A_llm`
+    - `PrimaryAcc@1 = 0.98`
+    - `RelatedRecall = 0.8621`
+    - `RelatedPrecision = 1.0`
+    - `escalation_rate = 0.68`
+  - `R -> A_clean -> B` (`mock Stage B`)
+    - `PrimaryAcc@1 = 0.94`
+    - `RelatedRecall = 0.8621`
+    - `RelatedPrecision = 0.6098`
+    - `fast_path_rate = 0.42`
+    - `slow_path_rate = 0.58`
+  - `R -> A_llm -> B` (`mock Stage B`)
+    - `PrimaryAcc@1 = 0.88`
+    - `AcceptablePrimary@1 = 0.96`
+    - `RelatedRecall = 0.8276`
+    - `RelatedPrecision = 0.8276`
+    - `fast_path_rate = 0.32`
+    - `slow_path_rate = 0.68`
+- 因此，当前 `Stage B mock` 的最准确定位不是“性能已赢过 A”，而是:
+  - `R/A/B` 正式链路已可端到端运行
+  - `Stage B v1` 的 provider 接口、trace、评测、四链路对照都已建立
+  - 下一步真正值得做的是:
+    1. 用 `deepseek` 在 hard-case / blind escalated 子集做真实 provider smoke
+    2. 调 `Stage B` 共识 prompt 与 override policy
+    3. 再决定是否做全量 blind `A_llm -> B`
+
+### 10.25 2026-03-17 `Stage B + deepseek` 的第一轮 `dev hard-case` smoke
+- 已生成 `dev hard-case` 子集:
+  - `data/agentdns_routing/formal/dev_stage_b_hard13_20260317.jsonl`
+  - 当前样本数:
+    - `13`
+  - 主要覆盖:
+    - `high_risk`
+    - `governance_fallback`
+    - `sibling_competition`
+    - `multi_intent`
+- 已完成 `A_llm(mock) -> B(deepseek)` 的第一轮真实 provider smoke:
+  - `artifacts/routing_ab/dev_stage_b_hard13_a_llm_to_b_deepseek_20260317/`
+- 当前对照结果:
+  - `A_llm(mock)` baseline:
+    - `PrimaryAcc@1 = 0.9231`
+    - `AcceptablePrimary@1 = 0.9231`
+    - `RelatedRecall = 0.8571`
+    - `RelatedPrecision = 1.0`
+    - `escalation_rate = 1.0`
+  - `A_llm(mock) -> B(deepseek)`:
+    - `PrimaryAcc@1 = 0.6923`
+    - `AcceptablePrimary@1 = 0.7692`
+    - `RelatedRecall = 0.7143`
+    - `RelatedPrecision = 0.7143`
+    - `stage_b_changed_primary = 4`
+    - `stage_b_regressed_primary = 3`
+    - `stage_b_fixed_primary = 0`
+- 当前暴露的主要问题不是 provider 接口没通，而是:
+  - `Stage B` 真实 provider 当前对 `primary override` 过于激进
+  - 典型回归样本:
+    - `formal_dev_000008`
+      - `compliance.security.cn -> account.compliance.security.cn`
+    - `formal_dev_000025`
+      - `meeting.productivity.cn -> schedule.meeting.productivity.cn`
+    - `formal_dev_000036`
+      - `schedule.meeting.productivity.cn -> xian.itinerary.travel.cn`
+- 因此，当前执行判断更新为:
+  - `Stage B` 的 real-provider 链路已经打通
+  - 但当前版本**不应**直接扩到 full `dev`
+  - 更合理的下一步是:
+    1. 先收紧 `Stage B` 的 override policy
+    2. 对 `sibling` / `high-risk` 的角色 prompt 做约束化修正
+    3. 再重跑 `dev hard-case`
+
+### 10.26 2026-03-18 明确研发护栏: 禁止 `hardcoding + 面向测试集 overfit`
+- 这条要求从本节开始视为**硬约束**，不再只是口头提醒。
+- 明确禁止的行为:
+  - 针对单个已知错例补丁
+  - 针对具体 `fqdn` / query family / 样本 id 写特判
+  - 根据已揭盲 `blind / holdout / hard-case` 结果持续调到“该批数据变好看”
+- 当前允许的修改类型，只能是:
+  - 与具体样本无关的通用决策协议
+  - 候选内约束、置信度协议、共识终止条件、provider 稳定性等方法级改动
+- 因此，对后续 `Stage B` 的最严格执行要求是:
+  - 不得以“修复 `formal_blind_xxx` / `formal_dev_xxx`”为目标写规则
+  - 若继续基于已揭盲 `blind / hard-case` 调整版本，必须显式升版本并标记为 `exploratory`
+  - 任何此类结果不得再表述为正式泛化验证
