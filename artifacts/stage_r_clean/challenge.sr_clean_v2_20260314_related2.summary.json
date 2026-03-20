@@ -1,0 +1,9 @@
+{
+  "input": "artifacts/dataset/challenge_joined_20260320_once.jsonl",
+  "samples": 24,
+  "top_k": 10,
+  "stage": "stage_r_clean",
+  "labels_available": true,
+  "PrimaryRecall@K": 0.9167,
+  "RelatedCoverage@K": 1.0
+}
