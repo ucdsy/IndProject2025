@@ -76,6 +76,17 @@ class _HeuristicStageATestClient:
             "escalate_to_stage_b": False,
             "escalation_reasons": [],
             "notes": ["heuristic_test_decision"],
+            "primary_rationale": "query core task aligns with the selected primary candidate",
+            "secondary_rationale": "related nodes are only kept when they clearly match secondary intent",
+            "uncertainty_summary": "minor ambiguity remains between primary and nearest challenger",
+            "confusion_points": ["sibling_granularity_conflict"],
+            "override_sensitivity": "needs_strong_evidence",
+            "challenger_notes": [
+                {
+                    "fqdn": ranked[1]["fqdn"],
+                    "note": "closest challenger has weaker direct primary evidence",
+                }
+            ] if len(ranked) > 1 else [],
         }
         return decision, json.dumps(decision, ensure_ascii=False)
 
@@ -203,6 +214,9 @@ class StageALLMTestCase(unittest.TestCase):
         self.assertEqual(trace["stage_a"]["base_stage_a_version"], self.config.base_stage_a_version)
         self.assertEqual(trace["stage_a"]["prompt_version"], self.config.prompt_version)
         self.assertIn("query_packet", trace["stage_a"])
+        self.assertIn("uncertainty_summary", trace["stage_a"]["llm_decision"])
+        self.assertIn("challenger_notes", trace["stage_a"]["llm_decision"])
+        self.assertEqual(trace["stage_a"]["llm_decision"]["override_sensitivity"], "needs_strong_evidence")
 
     def test_minmax_norm_uses_spread_floor(self) -> None:
         normed = _minmax_norm({"a": 0.05, "b": 0.15}, spread_floor=0.5)

@@ -17,8 +17,8 @@ from .stage_a_clean import _clip, _is_chain_duplicate, _safe_primary
 
 @dataclass(frozen=True)
 class StageBConfig:
-    stage_b_version: str = "stage_b_v1_20260318_relatedguard"
-    prompt_version: str = "stage_b_prompt_v2_20260318"
+    stage_b_version: str = "stage_b_v1_20260323_packetv2"
+    prompt_version: str = "stage_b_prompt_v3_20260323"
     decision_mode: str = "llm_consensus_v1"
     deterministic_decision_mode: str = "consensus_minimal_v0"
     round2_margin_threshold: float = 0.10
@@ -38,7 +38,7 @@ class StageBConfig:
     governance_risk_temperature: float | None = 0.2
     hierarchy_resolver_temperature: float | None = 0.35
     user_preference_temperature: float | None = 0.7
-    llm_max_tokens: int = 1200
+    llm_max_tokens: int = 1800
     parallel_role_calls: bool = True
     max_parallel_roles: int = 4
 
@@ -130,7 +130,7 @@ class OpenAICompatibleStageBLLMClient:
         model: str,
         api_key: str,
         base_url: str | None = None,
-        timeout: float = 45.0,
+        timeout: float = 60.0,
     ) -> None:
         self.provider = provider
         self.model = model
@@ -172,7 +172,7 @@ def make_stage_b_llm_client(provider: str, model: str | None = None) -> StageBLL
             model=model or "deepseek-chat",
             api_key=api_key,
             base_url="https://api.deepseek.com/v1",
-            timeout=45.0,
+            timeout=60.0,
         )
     if provider == "openai":
         api_key = os.getenv("OPENAI_API_KEY")
@@ -182,7 +182,7 @@ def make_stage_b_llm_client(provider: str, model: str | None = None) -> StageBLL
             provider="openai",
             model=model or "gpt-5.4",
             api_key=api_key,
-            timeout=45.0,
+            timeout=60.0,
         )
     raise ValueError(f"Unsupported provider: {provider}")
 
@@ -199,6 +199,11 @@ def _role_temperature(role_name: str, config: StageBConfig) -> float:
 
 
 def _candidate_records(trace: dict[str, Any], resolver: NamespaceResolver) -> list[dict[str, Any]]:
+    stage_a_llm_map = {
+        row["fqdn"]: row
+        for row in trace["stage_a"].get("llm_decision", {}).get("candidate_judgements", [])
+        if isinstance(row, dict) and row.get("fqdn")
+    }
     stage_r_by_fqdn = {
         row["fqdn"]: row
         for row in trace["stage_r"].get("fqdn_candidates", [])
@@ -212,9 +217,11 @@ def _candidate_records(trace: dict[str, Any], resolver: NamespaceResolver) -> li
         fqdn = row["fqdn"]
         breakdown = row.get("score_breakdown", {})
         evidence_for = row.get("evidence_for", {})
+        evidence_against = row.get("evidence_against", [])
         stage_r_row = stage_r_by_fqdn.get(fqdn, {})
         top_k_row = routing_top_k_by_fqdn.get(fqdn, {})
         node = resolver.get_node(fqdn)
+        llm_row = stage_a_llm_map.get(fqdn, {})
         penalty_total = sum(
             float(breakdown.get(key, 0.0))
             for key in (
@@ -239,6 +246,7 @@ def _candidate_records(trace: dict[str, Any], resolver: NamespaceResolver) -> li
             scene_hits = []
             matched_phrases = {}
             freeform_evidence = list(evidence_for)[:3] if isinstance(evidence_for, list) else []
+        freeform_evidence_against = list(evidence_against)[:3] if isinstance(evidence_against, list) else []
         explicit_primary_support = 1.0 if primary_hits else 0.0
         explicit_secondary_support = 1.0 if secondary_hits else 0.0
         scene_support = 1.0 if scene_hits else 0.0
@@ -282,6 +290,13 @@ def _candidate_records(trace: dict[str, Any], resolver: NamespaceResolver) -> li
                 "desc": node.desc if node else "",
                 "aliases": list(node.aliases[:5]) if node else [],
                 "freeform_evidence": freeform_evidence,
+                "freeform_evidence_against": freeform_evidence_against,
+                "stage_a_llm_task_fit": _safe_float(llm_row.get("task_fit", 0.0)),
+                "stage_a_llm_primary_fit": _safe_float(llm_row.get("primary_fit", 0.0)),
+                "stage_a_llm_related_fit": _safe_float(llm_row.get("related_fit", 0.0)),
+                "stage_a_llm_specificity_judgement": str(llm_row.get("specificity_judgement", "fit"))[:32],
+                "stage_a_llm_evidence_for": _coerce_text_list(llm_row.get("evidence_for", []), limit=3),
+                "stage_a_llm_evidence_against": _coerce_text_list(llm_row.get("evidence_against", []), limit=3),
             }
         )
     return records
@@ -289,6 +304,79 @@ def _candidate_records(trace: dict[str, Any], resolver: NamespaceResolver) -> li
 
 def _record_by_fqdn(records: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return {record["fqdn"]: record for record in records}
+
+
+def _competition_relation(
+    fqdn: str,
+    stage_a_primary: str | None,
+    resolver: NamespaceResolver,
+) -> str:
+    if not stage_a_primary:
+        return "no_incumbent"
+    if fqdn == stage_a_primary:
+        return "incumbent"
+    if _is_chain_duplicate(fqdn, stage_a_primary, resolver):
+        return "same_chain_competitor"
+    left = resolver.get_node(fqdn)
+    right = resolver.get_node(stage_a_primary)
+    if left and right and left.l1 == right.l1:
+        return "same_l1_competitor"
+    return "cross_l1_competitor"
+
+
+def _negative_evidence_card(record: dict[str, Any]) -> list[str]:
+    reasons: list[str] = []
+    if record.get("secondary_hits") and not record.get("primary_hits"):
+        reasons.append("secondary_only_signal")
+    if record.get("scene_hits") and not record.get("primary_hits"):
+        reasons.append("scene_only_support")
+    if record.get("specificity_fit", 0.0) < 0.40:
+        reasons.append("specificity_mismatch")
+    if record.get("penalty_total", 0.0) >= 0.25:
+        reasons.append("structure_penalties_present")
+    for item in record.get("freeform_evidence_against", [])[:2]:
+        if item not in reasons:
+            reasons.append(item)
+    return reasons[:4]
+
+
+def _positive_evidence_card(record: dict[str, Any]) -> list[str]:
+    items: list[str] = []
+    for bucket in ("primary_hits", "secondary_hits", "scene_hits", "freeform_evidence"):
+        for value in record.get(bucket, [])[:2]:
+            text = str(value).strip()
+            if text and text not in items:
+                items.append(text[:180])
+            if len(items) >= 4:
+                break
+        if len(items) >= 4:
+            break
+    return items
+
+
+def _stage_a_semantic_handoff(stage_a: dict[str, Any]) -> dict[str, Any]:
+    llm_decision = stage_a.get("llm_decision", {})
+    challenger_notes = llm_decision.get("challenger_notes", [])
+    if not isinstance(challenger_notes, list):
+        challenger_notes = []
+    return {
+        "scene_context": llm_decision.get("scene_context", ""),
+        "primary_intent": llm_decision.get("primary_intent", ""),
+        "secondary_intents": list(llm_decision.get("secondary_intents", []))[:4],
+        "primary_rationale": llm_decision.get("primary_rationale", ""),
+        "secondary_rationale": llm_decision.get("secondary_rationale", ""),
+        "uncertainty_summary": llm_decision.get("uncertainty_summary", ""),
+        "confusion_points": list(llm_decision.get("confusion_points", []))[:5],
+        "override_sensitivity": llm_decision.get("override_sensitivity", ""),
+        "challenger_notes": [
+            {
+                "fqdn": item.get("fqdn"),
+                "note": item.get("note"),
+            }
+            for item in challenger_notes[:4]
+            if isinstance(item, dict) and item.get("fqdn") and item.get("note")
+        ],
+    }
 
 
 def _histogram(items: list[str]) -> dict[str, int]:
@@ -616,11 +704,12 @@ def _role_focus(role_name: str) -> str:
 def _role_system_prompt(role_name: str) -> str:
     return (
         "你是 AgentDNS Stage B 的慢路径共识角色。"
-        "你只能在给定候选集合内做结构化判断，不能发明新 fqdn。"
+        "你仍然只能在给定候选集合内输出最终提案，不能发明新 fqdn。"
         f"你当前扮演的角色是 {role_name}。"
         f"{_role_focus(role_name)}"
-        "请在 query / Stage A 结果 / candidates 的约束下，给出最合理的 primary 与 related 提案。"
-        "如果你不同意 Stage A，可以明确改判，但必须基于候选内证据。"
+        "请结合 query、Stage A 的语义交接、以及候选内证据卡，比较 incumbent 与主要 challenger。"
+        "如果你认为 Stage A 原判存在明显弱点，可以建议 override；如果证据仍不足，也可以保留原判。"
+        "请尽量说明 primary 为什么更像主任务，related 为什么更像次要诉求，以及当前最大的歧义点是什么。"
         "你必须显式声明自己是支持 Stage A 原判，还是建议 override。"
         "输出必须是单个 JSON 对象，不能附带散文解释。"
     )
@@ -630,15 +719,16 @@ def _role_user_prompt(role_name: str, packet: dict[str, Any]) -> str:
     return (
         "请作为固定角色参与 Stage B 共识。\n"
         "要求：\n"
-        "1. 只能从 candidates 中选择 proposal_primary_fqdn 与 proposal_related_fqdns。\n"
+        "1. 最终输出中的 proposal_primary_fqdn 与 proposal_related_fqdns 必须来自 candidates。\n"
         "2. proposal_primary_fqdn 必须唯一。\n"
         "3. proposal_related_fqdns 可以为空，但不能包含 proposal_primary_fqdn。\n"
-        "4. rationale 必须解释你为什么支持这个 primary。\n"
-        "5. 若 packet.round_index=2，请只在 round2_candidates 中二选一，不要跳回其他候选。\n"
+        "4. rationale 请解释你为什么更支持当前 primary，以及 incumbent/ challenger 的关键差异。\n"
+        "5. 若 packet.round_index=2，请优先在 round2_candidates 中比较，不要跳回其他候选。\n"
         "6. confidence 用 0 到 1。\n"
         "7. override_position 只能是 support_stage_a 或 propose_override。\n"
         "8. 若 override_position=propose_override，可用的 override_basis_tags 仅限："
         "explicit_primary_evidence, specificity_gain, risk_requirement, multi_intent_separation, hierarchy_disambiguation。\n"
+        "9. 请优先利用 semantic_handoff、competition_view、positive_evidence_card、negative_evidence_card 做判断，不要只重复旧分数。\n"
         f"当前角色：{role_name}\n\n"
         f"{json.dumps(packet, ensure_ascii=False, indent=2)}"
     )
@@ -648,11 +738,43 @@ def _build_consensus_packet(
     sample: dict[str, Any],
     trace: dict[str, Any],
     records: list[dict[str, Any]],
+    resolver: NamespaceResolver,
     config: StageBConfig,
     round_index: int,
     round2_candidates: list[str] | None = None,
 ) -> dict[str, Any]:
     stage_a = trace["stage_a"]
+    stage_a_primary = stage_a.get("selected_primary_fqdn")
+    enriched_records: list[dict[str, Any]] = []
+    for record in records:
+        enriched = dict(record)
+        enriched["competition_view"] = {
+            "relation_to_stage_a_primary": _competition_relation(record["fqdn"], stage_a_primary, resolver),
+            "stage_a_selected_primary": record["fqdn"] == stage_a_primary,
+            "same_chain_as_stage_a_primary": _is_chain_duplicate(record["fqdn"], stage_a_primary, resolver)
+            if stage_a_primary
+            else False,
+        }
+        enriched["positive_evidence_card"] = _positive_evidence_card(record)
+        enriched["negative_evidence_card"] = _negative_evidence_card(record)
+        enriched["secondary_recovery_card"] = {
+            "secondary_anchor_strength": round(
+                _clip(
+                    0.65 * (1.0 if record.get("secondary_hits") else 0.0)
+                    + 0.20 * min(len(record.get("stage_a_llm_evidence_for", [])), 2) / 2
+                    + 0.15 * min(record.get("score_related", 0.0), 1.0)
+                ),
+                6,
+            ),
+            "cross_domain_secondary_ok": bool(
+                record.get("secondary_hits")
+                or record.get("stage_a_llm_related_fit", 0.0) >= 0.60
+            ),
+            "chain_duplicate_risk": bool(
+                stage_a_primary and _is_chain_duplicate(stage_a_primary, record["fqdn"], resolver)
+            ),
+        }
+        enriched_records.append(enriched)
     packet = {
         "sample_id": sample["id"],
         "namespace_version": trace["namespace_version"],
@@ -670,9 +792,11 @@ def _build_consensus_packet(
             "escalation_reasons": list(stage_a.get("escalation_reasons", [])),
             "query_packet": stage_a.get("query_packet", {}),
             "decision_packet": stage_a.get("decision_packet", {}),
+            "semantic_handoff": _stage_a_semantic_handoff(stage_a),
+            "routing_top_k": list(stage_a.get("routing_top_k", []))[:5],
         },
         "round_index": round_index,
-        "candidates": records,
+        "candidates": enriched_records,
     }
     if round2_candidates:
         packet["round2_candidates"] = round2_candidates
@@ -1051,6 +1175,7 @@ def _analyze_stage_b_deterministic(
         sample={"id": trace["sample_id"], "query": trace.get("query", ""), "context": trace.get("context", {})},
         trace=trace,
         records=records,
+        resolver=resolver,
         config=config,
         round_index=1,
     )
@@ -1097,6 +1222,7 @@ def _analyze_stage_b_deterministic(
                 sample={"id": trace["sample_id"], "query": trace.get("query", ""), "context": trace.get("context", {})},
                 trace=trace,
                 records=top2_records,
+                resolver=resolver,
                 config=config,
                 round_index=2,
                 round2_candidates=round2_candidates,
@@ -1258,7 +1384,7 @@ def _analyze_stage_b_llm(
         }
 
     stage_a_primary = stage_a.get("selected_primary_fqdn")
-    round1_packet = _build_consensus_packet(sample, trace, records, config, round_index=1)
+    round1_packet = _build_consensus_packet(sample, trace, records, resolver, config, round_index=1)
     round1_votes, round1_issues = _collect_llm_votes(ROLE_NAMES, round1_packet, client, config, resolver=resolver)
     round1_scores = _aggregate_feedback_scores(
         records,
@@ -1297,6 +1423,7 @@ def _analyze_stage_b_llm(
                 sample,
                 trace,
                 top2_records,
+                resolver,
                 config,
                 round_index=2,
                 round2_candidates=round2_candidates,

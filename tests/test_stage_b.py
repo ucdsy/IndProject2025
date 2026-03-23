@@ -486,6 +486,44 @@ class StageBTestCase(unittest.TestCase):
         self.assertIn("override_attempted", stage_b_trace["stage_b"]["trust_trace"])
         self.assertIn("sensitive_override_flags", stage_b_trace["stage_b"]["trust_trace"])
 
+    def test_stage_b_packet_includes_stage_a_uncertainty_handoff_and_cards(self) -> None:
+        trace = build_stage_a_llm_trace(
+            sample=self.samples["formal_dev_000007"],
+            snapshot=self.snapshots["formal_dev_000007"],
+            resolver=self.resolver,
+            client=_HeuristicStageATestClient(),
+            config=StageALLMConfig(stage_a_version="sa_llm_stage_b_packet_test"),
+        )
+        trace["stage_a"]["escalate_to_stage_b"] = True
+        trace["stage_a"]["escalation_reasons"] = ["low_confidence", "sibling_granularity_conflict"]
+        client = _CapturingScriptedStageBLLMClient(
+            round1={
+                role: {
+                    "proposal_primary_fqdn": trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.82,
+                    "rationale": f"{role}: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                }
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
+            }
+        )
+        build_stage_b_trace(
+            sample=self.samples["formal_dev_000007"],
+            trace=trace,
+            resolver=self.resolver,
+            config=StageBConfig(stage_b_version="stage_b_packet_capture_test"),
+            client=client,
+        )
+        packet = client.packets[0]
+        self.assertIn("semantic_handoff", packet["stage_a"])
+        self.assertTrue(packet["stage_a"]["semantic_handoff"]["uncertainty_summary"])
+        self.assertIn("competition_view", packet["candidates"][0])
+        self.assertIn("positive_evidence_card", packet["candidates"][0])
+        self.assertIn("negative_evidence_card", packet["candidates"][0])
+        self.assertIn("secondary_recovery_card", packet["candidates"][0])
+
     def test_role_temperature_can_be_overridden_per_agent(self) -> None:
         config = StageBConfig(
             llm_temperature=0.0,
@@ -638,8 +676,29 @@ class _HeuristicStageATestClient:
             "escalate_to_stage_b": False,
             "escalation_reasons": [],
             "notes": ["heuristic_test_decision"],
+            "primary_rationale": "selected primary best matches the main task",
+            "secondary_rationale": "related nodes are reserved for explicit secondary support",
+            "uncertainty_summary": "nearest challenger shares partial surface cues",
+            "confusion_points": ["sibling_granularity_conflict"],
+            "override_sensitivity": "needs_strong_evidence",
+            "challenger_notes": [
+                {
+                    "fqdn": ranked[1]["fqdn"],
+                    "note": "nearest challenger is competitive but less directly grounded",
+                }
+            ] if len(ranked) > 1 else [],
         }
         return decision, json.dumps(decision, ensure_ascii=False)
+
+
+class _CapturingScriptedStageBLLMClient(_ScriptedStageBLLMClient):
+    def __init__(self, round1: dict[str, dict], round2: dict[str, dict] | None = None) -> None:
+        super().__init__(round1=round1, round2=round2)
+        self.packets: list[dict] = []
+
+    def adjudicate(self, role_name: str, packet: dict, config: StageBConfig) -> tuple[dict, str]:
+        self.packets.append(copy.deepcopy(packet))
+        return super().adjudicate(role_name, packet, config)
 
 
 if __name__ == "__main__":

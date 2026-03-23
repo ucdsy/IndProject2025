@@ -26,14 +26,14 @@ QUOTE_RE = re.compile(r"[“\"「『](.*?)[”\"」』]")
 
 @dataclass(frozen=True)
 class StageALLMConfig:
-    stage_a_version: str = "sa_llm_v1_20260314"
-    prompt_version: str = "stage_a_prompt_v1_20260317"
+    stage_a_version: str = "sa_llm_v2_20260323_uncertainty"
+    prompt_version: str = "stage_a_prompt_v2_20260323"
     base_stage_a_version: str = StageACleanConfig().stage_a_version
     prompt_candidate_limit: int = 8
     routing_top_k: int = 5
     max_related: int = 3
     llm_temperature: float = 0.0
-    llm_max_tokens: int = 1400
+    llm_max_tokens: int = 1800
     score_temperature: float = 0.45
     confidence_threshold: float = 0.62
     llm_confidence_relief_threshold: float = 0.82
@@ -118,7 +118,7 @@ class OpenAICompatibleStageALLMClient:
         model: str,
         api_key: str,
         base_url: str | None = None,
-        timeout: float = 45.0,
+        timeout: float = 60.0,
     ) -> None:
         self.provider = provider
         self.model = model
@@ -160,7 +160,7 @@ def make_llm_client(provider: str, model: str | None = None) -> StageALLMClient:
             model=model or "deepseek-chat",
             api_key=api_key,
             base_url="https://api.deepseek.com/v1",
-            timeout=45.0,
+            timeout=60.0,
         )
     if provider == "openai":
         api_key = os.getenv("OPENAI_API_KEY")
@@ -170,17 +170,26 @@ def make_llm_client(provider: str, model: str | None = None) -> StageALLMClient:
             provider="openai",
             model=model or "gpt-5.4",
             api_key=api_key,
-            timeout=45.0,
+            timeout=60.0,
         )
     raise ValueError(f"Unsupported provider: {provider}")
+
+
+OVERRIDE_SENSITIVITY_VALUES = {
+    "safe_to_override",
+    "needs_strong_evidence",
+    "likely_secondary_confusion",
+    "high_risk_guarded",
+}
 
 
 def _system_prompt() -> str:
     return (
         "你是 AgentDNS Stage A 的单智能体裁决器。"
         "你只能在给定候选集合内做结构化裁决，不能发明新 fqdn。"
-        "先理解 query 的 scene_context、primary_intent、secondary_intents，再在 candidates 内判断 primary/related。"
+        "请先理解 query 的 scene_context、primary_intent、secondary_intents，再在 candidates 内判断 primary/related。"
         "你必须区分 primary 和 related；若不确定，应请求升级到 Stage B。"
+        "除了裁决结果，请提供简短、受约束的语义摘要，说明为什么当前 primary 最合适、主要 challenger 为什么没有赢，以及你最不确定的点是什么。"
         "confusion_sources 只是软提示，不是既定事实。"
         "输出必须是单个 JSON 对象，不能附带散文解释。"
     )
@@ -190,7 +199,7 @@ def _user_prompt(packet: dict[str, Any]) -> str:
     return (
         "请基于下面的 decision packet 进行候选内裁决。\n"
         "要求：\n"
-        "1. 只能从 candidates 中选 selected_primary_fqdn 和 selected_related_fqdns。\n"
+        "1. 最终输出中的 selected_primary_fqdn 和 selected_related_fqdns 必须来自 candidates。\n"
         "2. 先输出 scene_context、primary_intent、secondary_intents。\n"
         "3. related 只在存在明确 secondary_intent 且候选直接承接该 secondary_intent 时才可填写；若无明确 secondary_intent，一般返回空列表。\n"
         "4. 对每个 selected_related_fqdn，candidate_judgements.evidence_for 必须给出支持它的具体短语；不要因为“泛相关”就挂 related。\n"
@@ -199,7 +208,11 @@ def _user_prompt(packet: dict[str, Any]) -> str:
         "7. task_fit / primary_fit / related_fit 都用 0 到 1 的数值。\n"
         "8. specificity_judgement 只能取 too_coarse / fit / too_specific。\n"
         "9. confidence 用 0 到 1，但这是模型自评，不会直接决定最终系统置信度。\n"
-        "10. 若低置信、样本高风险或 primary/related 拿不准，设置 escalate_to_stage_b=true。\n\n"
+        "10. 若低置信、样本高风险或 primary/related 拿不准，设置 escalate_to_stage_b=true。\n"
+        "11. 请补充以下短字段：primary_rationale、secondary_rationale、uncertainty_summary。\n"
+        "12. confusion_points 用短标签列表，建议围绕 sibling_granularity_conflict、cross_domain_overlap、primary_vs_secondary_ambiguous、insufficient_primary_cues、high_risk_guarded 等概念。\n"
+        "13. override_sensitivity 只能取 safe_to_override / needs_strong_evidence / likely_secondary_confusion / high_risk_guarded。\n"
+        "14. challenger_notes 请用对象列表，每项包含 fqdn 和 note，解释主要 challenger 为什么构成竞争但没有赢。\n\n"
         f"{json.dumps(packet, ensure_ascii=False, indent=2)}"
     )
 
@@ -305,6 +318,65 @@ def _coerce_text_list(value: Any, limit: int = 3) -> list[str]:
     return items
 
 
+def _coerce_short_text(value: Any, limit: int = 180) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    return text[:limit]
+
+
+def _coerce_short_label_list(value: Any, limit: int = 5) -> list[str]:
+    if isinstance(value, str):
+        value = [value]
+    if not isinstance(value, list):
+        return []
+    labels: list[str] = []
+    for item in value:
+        text = str(item or "").strip()
+        if not text:
+            continue
+        normalized = text.replace(" ", "_")[:64]
+        if normalized not in labels:
+            labels.append(normalized)
+        if len(labels) >= limit:
+            break
+    return labels
+
+
+def _normalize_override_sensitivity(raw: Any) -> str:
+    normalized = str(raw or "").strip().lower().replace("-", "_").replace(" ", "_")
+    if normalized in OVERRIDE_SENSITIVITY_VALUES:
+        return normalized
+    if normalized in {"cautious", "guarded", "needs_more_evidence"}:
+        return "needs_strong_evidence"
+    if normalized in {"secondary_confusion", "related_confusion"}:
+        return "likely_secondary_confusion"
+    if normalized in {"high_risk", "high_risk_sensitive"}:
+        return "high_risk_guarded"
+    return "needs_strong_evidence"
+
+
+def _sanitize_challenger_notes(value: Any, candidate_set: set[str]) -> list[dict[str, str]]:
+    notes: list[dict[str, str]] = []
+    if isinstance(value, dict):
+        value = [{"fqdn": fqdn, "note": note} for fqdn, note in value.items()]
+    if not isinstance(value, list):
+        return notes
+    for item in value:
+        if not isinstance(item, dict):
+            continue
+        fqdn = item.get("fqdn")
+        if fqdn not in candidate_set:
+            continue
+        note = _coerce_short_text(item.get("note", ""), limit=180)
+        if not note:
+            continue
+        notes.append({"fqdn": fqdn, "note": note})
+        if len(notes) >= 4:
+            break
+    return notes
+
+
 def _build_prompt_query_view(query: str) -> dict[str, Any]:
     text = (query or "").strip()
     clauses = [part.strip("，。；; ") for part in CLAUSE_RE.split(text) if part.strip("，。；; ")]
@@ -407,6 +479,12 @@ def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: list[str]) -> t
             "escalate_to_stage_b": bool(raw.get("escalate_to_stage_b", False)),
             "escalation_reasons": list(raw_escalation_reasons),
             "notes": list(raw_notes)[:5],
+            "primary_rationale": _coerce_short_text(raw.get("primary_rationale", ""), limit=220),
+            "secondary_rationale": _coerce_short_text(raw.get("secondary_rationale", ""), limit=220),
+            "uncertainty_summary": _coerce_short_text(raw.get("uncertainty_summary", ""), limit=220),
+            "confusion_points": _coerce_short_label_list(raw.get("confusion_points", []), limit=5),
+            "override_sensitivity": _normalize_override_sensitivity(raw.get("override_sensitivity", "")),
+            "challenger_notes": _sanitize_challenger_notes(raw.get("challenger_notes", []), candidate_set),
         },
         issues,
     )
@@ -880,6 +958,12 @@ def analyze_stage_a_llm(
             "escalate_to_stage_b": True,
             "escalation_reasons": ["llm_error"],
             "notes": [str(exc)],
+            "primary_rationale": "",
+            "secondary_rationale": "",
+            "uncertainty_summary": "stage_a_llm_error",
+            "confusion_points": ["llm_error"],
+            "override_sensitivity": "needs_strong_evidence",
+            "challenger_notes": [],
         }
         llm_raw = str(exc)
 
