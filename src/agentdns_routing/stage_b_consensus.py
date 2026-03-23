@@ -38,7 +38,7 @@ class StageBConfig:
     governance_risk_temperature: float | None = 0.2
     hierarchy_resolver_temperature: float | None = 0.35
     user_preference_temperature: float | None = 0.7
-    llm_max_tokens: int = 1800
+    llm_max_tokens: int = 3000
     parallel_role_calls: bool = True
     max_parallel_roles: int = 4
 
