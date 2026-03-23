@@ -5,7 +5,9 @@
 
 当前阶段修正:
 - 仓库里旧 `bootstrap Stage R/A` 的可运行代码已清理，只保留执行日志中的历史结果说明，不进入正式主表。
-- 正式主表只能来自 `formal/dev + formal/blind + formal/challenge` 协议下重做后的 clean `Stage R/A`。
+- 本文定义的是 `formal/dev + formal/blind + formal/challenge` 的原始主评测纪律。
+- 当前 repo 后续又新增了 `holdout2` fresh split 与 `review_packetv2_20260323` 的 revealed 对照，它们属于当前状态说明与扩展验证，不替代本文的 formal 协议定义。
+- 因此，本文中的 B1/B2/Ours 实验矩阵是早期评测设计，不应被误读为当前唯一有效的实验对照设置。
 
 ## 1. 系统分层（必须在 PPT 里画一张图）
 - Stage R（命名空间召回）:

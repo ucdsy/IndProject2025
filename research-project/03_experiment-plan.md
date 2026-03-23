@@ -1,5 +1,10 @@
 # 实验计划
 
+> 注:
+> - 本文是早期研究 framing 与实验计划，不代表当前 frozen 实验矩阵。
+> - 当前 live repo 的实现与结果，应以 `research-project/04_execution-log.md`、`closure/20_stage_b_bootstrap_plan.md` 与 `closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md` 为准。
+> - 文中的样本规模目标、早期基线命名与未来式表述主要保留作研究过程记录。
+
 ## 待验证主张
 围绕任务书的三段式路径（异质生成 -> 共识演化 -> 可信标识）验证 3 类主张：
 1. 质量: 多智能体协作在真实/准真实标签约束下，优于单智能体或简单投票。
@@ -24,7 +29,7 @@
   - 可选: `relevant_fqdns`
   - 可选: `acceptable_fqdns`
 
-### 数据构建方案（不依赖业务注册信息）
+### 数据构建方案（不依赖业务注册信息，以下规模目标属早期规划）
 - L1（推荐）: 自建小规模标注集（300-800 条）
   - 来源: 基于现有 AgentDNS 标签体系做 label-first 构造:
     - 先选 `ground_truth_fqdn`
@@ -48,7 +53,7 @@
 - `OraclePrimary@K`
 
 
-## 基线设置
+## 基线设置（早期规划命名，非当前唯一实验矩阵）
 - Single-Agent Prompting: 单智能体 + 最佳提示（含检索或规则提示）。
 - Multi-Agent Vote: 多角色独立判断 + 多数投票/加权投票。
 - No-Feedback Consensus: 多轮但不计算反馈函数。

@@ -1,12 +1,12 @@
 # 执行级规格与评审门槛 v1
 
 > 目的: 把“语义拆解、快慢路径决策、下一跳发现、实验门槛”压缩进一份可执行规格，避免你在多份文档里来回跳。
-> 定位: 这是开工前必须审的主文档。`closure/13_design_doc_agentdns_routing.md` 负责讲总设计，这份文档负责约束实现。
+> 定位: 这是冻结规格与约束边界文档。`closure/13_design_doc_agentdns_routing.md` 负责讲总设计，这份文档负责定义 contract 与评审门槛。
 
-当前实现状态修正:
+当前状态说明:
 - 仓库中的旧 `bootstrap Stage R/A` 代码已从主干清理；历史结果只保留作过程记录。
-- 当前最优先任务不是继续补算法功能，而是先完成正式数据集、blind split 与 freeze protocol。
-- 只有在这些前提冻结后，才允许重做 clean `Stage R` 与 clean `Stage A`。
+- 当前这些前置工作已完成，clean `Stage R`、`Stage A clean`、`Stage A llm v2` 与 `Stage B packetv2` 均已落地。
+- 因此，本文中的 `freeze / blind protocol / 重建顺序` 相关表述主要保留作冻结纪律说明，不再等同于当前实施顺序。
 
 ## 1. 总体边界
 - 输入: `query`, `context`, `namespace_v1`, `agent_registry_snapshot`
@@ -35,7 +35,7 @@
   - gold 数据集中的 fqdn 字段必须已经是 canonical `routing_fqdn`
   - descriptor 侧允许保留 `segments`，但工程消费一律通过 resolver 展开为 canonical catalog
 
-重建顺序（当前冻结）:
+历史冻结时的重建顺序（保留作纪律说明，不代表当前 live repo 的实施阶段）:
 1. 先冻结正式 gold schema、split 纪律、blind protocol
 2. 再冻结 descriptor/词典/行业术语表的独立来源
 3. 只在上述前提下重做 clean `Stage R`

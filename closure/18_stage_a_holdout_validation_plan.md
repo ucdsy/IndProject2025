@@ -8,6 +8,11 @@
 > - formal 协议: [09_eval_protocol.md](/Users/xizhuxizhu/Desktop/IndProj04/closure/09_eval_protocol.md)
 > - 执行门槛: [14_execution_spec_and_review_gate.md](/Users/xizhuxizhu/Desktop/IndProj04/closure/14_execution_spec_and_review_gate.md)
 > - 当前方法边界: [16_stage_a_strategy_and_execution.md](/Users/xizhuxizhu/Desktop/IndProj04/closure/16_stage_a_strategy_and_execution.md)
+>
+> 注:
+> - 本文是 2026-03-15 的历史 holdout 验证计划，不代表当前 live repo 的最新实验矩阵。
+> - `blind`、`challenge` 与 `holdout2` 现已揭盲；若继续引用本文，只能把它视为历史验证路径与实验纪律说明。
+> - 当前项目总状态应结合 `closure/20_stage_b_bootstrap_plan.md`、`closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md` 与 `research-project/04_execution-log.md` 阅读。
 
 ## 1. 当前判断
 

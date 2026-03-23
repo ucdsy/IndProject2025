@@ -3,6 +3,12 @@
 > 目的: 在不打破 `candidate-internal` 约束的前提下，为 `Stage B` 提供比当前分数摘要更强的语义输入。
 >
 > 背景: `Stage B relatedguard` 在 `dev / blind / challenge / holdout2` 上已完成一轮真实 provider 验证，但对 fresh holdout 的稳定纠错增益未证成。当前主要瓶颈不是 provider runtime，而是 `Stage B` 看到的 candidate packet 过薄、prompt 过硬。
+>
+> 当前状态说明:
+> - 本文是当前方法设计页，不是统一结果页。
+> - 已落地: `sa_llm_v2_20260323_uncertainty` 的 uncertainty handoff 字段，以及 `stage_b_v1_20260323_packetv2` 的 revealed 评测。
+> - 尚未证明: `Stage B` 已稳定压过所有上游线路。
+> - `Stage C` 本轮仍只保留为已定义但未实现的下一步工程闭环，不在本文展开外部 repo 联动细节。
 
 ## 1. 当前问题判断
 - 当前 `Stage B` 的输入主要由:

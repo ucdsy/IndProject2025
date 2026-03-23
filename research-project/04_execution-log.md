@@ -1,5 +1,9 @@
 # 实验执行日志
 
+> 注:
+> - 本文是当前仓库最可信的实验时间线与状态页。
+> - 若要理解 live repo 的当前节点，应优先看 2026-03-23 的 `A-LLM-02` 与 `B-PACKETV2-01`，并与 `closure/20_stage_b_bootstrap_plan.md`、`closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md` 对照阅读。
+
 | 日期 | 运行 ID | 配置 | 关键结果 | 备注 |
 |---|---|---|---|---|
 | 2026-03-06 | SR-BOOT-01 | `Stage R bootstrap`，25 个 namespace descriptors，seed gold: dev=12/test=8，`top_k=10`，`stage_r_version=sr_v0_20260306` | dev: `PrimaryRecall@10=1.00`，`RelatedCoverage@10=1.00`；test: `PrimaryRecall@10=1.00`，`RelatedCoverage@10=1.00` | 已生成 `artifacts/stage_r/*.jsonl`，供后续 Stage A/B 共用 candidate snapshot |
@@ -23,6 +27,8 @@
 | 2026-03-20 | B-CHALLENGE-01 | 用 `challenge_compare_deepseek_20260320` 对 `A_clean -> B` 与 `A_llm -> B` 做探索性 challenge 对照 | clean: `0.2917 -> 0.3750`；llm: `0.4167 -> 0.4583`；challenge `related` 仍为 `0.0` | 当前 `Stage B` 在 challenge 上有小幅提升，但尚不足以支撑“慢路径已验证完成” |
 | 2026-03-22 | DATA-HOLDOUT2-01 | 基于 `closure/23_holdout2_data_spec.md` 新建 unrevealed `holdout2`；新增 `scripts/build_holdout2_dataset.py`、`scripts/validate_holdout2_dataset.py` 与 split 级 schema | `holdout2=54`；bucket 分布 `12/10/10/8/8/6`；`distinct_base_fqdn=25`；`l3_ratio=0.3148`；`multi_intent_ratio=0.3704` | `holdout2` 与当前 `formal/dev`、`formal/blind`、`formal/challenge` 做到 family-disjoint；用途是给后续 `Stage A vNext / Stage B` 提供新的单次 join 正式验证，不可用于继续按已揭盲错例补样本 |
 | 2026-03-22 | DATA-HOLDOUT2-VALIDATE-01 | 重跑 `holdout2` validator；校验 schema、input/label 对齐、family/query disjoint、bucket 配额、base coverage、manifest 回算与 coverage csv 一致性 | `ok=true`，`warnings=[]`；`family_disjoint=true`；`query_text_disjoint=true`；`coverage_csv_matches=true` | 已生成 `artifacts/dataset/holdout2_validation_report.json`；当前可将 `holdout2_input.jsonl` 交算法组开发读取，`holdout2_labels.jsonl` 保持冻结直到版本冻结后单次 join |
+| 2026-03-23 | A-LLM-02 | `sa_llm_v2_20260323_uncertainty`；把 `Stage A llm` 从早期 `v1` 线推进到 uncertainty handoff 线，并在 `review_packetv2_20260323` 上统一对照 | dev: `0.9600`；blind: `0.9143`；challenge: `0.6250`；holdout2: `0.8889`；blind `RelatedPrecision=1.0000` | 当前 `A_llm_v2` 已成为比 `A_clean` 更强的主裁决线，但仍需和 `Stage B` 联合判断是否形成最终主方法 |
+| 2026-03-23 | B-PACKETV2-01 | `stage_b_v1_20260323_packetv2`；在 `dev / blind / challenge / holdout2` 上做 revealed 对照 | `A_clean -> B`: dev 持平、blind `0.8286 -> 0.8571`、challenge `0.2917 -> 0.4167`、holdout2 持平；`A_llm_v2 -> B`: dev/blind 持平、challenge `0.6250 -> 0.6667`、holdout2 `0.8889 -> 0.9074` | 当前 `Stage B` 已证实“在部分 split 上有选择性的净增益”，但尚未形成对所有线路都稳定增益的统一结论 |
 
 ## 运行元数据清单
 每次跑实验至少记录这些字段，避免最后写报告/论文时“数据找不到”：
@@ -40,7 +46,7 @@
 ## 主张-证据对照表（当前状态）
 | 主张 | 证据（实验/表格） | 状态 |
 |---|---|---|
-| 协作机制优于单智能体 | 尚无统一 frozen lineage 主结果表 | 未完成 |
+| 协作机制优于单智能体 | 已有 `review_packetv2_20260323` 的 revealed / holdout2 正向信号，但尚无统一 frozen-lineage 主结果表 | 进行中 |
 | 反馈驱动优于无反馈 | 尚无统一 frozen lineage 消融表 | 未完成 |
 | 异质性有贡献 | 尚无统一 frozen lineage 消融表 | 未完成 |
 | 可信标识提升审计能力且成本可控 | 尚无正式主表，当前只有 trace/schema 与工程可行性证据 | 未完成 |

@@ -1,123 +1,108 @@
-# IndProj04（2026-04-30 结项）工作区索引
+# IndProj04（2026-04 结项）工作区索引
 
-> 目标: 按任务书在 2026-04-30 前形成“可验收结项包”，并可复用为论文与专利素材。
+> 目标: 按任务书形成可验收结项包，并把当前原型、实验和材料沉淀成可复用的论文/专利素材。
 
-## 1. 你现在该看哪些（按优先级）
-- 主审文档（优先只看这 2 份）:
-  - `closure/13_design_doc_agentdns_routing.md`
-  - `closure/14_execution_spec_and_review_gate.md`
-- 结项讲法与硬交付:
+## 1. 现在先看哪些
+- 当前主线与状态入口:
+  - `closure/README.md`
+  - `research-project/README.md`
+- 当前最关键的状态文档:
+  - `closure/19_stage_a_blind_error_analysis.md`
+  - `closure/20_stage_b_bootstrap_plan.md`
+  - `closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md`
+- 结项交付与讲法:
   - `closure/01_deliverables_checklist.md`
   - `closure/02_taskbook_mapping.md`
   - `closure/06_review_ppt_outline.md`
-- 本周必须冻结（M1: 2026-03-11）:
-  - `closure/07_namespace_v1.md`
-  - `closure/08_dataset_spec_and_labeling.md`
-  - `closure/09_eval_protocol.md`
-  - `closure/10_demo_runbook.md`
-  - `closure/15_stage_r_clean_guardrails.md`
-  - `closure/16_stage_a_strategy_and_execution.md`
-- 命名/注册发现（把命名讲清楚，方便接真实平台）:
-  - `closure/11_agent_registry_and_naming.md`
-- clean Stage R 护栏（防过拟合 / 防伪 clean）:
-  - `closure/15_stage_r_clean_guardrails.md`
-- clean Stage A 方法与执行分工:
-  - `closure/16_stage_a_strategy_and_execution.md`
-- 材料复用（只取加速结项的部分）:
-  - `closure/12_materials_reuse_notes.md`
-- 论文/专利主线:
-  - `closure/04_paper_blueprint.md`
-  - `closure/03_patent_blueprint.md`
-- 8 周倒排（到 2026-04-30）:
-  - `closure/05_12week_plan.md`
 
-## 2. 研究过程材料（写论文用）
-- `research-project/01_problem-framing.md`
-- `research-project/02_feasibility.md`
-- `research-project/03_experiment-plan.md`
-- `research-project/04_execution-log.md`
-- `research-project/05_paper-outline.md`
-- `research-project/06_related-work.md`
-- `research-project/07_rebuttal-risks.md`
+## 2. 当前版本线（2026-03-24）
+- `Stage R`
+  - `sr_clean_v2_20260314_related2`
+- `Stage A clean`
+  - `sa_clean_v2_20260314`
+- `Stage A llm`
+  - `sa_llm_v2_20260323_uncertainty`
+- `Stage B`
+  - `stage_b_v1_20260323_packetv2`
+- `Stage C`
+  - 尚未开始
 
-## 3. 任务书摘录
-- `closure/00_taskbook_extract.md`
+## 3. 当前主结果（review packet v2）
 
-## 4. 执行入口（已落地）
-说明:
-- 下面这些“已落地”内容目前只表示 `contract/schema/脚手架` 已跑通。
-- 旧 `bootstrap Stage R/A` 代码与默认入口已清理出主干，只保留历史执行日志与少量结论说明，不再作为可运行入口。
-- 接下来按“先数据集与 blind protocol，后 clean Stage R/A”的顺序重做算法实现。
+- 当前 `Stage A / Stage B` revealed 对照的主引用目录唯一以 `artifacts/routing_ab/review_packetv2_20260323/` 为准。
 
-- 数据与标注底座:
-  - `data/agentdns_routing/README.md`
-  - `data/agentdns_routing/namespace_descriptors.jsonl`
-  - `artifacts/dataset/knowledge_source_audit.md`
-  - `data/agentdns_routing/dev.jsonl`
-  - `data/agentdns_routing/test.jsonl`
-  - `data/agentdns_routing/formal/manifest.json`
-  - `data/agentdns_routing/formal/family_ledger.csv`
-  - `data/agentdns_routing/formal/coverage_plan.csv`
+| split | `A_clean` | `A_clean -> B` | `A_llm_v2` | `A_llm_v2 -> B` |
+|---|---:|---:|---:|---:|
+| dev `PrimaryAcc@1` | `1.0000` | `1.0000` | `0.9600` | `0.9600` |
+| blind `PrimaryAcc@1` | `0.8286` | `0.8571` | `0.9143` | `0.9143` |
+| challenge `PrimaryAcc@1` | `0.2917` | `0.4167` | `0.6250` | `0.6667` |
+| holdout2 `PrimaryAcc@1` | `0.7407` | `0.7407` | `0.8889` | `0.9074` |
+
+当前可直接说的结论:
+- `Stage R` 已经是稳定主召回基线
+- `Stage A clean` 仍是强 fast-path 基线，但 fresh `holdout2` 上不够强
+- `Stage A llm v2` 已成为当前更强的主裁决线
+- `Stage B packetv2` 已完成 `dev / blind / challenge / holdout2` 评测
+  - 对 `A_clean`：在 blind、challenge 上有提升；在 dev、holdout2 上无增益
+  - 对 `A_llm_v2`：在 challenge、holdout2 上有提升；在 dev、blind 上基本持平
+- 因此，`Stage B` 现在可以说“有选择性的正向增益”，但还不能说“已经稳定压过上游所有线路”
+
+## 4. 执行入口（当前可运行）
+- 数据与协议:
   - `data/agentdns_routing/formal/README.md`
+  - `data/agentdns_routing/formal/manifest.json`
+  - `data/agentdns_routing/formal/holdout2_manifest.json`
   - `data/agentdns_routing/labeling_guide.md`
-- clean Stage R（descriptor-only baseline）:
+- `Stage R`:
   - `src/agentdns_routing/stage_r_clean.py`
   - `scripts/run_stage_r_clean_snapshot.py`
-  - `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl`
-  - `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_summary.json`
-  - `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_report.md`
-  - `artifacts/stage_r_clean/dev.snapshot_freeze.json`
-- clean Stage A（deterministic adjudicator）:
+  - `artifacts/stage_r_clean/dev.sr_clean_v2_20260314_related2.summary.json`
+  - `artifacts/stage_r_clean/blind_revealed_20260315_once.sr_clean_v2_20260314_related2.summary.json`
+  - `artifacts/stage_r_clean/challenge.sr_clean_v2_20260314_related2.summary.json`
+  - `artifacts/stage_r_clean/holdout2_revealed_20260322/holdout2_joined_20260322_once.sr_clean_v2_20260314_related2.gate_summary.json`
+- `Stage A clean`:
   - `src/agentdns_routing/stage_a_clean.py`
   - `scripts/run_stage_a_clean.py`
-  - `artifacts/stage_a_clean/dev.sa_clean_v2_20260314.jsonl`
-  - `artifacts/stage_a_clean/dev.sa_clean_v2_20260314.summary.json`
-- clean Stage A（structured LLM, mock）:
+- `Stage A llm`:
   - `src/agentdns_routing/stage_a_llm.py`
   - `scripts/run_stage_a_llm.py`
-  - `artifacts/stage_a_llm_mock/dev.sa_llm_v1_20260314.jsonl`
-  - `artifacts/stage_a_llm_mock/dev.sa_llm_v1_20260314.summary.json`
-- Canonical routing contract:
-  - `src/agentdns_routing/namespace.py`
-  - `scripts/export_routing_catalog.py`
-  - `artifacts/namespace/routing_catalog.ns_v1_20260311.jsonl`
-- Schema:
-  - `schemas/namespace_descriptor.schema.json`
-  - `schemas/gold_routing_sample.schema.json`
-  - `schemas/formal_dev_sample.schema.json`
-  - `schemas/formal_blind_input_sample.schema.json`
-  - `schemas/formal_blind_label_sample.schema.json`
-  - `schemas/formal_challenge_input_sample.schema.json`
-  - `schemas/formal_challenge_label_sample.schema.json`
-  - `schemas/candidate_snapshot.schema.json`
-  - `schemas/routing_run_trace.schema.json`
-- 数据校验入口:
-  - `scripts/validate_formal_dataset.py`
-- 历史 bootstrap 结果:
-  - 只保留在 `research-project/04_execution-log.md` 作为过程记录，不再提供默认运行入口
+- `Stage B`:
+  - `src/agentdns_routing/stage_b_consensus.py`
+  - `src/agentdns_routing/stage_b_eval.py`
+  - `scripts/run_stage_b.py`
+  - `scripts/run_routing_ab_experiment.py`
+- 当前主对照产物目录:
+  - `artifacts/routing_ab/review_packetv2_20260323/`
+  - `artifacts/stage_b/ablations_20260323/`
 
-## 5. 当前放行边界
+## 5. 当前状态判断
 - 已完成:
   - canonical `routing_fqdn` contract
-  - clean `Stage R` snapshot
-- 但当前状态仅代表:
-  - schema、trace、resolver、脚手架已通
-  - 不代表 Stage R/A 方法已经成立
-- 尚未开始（按设计后置）:
-  - Stage B 多角色共识
-  - Stage C deterministic selector
-- 接口边界:
-  - Stage B 只能消费 `Stage A trace + fqdn_candidates`
-  - Stage C 只能消费 canonical `selected_primary_fqdn`
+  - formal `dev / blind / challenge` 协议
+  - `holdout2` 新增与校验
+  - clean `Stage R`
+  - clean `Stage A`
+  - `Stage A llm v2`
+  - `Stage B packetv2`
+  - `dev / blind / challenge / holdout2` 的一轮 revealed 对照
+- 已有但仍属 exploratory / review 结论:
+  - `Stage B` 的净增益判断
+  - `Stage A llm v2` 与 `Stage B` 的正式主线地位
+- 尚未完成:
+  - 统一 frozen-lineage 的 paper-ready 主结果表
+  - `Stage B` 的系统性 ablation
+  - `Stage C`
 
-## 6. 重建顺序（当前冻结）
-1. 先保留 `namespace/canonical contract`，不再继续沿现有 `Stage R/A` 补功能。
-2. 先完成正式 gold 数据集、blind split、freeze protocol。
-3. 只允许使用独立于 gold query 的命名空间知识源，重建 clean `Stage R`（当前 `descriptor examples` 与旧 bootstrap 词典均已排除出 clean baseline 输入）。
-4. 在冻结的 Stage R snapshot 上重建 clean `Stage A`。
-5. 通过 blind test 后，再进入 Stage C；Stage B 最后做。
+## 6. 当前边界
+- `Stage A` 与 `Stage B` 都仍然坚持 `candidate-internal`
+- `Stage B` 不允许掩盖 `Stage R miss`
+- `holdout2` 已揭盲；后续若继续用其调参，只能算 `exploratory`
+- 现在不应再把仓库描述成“只有 contract/schema/脚手架”
 
-当前冻结结论:
-- `clean Stage A v1` 的 `dev` 输入版本固定为 `sr_clean_v1_20260307`
-- 冻结清单见 `artifacts/stage_r_clean/dev.snapshot_freeze.json`
-- 后续如继续迭代 `Stage R`，必须升新版本，不得覆盖当前冻结产物
+## 7. 历史与当前的关系
+- `closure/15-20` 中部分文档起点是 2026-03-14 到 2026-03-17 的冻结/立项判断
+- 当前 live repo 以:
+  - `closure/20_stage_b_bootstrap_plan.md`
+  - `closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md`
+  - `research-project/04_execution-log.md`
+  为准来理解最新进展

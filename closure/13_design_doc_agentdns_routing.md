@@ -10,7 +10,9 @@
 > 当前实现状态修正:
 > - 仓库中旧 `bootstrap Stage R/A` 代码已从主干清理；历史结果只保留为过程记录，不再作为可运行入口。
 > - 它们不能作为正式方法、正式主表、或论文/结项的主证据直接继承。
-> - 当前阶段的正确顺序是: 先完成正式 gold 数据集与 blind protocol，再重做 clean Stage R / Stage A。
+> - 本文是总设计与目标边界文档，不是当前实现状态页。
+> - 当前 live repo 的实现与结果，应以 `closure/20_stage_b_bootstrap_plan.md`、`closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md` 与 `research-project/04_execution-log.md` 为准。
+> - `AgentDNSDemo / IndProj / A2A` 在本文中主要承担角色定义与接口边界说明，不代表当前仓库已完成外部联动。
 
 ## 0. 结论先行（你最终交付什么）
 结项包最小闭环（任务书硬指标）:
@@ -94,13 +96,13 @@
 - `data/agentdns_routing/test.jsonl`
 - `data/agentdns_routing/labeling_guide.md`（标注指南）
 
-当前冻结的重建顺序:
+历史冻结时的重建顺序（保留作设计背景，不代表当前 live repo 状态）:
 1. 保留 `namespace/canonical contract`
 2. 先完成正式 gold 数据集、blind split、challenge split
 3. 冻结“可用于算法的知识源”与“不可使用的金标泄漏源”
 4. 在冻结数据上重做 clean Stage R
 5. 在冻结 Stage R snapshot 上重做 clean Stage A
-6. Stage C 后置，Stage B 最后实现
+6. 该历史方案把 `Stage C` 放在后段，并把 `Stage B` 作为最后实现项
 
 ### 3.2 每条样本（最小字段）
 - `id`, `namespace_version`, `query`, `context`(opt)

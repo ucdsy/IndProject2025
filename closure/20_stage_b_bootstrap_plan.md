@@ -3,28 +3,69 @@
 > 目的: 在冻结 `Stage A v1` 的前提下，明确 `Stage B` 的最小工程起步范围、接口、文件落点与执行顺序。
 >
 > 适用范围: `Stage B v0/v1` 代码脚手架、样本池、评测器与答辩实现计划。
+>
+> 注:
+> - 本文起点是 2026-03-17 的 bootstrap plan。
+> - 当前 live repo 已推进到:
+>   - `sa_llm_v2_20260323_uncertainty`
+>   - `stage_b_v1_20260323_packetv2`
+>   - `dev / blind / challenge / holdout2` revealed 对照
+> - 因此，第 1 节与第 13-14 节更接近当前状态；第 2-12 节主要保留 bootstrap 设计与演进记录。
 
-## 1. 当前仓库状态
+## 1. 当前仓库状态（2026-03-24）
 
 ### 1.1 已有
 - `Stage A -> Stage B` 触发字段已经存在:
   - `escalate_to_stage_b`
   - `escalation_reasons`
 - `routing_run_trace.schema.json` 已为 `stage_b` 预留 object 位
-- 文档已定义 `Stage B` 目标与机制:
-  - `closure/13_design_doc_agentdns_routing.md`
-  - `README.md`
-  - `research-project/03_experiment-plan.md`
+- 已落地 `Stage B` 工程文件:
+  - `src/agentdns_routing/stage_b_consensus.py`
+  - `src/agentdns_routing/stage_b_eval.py`
+  - `scripts/run_stage_b.py`
+  - `scripts/run_routing_ab_experiment.py`
+  - `tests/test_stage_b.py`
+- 当前版本线:
+  - `Stage A clean = sa_clean_v2_20260314`
+  - `Stage A llm = sa_llm_v2_20260323_uncertainty`
+  - `Stage B = stage_b_v1_20260323_packetv2`
+- 已有当前主结果目录:
+  - `artifacts/routing_ab/review_packetv2_20260323/`
+  - `artifacts/stage_b/ablations_20260323/`
 
-### 1.2 尚无
-- 无 `src/.../stage_b_*.py`
-- 无 `scripts/run_stage_b.py`
-- 无 `tests/test_stage_b.py`
-- 无正式 `Stage B` 样本池文件
-- 无 `Stage B` evaluator / trace writer
+### 1.2 最新 revealed / holdout2 对照
+- `A_clean -> B`
+  - dev: `1.0000 -> 1.0000`
+  - blind: `0.8286 -> 0.8571`
+  - challenge: `0.2917 -> 0.4167`
+  - holdout2: `0.7407 -> 0.7407`
+- `A_llm_v2 -> B`
+  - dev: `0.9600 -> 0.9600`
+  - blind: `0.9143 -> 0.9143`
+  - challenge: `0.6250 -> 0.6667`
+  - holdout2: `0.8889 -> 0.9074`
 
-结论:
-- 当前 `Stage B` 还处于**设计完成、工程未开工**状态。
+### 1.3 当前结论
+- `Stage B packetv2` 已经不是“工程未开工”，也不是只有 seed pool/harness。
+- 当前更准确的判断是:
+  - `Stage B` 已完成一轮正式 revealed 对照
+  - 当前最强上游线是 `A_llm_v2`
+  - 对部分线路和 split 存在正向增益
+  - 但增益并不覆盖所有上游版本与所有 split
+  - `holdout2` 已揭盲；若基于其结果继续调参，后续版本只能算 `exploratory`
+  - 因此它仍应被表述为 `experimental / review-stage`，还不是最终 paper-ready 结论
+
+### 1.4 2026-03-23 `packetv2` revealed 对照摘要
+- 对 `A_clean`:
+  - `Stage B` 在 blind / challenge 上能修一部分 primary miss
+  - 但在 dev / holdout2 上未带来净增益
+- 对 `A_llm_v2`:
+  - `Stage B` 在 challenge / holdout2 上有小幅正增益
+  - 在 dev / blind 上基本持平
+- 因此，当前对外口径应固定为:
+  - `Stage B` 已完成工程实现与一轮正式 revealed 对照
+  - `Stage B packetv2` 证明了“慢路径可以在部分 split 上修复上游错误”
+  - 但当前证据尚不足以宣称它已稳定优于所有上游线路
 
 ## 2. Stage B 的最小目标
 - 不做开放式多轮自由 debate

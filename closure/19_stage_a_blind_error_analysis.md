@@ -7,6 +7,14 @@
 > 冻结对象:
 > - `sr_clean_v2_20260314_related2`
 > - `sa_clean_v8_20260314_riskschema_on_sr_v2`
+>
+> 注:
+> - 本文解释的是 2026-03-15 那轮 `Stage A clean` blind 揭盲结果。
+> - 当前 repo 后续已经新增:
+>   - `holdout2` fresh split
+>   - `sa_llm_v2_20260323_uncertainty`
+>   - `stage_b_v1_20260323_packetv2`
+> - 因此，本文仍然是 `Stage A clean` 误差边界的重要依据，但已经不是理解当前项目总状态的唯一入口；最新进展请结合 `closure/20_stage_b_bootstrap_plan.md`、`closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md` 与 `research-project/04_execution-log.md` 阅读。
 
 ## 1. Blind 总结
 - blind 样本数: `35`
