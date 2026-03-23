@@ -28,7 +28,7 @@ def parse_args() -> argparse.Namespace:
         default=str(ROOT / "data" / "agentdns_routing" / "namespace_descriptors.jsonl"),
         help="Namespace descriptor jsonl path.",
     )
-    parser.add_argument("--provider", choices=["mock", "deepseek", "openai"], default="mock")
+    parser.add_argument("--provider", choices=["deepseek", "openai"], default="deepseek")
     parser.add_argument("--model", default=None, help="LLM model name.")
     parser.add_argument("--stage-a-version", default=StageALLMConfig().stage_a_version)
     parser.add_argument("--prompt-version", default=StageALLMConfig().prompt_version)

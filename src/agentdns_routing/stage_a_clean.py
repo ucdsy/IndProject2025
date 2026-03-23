@@ -18,29 +18,80 @@ QUOTE_RE = re.compile(r"[“\"「『](.*?)[”\"」』]")
 class StageACleanConfig:
     stage_a_version: str = "sa_clean_v2_20260314"
     routing_top_k: int = 5
+    semantic_signal_scale: float = 1.0
+    structure_penalty_scale: float = 1.0
+    segment_guard_scale: float = 1.0
     stage_r_weight: float = 0.40
-    primary_fit_weight: float = 0.26
-    context_fit_weight: float = 0.10
-    hierarchy_fit_weight: float = 0.10
-    specificity_weight: float = 0.08
-    evidence_diversity_weight: float = 0.06
-    node_type_weight: float = 0.05
-    coarse_parent_penalty_weight: float = 0.26
-    secondary_only_penalty: float = 0.10
-    multi_intent_secondary_primary_penalty: float = 0.12
-    weak_segment_penalty: float = 0.12
-    scene_only_segment_penalty: float = 0.14
-    segment_parent_guard_penalty: float = 0.22
-    explicit_cue_guard_penalty: float = 0.26
-    segment_secondary_only_multiplier: float = 1.6
-    fallback_penalty: float = 0.16
-    fallback_relief_child_primary_threshold: float = 0.20
     related_min_score: float = 0.30
     related_gap: float = 0.12
     confidence_threshold: float = 0.62
     margin_threshold: float = 0.08
     high_risk_margin_threshold: float = 0.14
     head_delta_threshold: float = 0.03
+
+    @property
+    def primary_fit_weight(self) -> float:
+        return 0.26 * self.semantic_signal_scale
+
+    @property
+    def context_fit_weight(self) -> float:
+        return 0.10 * self.semantic_signal_scale
+
+    @property
+    def hierarchy_fit_weight(self) -> float:
+        return 0.10 * self.semantic_signal_scale
+
+    @property
+    def specificity_weight(self) -> float:
+        return 0.08 * self.semantic_signal_scale
+
+    @property
+    def evidence_diversity_weight(self) -> float:
+        return 0.06 * self.semantic_signal_scale
+
+    @property
+    def node_type_weight(self) -> float:
+        return 0.05 * self.semantic_signal_scale
+
+    @property
+    def coarse_parent_penalty_weight(self) -> float:
+        return 0.26 * self.structure_penalty_scale
+
+    @property
+    def secondary_only_penalty(self) -> float:
+        return 0.10 * self.structure_penalty_scale
+
+    @property
+    def multi_intent_secondary_primary_penalty(self) -> float:
+        return 0.12 * self.structure_penalty_scale
+
+    @property
+    def weak_segment_penalty(self) -> float:
+        return 0.12 * self.segment_guard_scale
+
+    @property
+    def scene_only_segment_penalty(self) -> float:
+        return 0.14 * self.segment_guard_scale
+
+    @property
+    def segment_parent_guard_penalty(self) -> float:
+        return 0.22 * self.segment_guard_scale
+
+    @property
+    def explicit_cue_guard_penalty(self) -> float:
+        return 0.26 * self.segment_guard_scale
+
+    @property
+    def segment_secondary_only_multiplier(self) -> float:
+        return 1.6
+
+    @property
+    def fallback_penalty(self) -> float:
+        return 0.16 * self.structure_penalty_scale
+
+    @property
+    def fallback_relief_child_primary_threshold(self) -> float:
+        return 0.20
 
 
 def normalize_text(value: str) -> str:

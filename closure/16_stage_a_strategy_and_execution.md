@@ -945,3 +945,62 @@
   - 不得以“修复 `formal_blind_xxx` / `formal_dev_xxx`”为目标写规则
   - 若继续基于已揭盲 `blind / hard-case` 调整版本，必须显式升版本并标记为 `exploratory`
   - 任何此类结果不得再表述为正式泛化验证
+
+### 10.27 2026-03-22 `holdout2` 首次全链路运行后的执行判断
+- 已在新的 `holdout2` 上完成:
+  - `Stage R`
+  - `A_clean`
+  - `A_llm`
+  - `A_clean -> B`
+  - `A_llm -> B`
+- 当前最关键结论不是 `Stage B` 完全无效，而是:
+  - `Stage B relatedguard` 在 fresh holdout 上**没有证明稳定净增益**
+  - `A_clean -> B` 出现过 `0 fix / 1 regress`
+  - `A_llm -> B` 多数情况下仍然 `changed_primary = 0`
+- 这一步把项目判断从“继续调 Stage B 参数”更新为:
+  - `Stage B` 当前不是可放行的稳定纠错器
+  - 后续继续调 `temperature / timeout / token` 只能算 runtime sensitivity
+  - 主问题在于:
+    - prompt 过硬
+    - `Stage B` packet 过薄
+    - `Stage B` 看不到 `Stage A LLM` 的语义困惑点
+
+### 10.28 2026-03-23 `Stage B` 角色与实现口径调整
+- 为避免角色定义与标签目标失配，当前已将:
+  - `CostLatency`
+  - 替换为
+  - `HierarchyResolver`
+- 当前判断:
+  - `CostLatency` 角色缺乏真实 cost/latency 证据输入，更多是噪声源
+  - `HierarchyResolver` 更贴合当前已暴露的:
+    - sibling competition
+    - parent-child conflict
+    - base-segment granularity tie
+- 同时，生产代码中的 `mock` provider/client 已移除:
+  - `Stage A llm`
+  - `Stage B`
+- 保留的只有:
+  - `deterministic` baseline
+  - `deepseek / openai` 实际 provider
+
+### 10.29 2026-03-23 `Stage A uncertainty handoff + Stage B packet v2` 方向冻结
+- 当前已明确: `Stage B` 的下一步主升级方向，不再是继续堆参数或继续改 runtime，而是:
+  - 保持 `candidate-internal`
+  - 但增强 `Stage B` 可见的语义输入
+- 冻结的新方向包括:
+  - `Stage A LLM` 下传:
+    - `primary_rationale`
+    - `secondary_rationale`
+    - `challenger_notes`
+    - `uncertainty_summary`
+    - `confusion_points`
+    - `override_sensitivity`
+  - `Stage B packet v2` 增补:
+    - `competition_clusters`
+    - `negative_evidence_card`
+    - `secondary_recovery_card`
+- 当前设计判断:
+  - `Stage B` 的问题不是“不能候选外发明新候选”
+  - 而是“候选内只有分数摘要，缺少语义摘要和结构化负证据”
+- 对应正式设计已单独落文档:
+  - `closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md`

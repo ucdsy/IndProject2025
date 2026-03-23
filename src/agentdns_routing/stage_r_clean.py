@@ -34,27 +34,11 @@ CJK_RE = re.compile(r"[\u3400-\u9fff]")
 
 @dataclass(frozen=True)
 class StageRCleanConfig:
-    query_alias_weight: float = 0.58
-    context_alias_weight: float = 0.09
-    desc_similarity_weight: float = 0.20
-    context_match_weight: float = 0.13
-    desc_similarity_threshold: float = 0.01
-    desc_bigram_backoff_scale: float = 0.6
-    metadata_exact_match: float = 0.9
-    segment_exact_match: float = 0.7
-    segment_query_bonus: float = 0.10
-    segment_context_bonus: float = 0.03
-    short_segment_alias_discount: float = 0.55
-    segment_context_only_penalty: float = 0.10
-    segment_missing_segment_hit_penalty: float = 0.06
-    segment_low_desc_penalty: float = 0.06
-    segment_desc_penalty_threshold: float = 0.08
-    base_child_support_cap: float = 0.30
-    base_child_support_weight: float = 0.25
-    segment_parent_bonus_cap: float = 0.40
-    segment_parent_bonus_weight: float = 0.18
-    segment_weak_parent_threshold: float = 0.12
-    segment_weak_parent_penalty: float = 0.08
+    lexical_signal_scale: float = 1.0
+    desc_signal_scale: float = 1.0
+    context_signal_scale: float = 1.0
+    segment_penalty_scale: float = 1.0
+    hierarchy_bonus_scale: float = 1.0
     strict_parent_segment_limit: int = 1
     relaxed_parent_segment_limit: int = 3
     multi_intent_head_budget: int = 5
@@ -66,6 +50,90 @@ class StageRCleanConfig:
     enable_parent_fallback: bool = True
     enable_diversified_selection: bool = True
     enable_low_signal_fallback: bool = True
+
+    @property
+    def query_alias_weight(self) -> float:
+        return 0.58 * self.lexical_signal_scale
+
+    @property
+    def context_alias_weight(self) -> float:
+        return 0.09 * self.lexical_signal_scale
+
+    @property
+    def desc_similarity_weight(self) -> float:
+        return 0.20 * self.desc_signal_scale
+
+    @property
+    def context_match_weight(self) -> float:
+        return 0.13 * self.context_signal_scale
+
+    @property
+    def desc_similarity_threshold(self) -> float:
+        return 0.01
+
+    @property
+    def desc_bigram_backoff_scale(self) -> float:
+        return 0.6
+
+    @property
+    def metadata_exact_match(self) -> float:
+        return 0.9
+
+    @property
+    def segment_exact_match(self) -> float:
+        return 0.7
+
+    @property
+    def segment_query_bonus(self) -> float:
+        return 0.10
+
+    @property
+    def segment_context_bonus(self) -> float:
+        return 0.03
+
+    @property
+    def short_segment_alias_discount(self) -> float:
+        return 0.55
+
+    @property
+    def segment_context_only_penalty(self) -> float:
+        return 0.10 * self.segment_penalty_scale
+
+    @property
+    def segment_missing_segment_hit_penalty(self) -> float:
+        return 0.06 * self.segment_penalty_scale
+
+    @property
+    def segment_low_desc_penalty(self) -> float:
+        return 0.06 * self.segment_penalty_scale
+
+    @property
+    def segment_desc_penalty_threshold(self) -> float:
+        return 0.08
+
+    @property
+    def base_child_support_cap(self) -> float:
+        return 0.30
+
+    @property
+    def base_child_support_weight(self) -> float:
+        return 0.25 * self.hierarchy_bonus_scale
+
+    @property
+    def segment_parent_bonus_cap(self) -> float:
+        return 0.40
+
+    @property
+    def segment_parent_bonus_weight(self) -> float:
+        return 0.18 * self.hierarchy_bonus_scale
+
+    @property
+    def segment_weak_parent_threshold(self) -> float:
+        return 0.12
+
+    @property
+    def segment_weak_parent_penalty(self) -> float:
+        return 0.08 * self.segment_penalty_scale
 
 
 def normalize_text(value: str) -> str:

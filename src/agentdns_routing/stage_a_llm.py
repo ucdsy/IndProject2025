@@ -40,25 +40,67 @@ class StageALLMConfig:
     margin_threshold: float = 0.08
     high_risk_margin_threshold: float = 0.14
     minmax_spread_floor: float = 0.5
-    base_primary_weight: float = 0.55
-    stage_r_weight: float = 0.15
-    llm_task_weight: float = 0.15
-    llm_primary_weight: float = 0.10
-    llm_primary_bonus: float = 0.05
-    llm_specificity_fit_bonus: float = 0.05
-    llm_specificity_coarse_penalty: float = 0.05
-    llm_specificity_specific_penalty: float = 0.07
-    llm_risk_penalty: float = 0.08
-    base_related_weight: float = 0.50
-    llm_related_weight: float = 0.30
-    llm_related_selected_bonus: float = 0.08
-    llm_task_related_weight: float = 0.08
+    primary_blend_scale: float = 1.0
+    related_blend_scale: float = 1.0
+    llm_bias_scale: float = 1.0
     related_min_score: float = 0.42
     deterministic_related_anchor_threshold: float = 0.80
     same_l1_secondary_related_anchor_threshold: float = 0.55
     same_l1_secondary_related_min_score: float = 0.30
     cross_l1_secondary_related_min_score: float = 0.68
     scene_only_descendant_margin_threshold: float = 0.20
+
+    @property
+    def base_primary_weight(self) -> float:
+        return 0.55 * self.primary_blend_scale
+
+    @property
+    def stage_r_weight(self) -> float:
+        return 0.15 * self.primary_blend_scale
+
+    @property
+    def llm_task_weight(self) -> float:
+        return 0.15 * self.primary_blend_scale
+
+    @property
+    def llm_primary_weight(self) -> float:
+        return 0.10 * self.primary_blend_scale
+
+    @property
+    def llm_primary_bonus(self) -> float:
+        return 0.05 * self.llm_bias_scale
+
+    @property
+    def llm_specificity_fit_bonus(self) -> float:
+        return 0.05 * self.llm_bias_scale
+
+    @property
+    def llm_specificity_coarse_penalty(self) -> float:
+        return 0.05 * self.llm_bias_scale
+
+    @property
+    def llm_specificity_specific_penalty(self) -> float:
+        return 0.07 * self.llm_bias_scale
+
+    @property
+    def llm_risk_penalty(self) -> float:
+        return 0.08 * self.llm_bias_scale
+
+    @property
+    def base_related_weight(self) -> float:
+        return 0.50 * self.related_blend_scale
+
+    @property
+    def llm_related_weight(self) -> float:
+        return 0.30 * self.related_blend_scale
+
+    @property
+    def llm_related_selected_bonus(self) -> float:
+        return 0.08 * self.llm_bias_scale
+
+    @property
+    def llm_task_related_weight(self) -> float:
+        return 0.08 * self.related_blend_scale
 
 
 class StageALLMClient(Protocol):
@@ -67,59 +109,6 @@ class StageALLMClient(Protocol):
 
     def adjudicate(self, packet: dict[str, Any], config: StageALLMConfig) -> tuple[dict[str, Any], str]:
         raise NotImplementedError
-
-
-class MockStageALLMClient:
-    provider = "mock"
-    model = "mock-stage-a"
-
-    def adjudicate(self, packet: dict[str, Any], config: StageALLMConfig) -> tuple[dict[str, Any], str]:
-        ranked = sorted(
-            packet["candidates"],
-            key=lambda row: (
-                1 if row.get("primary_hits") else 0,
-                row.get("score_r", 0.0),
-                1 if row.get("node_kind") == "base" else 0,
-                1 if row.get("node_kind") == "segment" and row.get("scene_hits") else 0,
-            ),
-            reverse=True,
-        )
-        primary = ranked[0]["fqdn"] if ranked else None
-        related: list[str] = []
-        judgements: list[dict[str, Any]] = []
-        for candidate in packet["candidates"]:
-            explicit_primary = bool(candidate.get("primary_hits"))
-            explicit_secondary = bool(candidate.get("secondary_hits"))
-            task_fit = 0.9 if explicit_primary else 0.7 if explicit_secondary else 0.2
-            primary_fit = 0.95 if candidate["fqdn"] == primary else 0.15
-            related_fit = 0.8 if explicit_secondary and candidate["fqdn"] != primary else 0.0
-            if explicit_secondary and candidate["fqdn"] != primary:
-                related.append(candidate["fqdn"])
-            judgements.append(
-                {
-                    "fqdn": candidate["fqdn"],
-                    "task_fit": task_fit,
-                    "primary_fit": primary_fit,
-                    "related_fit": related_fit,
-                    "specificity_judgement": "fit",
-                    "risk_mismatch": False,
-                    "evidence_for": candidate.get("primary_hits", [])[:2] or candidate.get("secondary_hits", [])[:2],
-                    "evidence_against": [],
-                }
-            )
-        decision = {
-            "scene_context": " / ".join(packet.get("query_view", {}).get("quoted_segments", [])[:2]),
-            "primary_intent": packet.get("query", ""),
-            "secondary_intents": list(packet.get("query_view", {}).get("clauses", [])[1:3]),
-            "selected_primary_fqdn": primary,
-            "selected_related_fqdns": related[: config.max_related],
-            "candidate_judgements": judgements,
-            "confidence": 0.72,
-            "escalate_to_stage_b": False,
-            "escalation_reasons": [],
-            "notes": ["mock_decision"],
-        }
-        return decision, json.dumps(decision, ensure_ascii=False)
 
 
 class OpenAICompatibleStageALLMClient:
@@ -162,8 +151,6 @@ class OpenAICompatibleStageALLMClient:
 
 def make_llm_client(provider: str, model: str | None = None) -> StageALLMClient:
     provider = provider.lower()
-    if provider == "mock":
-        return MockStageALLMClient()
     if provider == "deepseek":
         api_key = os.getenv("DEEPSEEK_API_KEY")
         if not api_key:
@@ -281,6 +268,18 @@ def _specificity_adjustment(label: str, config: StageALLMConfig) -> float:
     return 0.0
 
 
+def _normalize_specificity_judgement(raw: Any) -> tuple[str, str | None]:
+    text = str(raw or "").strip().lower()
+    normalized = text.replace("-", "_").replace(" ", "_")
+    if normalized in {"fit", "too_coarse", "too_specific"}:
+        return normalized, None
+    if normalized in {"coarse", "too_coarsed", "toocoarse"}:
+        return "too_coarse", "llm_specificity_judgement_normalized"
+    if normalized in {"specific", "toospecific"}:
+        return "too_specific", "llm_specificity_judgement_normalized"
+    return "fit", "llm_specificity_judgement_unknown"
+
+
 def _safe_float(value: Any, default: float = 0.0) -> float:
     try:
         return _clip(float(value))
@@ -354,13 +353,18 @@ def _sanitize_llm_decision(raw: dict[str, Any], candidate_fqdns: list[str]) -> t
     candidate_judgements: list[dict[str, Any]] = []
     for fqdn in candidate_fqdns:
         row = judgements_by_fqdn.get(fqdn, {})
+        specificity_judgement, specificity_issue = _normalize_specificity_judgement(
+            row.get("specificity_judgement", "fit")
+        )
+        if specificity_issue:
+            issues.append(specificity_issue)
         candidate_judgements.append(
             {
                 "fqdn": fqdn,
                 "task_fit": _safe_float(row.get("task_fit", 0.0)),
                 "primary_fit": _safe_float(row.get("primary_fit", 0.0)),
                 "related_fit": _safe_float(row.get("related_fit", 0.0)),
-                "specificity_judgement": row.get("specificity_judgement", "fit"),
+                "specificity_judgement": specificity_judgement,
                 "risk_mismatch": bool(row.get("risk_mismatch", False)),
                 "confidence": _safe_float(row.get("confidence", 0.0)),
                 "evidence_for": _coerce_text_list(row.get("evidence_for", []), limit=3),
@@ -530,7 +534,7 @@ def _agreement_score(selected_primary: str | None, deterministic_primary: str | 
 
 
 def _llm_evidence_support(llm_row: dict[str, Any]) -> float:
-    specificity = str(llm_row.get("specificity_judgement", "fit"))
+    specificity, _ = _normalize_specificity_judgement(llm_row.get("specificity_judgement", "fit"))
     specificity_support = 1.0 if specificity == "fit" else 0.6 if specificity == "too_coarse" else 0.4
     return _clip(
         0.55 * _safe_float(llm_row.get("task_fit", 0.0))
@@ -584,7 +588,12 @@ def calibrate_llm_decision(
                 "evidence_against": [],
             },
         )
-        specificity_adjustment = _specificity_adjustment(llm_row.get("specificity_judgement", "fit"), config)
+        specificity_judgement, specificity_issue = _normalize_specificity_judgement(
+            llm_row.get("specificity_judgement", "fit")
+        )
+        if specificity_issue:
+            llm_issues.append(specificity_issue)
+        specificity_adjustment = _specificity_adjustment(specificity_judgement, config)
         risk_penalty = config.llm_risk_penalty if llm_row.get("risk_mismatch") else 0.0
         selected_primary_bonus = config.llm_primary_bonus if fqdn == llm_selected_primary else 0.0
         selected_related_bonus = config.llm_related_selected_bonus if fqdn in llm_selected_related else 0.0
@@ -618,6 +627,7 @@ def calibrate_llm_decision(
                     "llm_task_fit": round(_safe_float(llm_row.get("task_fit", 0.0)), 6),
                     "llm_primary_fit": round(_safe_float(llm_row.get("primary_fit", 0.0)), 6),
                     "llm_related_fit": round(_safe_float(llm_row.get("related_fit", 0.0)), 6),
+                    "llm_specificity_judgement": specificity_judgement,
                     "llm_selected_primary_bonus": round(selected_primary_bonus, 6),
                     "llm_selected_related_bonus": round(selected_related_bonus, 6),
                     "specificity_adjustment": round(specificity_adjustment, 6),

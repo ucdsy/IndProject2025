@@ -50,9 +50,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stage-a-llm-base-stage-a-version", default=None)
     parser.add_argument("--stage-b-version", default=StageBConfig().stage_b_version)
     parser.add_argument("--stage-b-prompt-version", default=StageBConfig().prompt_version)
-    parser.add_argument("--a-llm-provider", choices=["mock", "deepseek", "openai"], default="mock")
+    parser.add_argument("--a-llm-provider", choices=["deepseek", "openai"], default="deepseek")
     parser.add_argument("--a-llm-model", default=None)
-    parser.add_argument("--b-provider", choices=["deterministic", "mock", "deepseek", "openai"], default="mock")
+    parser.add_argument("--b-provider", choices=["deterministic", "deepseek", "openai"], default="deepseek")
     parser.add_argument("--b-model", default=None)
     parser.add_argument("--max-samples", type=int, default=None)
     parser.add_argument("--blind-mode", action="store_true")
@@ -213,10 +213,10 @@ def main() -> None:
         a_llm_summary["summary_path"] = summary_path
         results["a_llm"] = {"trace_path": trace_path, "summary_path": summary_path, "summary": a_llm_summary}
 
-    b_client = None if args.b_provider == "deterministic" else make_stage_b_llm_client(args.b_provider, args.b_model)
     b_config = StageBConfig(stage_b_version=args.stage_b_version, prompt_version=args.stage_b_prompt_version)
 
     if "a_clean_b" in requested:
+        b_client = None if args.b_provider == "deterministic" else make_stage_b_llm_client(args.b_provider, args.b_model)
         if not a_clean_traces:
             raise RuntimeError("a_clean traces are required for a_clean_b chain")
         a_clean_b_traces = [
@@ -231,6 +231,15 @@ def main() -> None:
         a_clean_b_summary["stage_r_version"] = a_clean_b_traces[0]["stage_r_version"] if a_clean_b_traces else None
         a_clean_b_summary["provider"] = b_client.provider if b_client else "deterministic"
         a_clean_b_summary["model"] = b_client.model if b_client else b_config.deterministic_decision_mode
+        a_clean_b_summary["llm_temperature"] = b_config.llm_temperature
+        a_clean_b_summary["role_temperatures"] = {
+            "DomainExpert": b_config.domain_expert_temperature,
+            "GovernanceRisk": b_config.governance_risk_temperature,
+            "HierarchyResolver": b_config.hierarchy_resolver_temperature,
+            "UserPreference": b_config.user_preference_temperature,
+        }
+        a_clean_b_summary["parallel_role_calls"] = b_config.parallel_role_calls
+        a_clean_b_summary["max_parallel_roles"] = b_config.max_parallel_roles
         a_clean_b_summary["input_path"] = args.input
         a_clean_b_summary["snapshot_path"] = args.snapshot
         a_clean_b_summary["blind_mode"] = bool(args.blind_mode)
@@ -251,6 +260,7 @@ def main() -> None:
         results["a_clean_b"] = {"trace_path": trace_path, "summary_path": summary_path, "summary": a_clean_b_summary}
 
     if "a_llm_b" in requested:
+        b_client = None if args.b_provider == "deterministic" else make_stage_b_llm_client(args.b_provider, args.b_model)
         if not a_llm_traces:
             raise RuntimeError("a_llm traces are required for a_llm_b chain")
         a_llm_b_traces = [
@@ -265,6 +275,15 @@ def main() -> None:
         a_llm_b_summary["stage_r_version"] = a_llm_b_traces[0]["stage_r_version"] if a_llm_b_traces else None
         a_llm_b_summary["provider"] = b_client.provider if b_client else "deterministic"
         a_llm_b_summary["model"] = b_client.model if b_client else b_config.deterministic_decision_mode
+        a_llm_b_summary["llm_temperature"] = b_config.llm_temperature
+        a_llm_b_summary["role_temperatures"] = {
+            "DomainExpert": b_config.domain_expert_temperature,
+            "GovernanceRisk": b_config.governance_risk_temperature,
+            "HierarchyResolver": b_config.hierarchy_resolver_temperature,
+            "UserPreference": b_config.user_preference_temperature,
+        }
+        a_llm_b_summary["parallel_role_calls"] = b_config.parallel_role_calls
+        a_llm_b_summary["max_parallel_roles"] = b_config.max_parallel_roles
         a_llm_b_summary["input_path"] = args.input
         a_llm_b_summary["snapshot_path"] = args.snapshot
         a_llm_b_summary["blind_mode"] = bool(args.blind_mode)

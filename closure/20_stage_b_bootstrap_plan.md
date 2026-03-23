@@ -321,3 +321,61 @@
   - 默认标记为 `exploratory`
   - 不得作为干净 holdout 结论
   - 若后续要声称泛化改进，必须再上新的未参与调参 split
+
+## 13. 2026-03-23 当前 `Stage B` 的真实瓶颈判断
+
+### 13.1 不是 runtime knob
+- 已对以下运行参数做过多轮调整:
+  - provider timeout
+  - role-specific temperature
+  - parallel role calls
+- 当前结论:
+  - 这些改动会引起边缘样本波动
+  - 但不会从根本上把 `Stage B` 变成稳定纠错器
+
+### 13.2 真正瓶颈是 packet 太薄
+- 当前 `Stage B` 看到的 packet 主要仍是:
+  - `score_a / score_related`
+  - `primary_fit / context_fit / hierarchy_fit`
+  - `primary_hits / secondary_hits / scene_hits`
+- 当前缺的是:
+  - 上游 `Stage A LLM` 的语义判断摘要
+  - 上游 `Stage A LLM` 的不确定性与困惑点
+  - 候选竞争簇信息
+  - 显式负证据卡
+
+## 14. 2026-03-23 `Stage A uncertainty handoff + Stage B packet v2` 正式纳入后续设计
+
+### 14.1 新的升级原则
+- 保留:
+  - `candidate-internal`
+  - 硬输出边界
+- 调整:
+  - prompt 语气不再过硬
+  - `Stage B` 输入不再只有分数摘要
+
+### 14.2 需要新增的上游下传
+- `Stage A LLM` 计划新增:
+  - `primary_rationale`
+  - `secondary_rationale`
+  - `challenger_notes`
+  - `uncertainty_summary`
+  - `confusion_points`
+  - `override_sensitivity`
+
+### 14.3 需要新增的候选内证据卡
+- `Stage B packet v2` 计划新增:
+  - `competition_clusters`
+  - `negative_evidence_card`
+  - `secondary_recovery_card`
+
+### 14.4 目的
+- 不是放开 `Stage B` 到候选外自由生成
+- 而是在保持可审计边界的前提下，提高:
+  - `PrimaryAcc` 的可判性
+  - `RelatedRecall` 的可恢复性
+  - `RelatedPrecision` 的可解释性
+
+### 14.5 对应设计文档
+- 当前正式设计见:
+  - `closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md`

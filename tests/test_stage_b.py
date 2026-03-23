@@ -2,15 +2,19 @@ from __future__ import annotations
 
 import copy
 import json
+import time
 import unittest
 from pathlib import Path
 
 from src.agentdns_routing.namespace import NamespaceResolver
 from src.agentdns_routing.stage_a_clean import StageACleanConfig, build_routing_run_trace
 from src.agentdns_routing.stage_a_eval import validate_traces
-from src.agentdns_routing.stage_b_consensus import MockStageBLLMClient, StageBConfig, build_stage_b_trace
+from src.agentdns_routing.stage_b_consensus import (
+    StageBConfig,
+    _role_temperature,
+    build_stage_b_trace,
+)
 from src.agentdns_routing.stage_a_llm import (
-    MockStageALLMClient,
     StageALLMConfig,
     build_routing_run_trace as build_stage_a_llm_trace,
 )
@@ -105,19 +109,32 @@ class StageBTestCase(unittest.TestCase):
         validation = validate_traces([trace], ROOT)
         self.assertTrue(validation["valid"], validation["errors"])
 
-    def test_stage_b_mock_llm_path_marks_final_output_as_stage_b(self) -> None:
+    def test_stage_b_llm_path_marks_final_output_as_stage_b(self) -> None:
         stage_a_trace = build_routing_run_trace(
             sample=self.samples["formal_dev_000007"],
             snapshot=self.snapshots["formal_dev_000007"],
             resolver=self.resolver,
             config=self.stage_a_config,
         )
+        client = _ScriptedStageBLLMClient(
+            round1={
+                role: {
+                    "proposal_primary_fqdn": stage_a_trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.9,
+                    "rationale": f"{role}: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                }
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
+            }
+        )
         trace = build_stage_b_trace(
             sample=self.samples["formal_dev_000007"],
             trace=stage_a_trace,
             resolver=self.resolver,
             config=StageBConfig(stage_b_version="stage_b_llm_test"),
-            client=MockStageBLLMClient(),
+            client=client,
         )
         self.assertTrue(trace["entered_stage_b"])
         self.assertEqual(trace["final_decision_source"], "stage_b")
@@ -142,7 +159,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "propose_override",
                     "override_basis_tags": ["risk_requirement", "hierarchy_disambiguation"],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             },
             round2={
                 role: {
@@ -153,7 +170,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "propose_override",
                     "override_basis_tags": ["risk_requirement", "hierarchy_disambiguation"],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             },
         )
         trace = build_stage_b_trace(
@@ -202,7 +219,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "propose_override",
                     "override_basis_tags": ["explicit_primary_evidence", "specificity_gain"],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             }
         )
         trace = build_stage_b_trace(
@@ -243,7 +260,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "support_stage_a",
                     "override_basis_tags": [],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             }
         )
         trace = build_stage_b_trace(
@@ -277,7 +294,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "support_stage_a",
                     "override_basis_tags": [],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             }
         )
         trace = build_stage_b_trace(
@@ -307,7 +324,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "support_stage_a",
                     "override_basis_tags": [],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             }
         )
         trace = build_stage_b_trace(
@@ -338,7 +355,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "support_stage_a",
                     "override_basis_tags": [],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             }
         )
         trace = build_stage_b_trace(
@@ -368,7 +385,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "support_stage_a",
                     "override_basis_tags": [],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             }
         )
         trace = build_stage_b_trace(
@@ -407,7 +424,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "propose_override",
                     "override_basis_tags": ["explicit_primary_evidence"],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             },
             round2={
                 role: {
@@ -418,7 +435,7 @@ class StageBTestCase(unittest.TestCase):
                     "override_position": "propose_override",
                     "override_basis_tags": ["explicit_primary_evidence"],
                 }
-                for role in ("DomainExpert", "GovernanceRisk", "CostLatency", "UserPreference")
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
             },
         )
         trace = build_stage_b_trace(
@@ -439,7 +456,7 @@ class StageBTestCase(unittest.TestCase):
             sample=self.samples["formal_dev_000007"],
             snapshot=self.snapshots["formal_dev_000007"],
             resolver=self.resolver,
-            client=MockStageALLMClient(),
+            client=_HeuristicStageATestClient(),
             config=StageALLMConfig(stage_a_version="sa_llm_stage_b_test"),
         )
         if not trace["stage_a"]["escalate_to_stage_b"]:
@@ -450,12 +467,90 @@ class StageBTestCase(unittest.TestCase):
             trace=trace,
             resolver=self.resolver,
             config=StageBConfig(stage_b_version="stage_b_on_a_llm_test"),
-            client=MockStageBLLMClient(),
+            client=_ScriptedStageBLLMClient(
+                round1={
+                    role: {
+                        "proposal_primary_fqdn": trace["stage_a"]["selected_primary_fqdn"],
+                        "proposal_related_fqdns": [],
+                        "confidence": 0.86,
+                        "rationale": f"{role}: keep",
+                        "override_position": "support_stage_a",
+                        "override_basis_tags": [],
+                    }
+                    for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
+                }
+            ),
         )
         self.assertTrue(stage_b_trace["entered_stage_b"])
         self.assertIn(stage_b_trace["final_decision_source"], {"stage_b"})
         self.assertIn("override_attempted", stage_b_trace["stage_b"]["trust_trace"])
         self.assertIn("sensitive_override_flags", stage_b_trace["stage_b"]["trust_trace"])
+
+    def test_role_temperature_can_be_overridden_per_agent(self) -> None:
+        config = StageBConfig(
+            llm_temperature=0.0,
+            domain_expert_temperature=0.2,
+            governance_risk_temperature=0.0,
+            user_preference_temperature=0.15,
+            hierarchy_resolver_temperature=0.25,
+        )
+        self.assertEqual(_role_temperature("GovernanceRisk", config), 0.0)
+        self.assertEqual(_role_temperature("DomainExpert", config), 0.2)
+        self.assertEqual(_role_temperature("UserPreference", config), 0.15)
+        self.assertEqual(_role_temperature("HierarchyResolver", config), 0.25)
+
+    def test_parallel_vote_collection_preserves_role_order(self) -> None:
+        stage_a_trace = build_routing_run_trace(
+            sample=self.samples["formal_dev_000007"],
+            snapshot=self.snapshots["formal_dev_000007"],
+            resolver=self.resolver,
+            config=self.stage_a_config,
+        )
+        client = _DelayedScriptedStageBLLMClient(
+            round1={
+                "DomainExpert": {
+                    "proposal_primary_fqdn": stage_a_trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.9,
+                    "rationale": "DomainExpert: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                },
+                "GovernanceRisk": {
+                    "proposal_primary_fqdn": stage_a_trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.88,
+                    "rationale": "GovernanceRisk: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                },
+                "HierarchyResolver": {
+                    "proposal_primary_fqdn": stage_a_trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.81,
+                    "rationale": "HierarchyResolver: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                },
+                "UserPreference": {
+                    "proposal_primary_fqdn": stage_a_trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.8,
+                    "rationale": "UserPreference: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                },
+            }
+        )
+        trace = build_stage_b_trace(
+            sample=self.samples["formal_dev_000007"],
+            trace=stage_a_trace,
+            resolver=self.resolver,
+            config=StageBConfig(stage_b_version="stage_b_parallel_order_test", parallel_role_calls=True),
+            client=client,
+        )
+        round1_agents = [vote["agent"] for vote in trace["stage_b"]["agent_votes"] if vote["round"] == 1]
+        self.assertEqual(round1_agents, ["DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference"])
 
 
 def _load_jsonl(path: Path) -> list[dict]:
@@ -469,7 +564,7 @@ def _load_jsonl(path: Path) -> list[dict]:
 
 
 class _ScriptedStageBLLMClient:
-    provider = "mock"
+    provider = "test"
     model = "scripted-stage-b"
 
     def __init__(self, round1: dict[str, dict], round2: dict[str, dict] | None = None) -> None:
@@ -479,6 +574,71 @@ class _ScriptedStageBLLMClient:
     def adjudicate(self, role_name: str, packet: dict, config: StageBConfig) -> tuple[dict, str]:
         payload = self._round1 if packet["round_index"] == 1 else self._round2
         decision = copy.deepcopy(payload[role_name])
+        return decision, json.dumps(decision, ensure_ascii=False)
+
+
+class _DelayedScriptedStageBLLMClient(_ScriptedStageBLLMClient):
+    provider = "test-parallel"
+    model = "delayed-scripted-stage-b"
+
+    def adjudicate(self, role_name: str, packet: dict, config: StageBConfig) -> tuple[dict, str]:
+        delays = {
+            "DomainExpert": 0.04,
+            "GovernanceRisk": 0.01,
+            "HierarchyResolver": 0.03,
+            "UserPreference": 0.02,
+        }
+        time.sleep(delays[role_name])
+        return super().adjudicate(role_name, packet, config)
+
+
+class _HeuristicStageATestClient:
+    provider = "test"
+    model = "heuristic-stage-a"
+
+    def adjudicate(self, packet, config):
+        ranked = sorted(
+            packet["candidates"],
+            key=lambda row: (
+                1 if row.get("primary_hits") else 0,
+                row.get("score_r", 0.0),
+                1 if row.get("node_kind") == "base" else 0,
+                1 if row.get("node_kind") == "segment" and row.get("scene_hits") else 0,
+            ),
+            reverse=True,
+        )
+        primary = ranked[0]["fqdn"] if ranked else None
+        related = [
+            row["fqdn"]
+            for row in ranked
+            if row["fqdn"] != primary and row.get("secondary_hits")
+        ][: config.max_related]
+        judgements = []
+        for candidate in packet["candidates"]:
+            judgements.append(
+                {
+                    "fqdn": candidate["fqdn"],
+                    "task_fit": 0.9 if candidate.get("primary_hits") else 0.7 if candidate.get("secondary_hits") else 0.2,
+                    "primary_fit": 0.95 if candidate["fqdn"] == primary else 0.15,
+                    "related_fit": 0.8 if candidate["fqdn"] in related else 0.0,
+                    "specificity_judgement": "fit",
+                    "risk_mismatch": False,
+                    "evidence_for": candidate.get("primary_hits", [])[:2] or candidate.get("secondary_hits", [])[:2],
+                    "evidence_against": [],
+                }
+            )
+        decision = {
+            "scene_context": " / ".join(packet.get("query_view", {}).get("quoted_segments", [])[:2]),
+            "primary_intent": packet.get("query", ""),
+            "secondary_intents": list(packet.get("query_view", {}).get("clauses", [])[1:3]),
+            "selected_primary_fqdn": primary,
+            "selected_related_fqdns": related,
+            "candidate_judgements": judgements,
+            "confidence": 0.72,
+            "escalate_to_stage_b": False,
+            "escalation_reasons": [],
+            "notes": ["heuristic_test_decision"],
+        }
         return decision, json.dumps(decision, ensure_ascii=False)
 
 

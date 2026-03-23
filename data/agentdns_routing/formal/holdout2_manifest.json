@@ -1,0 +1,64 @@
+{
+  "dataset_version": "holdout2_v0_20260322",
+  "namespace_version": "ns_v1_20260311",
+  "status": "unrevealed_seeded",
+  "paths": {
+    "input": "data/agentdns_routing/formal/holdout2_input.jsonl",
+    "labels": "data/agentdns_routing/formal/holdout2_labels.jsonl",
+    "coverage_status": "data/agentdns_routing/formal/holdout2_coverage_status.csv"
+  },
+  "reveal_protocol": {
+    "single_join": true,
+    "development_may_read_input_only": true,
+    "post_reveal_requires_version_bump": true
+  },
+  "targets": {
+    "total_range": [
+      48,
+      60
+    ],
+    "target_total": 54,
+    "bucket_targets": {
+      "hierarchy_sibling": 12,
+      "cross_domain": 10,
+      "multi_intent": 10,
+      "high_risk": 8,
+      "fast_path": 8,
+      "long_tail": 6
+    },
+    "min_distinct_base_fqdn": 20,
+    "multi_intent_ratio_range": [
+      0.35,
+      0.5
+    ],
+    "l3_ratio_min": 0.25,
+    "notes_for_audit_nonempty_ratio_max": 0.1
+  },
+  "current_stats": {
+    "total_samples": 54,
+    "distinct_base_fqdn": 25,
+    "l3_ratio": 0.3148,
+    "multi_intent_ratio": 0.3704,
+    "source_bucket_counts": {
+      "hierarchy_sibling": 12,
+      "cross_domain": 10,
+      "multi_intent": 10,
+      "high_risk": 8,
+      "fast_path": 8,
+      "long_tail": 6
+    },
+    "high_risk_case_count": 15,
+    "notes_for_audit_nonempty_ratio": 0.0926,
+    "ood_like_count": 0
+  },
+  "family_disjoint_against": [
+    "data/agentdns_routing/formal/dev.jsonl",
+    "data/agentdns_routing/formal/blind_input.jsonl",
+    "data/agentdns_routing/formal/challenge_input.jsonl"
+  ],
+  "provenance": {
+    "spec": "closure/23_holdout2_data_spec.md",
+    "built_on": "2026-03-22"
+  },
+  "last_validation_report": "artifacts/dataset/holdout2_validation_report.json"
+}

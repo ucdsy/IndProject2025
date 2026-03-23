@@ -5,6 +5,9 @@
 > 适用范围: `src/agentdns_routing/stage_r_clean.py`、`scripts/run_stage_r_clean_snapshot.py` 及其依赖的 clean 知识源。
 >
 > 生效时间: 2026-03-06 起，直到 blind 版本冻结前持续有效。
+>
+> 注: 本文档保留了 2026-03-10 那轮 `sr_clean_v1_20260307` 冻结时的护栏表述。
+> 当前 live repo 的 `Stage R` 主线已切换到 `sr_clean_v2_20260314_related2`；若涉及当前主线状态，请以 `README.md` 与最新 summary 为准。
 
 ## 1. 总原则
 - clean Stage R 的目标是做一个**干净、可解释、可复现的 hierarchical recall baseline**，不是为当前 `formal/dev` 专门拧出来的命中器。
@@ -178,7 +181,7 @@
 - 优先接受“机制式修正”
 - blind 版本冻结前，不允许因为追求更好 dev 分数而破坏 clean 性
 
-## 9. 当前冻结基线（2026-03-10）
+## 9. 当前冻结基线（2026-03-10，历史冻结记录）
 - 当前冻结的 `dev` snapshot 版本：`sr_clean_v1_20260307`
 - 冻结清单：`artifacts/stage_r_clean/dev.snapshot_freeze.json`
 - 冻结 snapshot：`artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl`
@@ -186,3 +189,10 @@
 - 对应 gate report：`artifacts/stage_r_clean/dev.sr_clean_v1_20260307.gate_report.md`
 - 从本条冻结开始，`clean Stage A v1` 只能消费该版本的 `dev` snapshot
 - 后续如需继续迭代 `Stage R`，必须升 `stage_r_version`，不得覆盖 `sr_clean_v1_20260307` 及其配套 gate 结论
+
+当前主线补充:
+- 当前 `Stage R` 主线版本：`sr_clean_v2_20260314_related2`
+- 当前主结果请看:
+  - `artifacts/stage_r_clean/dev.sr_clean_v2_20260314_related2.summary.json`
+  - `artifacts/stage_r_clean/blind_revealed_20260315_once.sr_clean_v2_20260314_related2.summary.json`
+  - `artifacts/stage_r_clean/challenge.sr_clean_v2_20260314_related2.summary.json`

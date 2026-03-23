@@ -1,0 +1,631 @@
+[
+  {
+    "id": "formal_blind_000001",
+    "ground_truth_fqdn": "permit.gov.cn",
+    "top1_fqdn": "permit.gov.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "lexical_overlap",
+      "governance_fallback"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000002",
+    "ground_truth_fqdn": "permit.gov.cn",
+    "top1_fqdn": "permit.gov.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "lexical_overlap",
+      "governance_fallback",
+      "multi_intent"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000003",
+    "ground_truth_fqdn": "policy.gov.cn",
+    "top1_fqdn": "policy.gov.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "lexical_overlap"
+    ],
+    "head_score_delta": 0.569707
+  },
+  {
+    "id": "formal_blind_000004",
+    "ground_truth_fqdn": "policy.gov.cn",
+    "top1_fqdn": "policy.gov.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "lexical_overlap",
+      "cross_domain_overlap",
+      "multi_intent"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000005",
+    "ground_truth_fqdn": "data.compliance.security.cn",
+    "top1_fqdn": "data.compliance.security.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "OK",
+    "confusion_sources": [
+      "C3_sibling_competition",
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "governance_fallback",
+      "multi_intent",
+      "fallback"
+    ],
+    "head_score_delta": 0.03
+  },
+  {
+    "id": "formal_blind_000006",
+    "ground_truth_fqdn": "compliance.security.cn",
+    "top1_fqdn": "transaction.compliance.security.cn",
+    "primary_rank": 2,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E5_candidate_noise",
+    "confusion_sources": [
+      "C3_sibling_competition",
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "governance_fallback"
+    ],
+    "head_score_delta": 0.03
+  },
+  {
+    "id": "formal_blind_000007",
+    "ground_truth_fqdn": "transaction.compliance.security.cn",
+    "top1_fqdn": "transaction.compliance.security.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "OK",
+    "confusion_sources": [
+      "C3_sibling_competition",
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "governance_fallback",
+      "multi_intent",
+      "fallback"
+    ],
+    "head_score_delta": 0.03
+  },
+  {
+    "id": "formal_blind_000008",
+    "ground_truth_fqdn": "risk.security.cn",
+    "top1_fqdn": "risk.security.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "governance_fallback"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000009",
+    "ground_truth_fqdn": "risk.security.cn",
+    "top1_fqdn": "data.compliance.security.cn",
+    "primary_rank": 3,
+    "l1_hit_top1": true,
+    "l2_hit_top1": false,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E5_candidate_noise",
+    "confusion_sources": [
+      "C3_sibling_competition",
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "governance_fallback",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.03
+  },
+  {
+    "id": "formal_blind_000010",
+    "ground_truth_fqdn": "fraud.security.cn",
+    "top1_fqdn": "fraud.security.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": 0.3965
+  },
+  {
+    "id": "formal_blind_000011",
+    "ground_truth_fqdn": "verify.invoice.finance.cn",
+    "top1_fqdn": "invoice.finance.cn",
+    "primary_rank": 5,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition",
+      "fallback",
+      "cross_domain_overlap",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.189369
+  },
+  {
+    "id": "formal_blind_000012",
+    "ground_truth_fqdn": "invoice.finance.cn",
+    "top1_fqdn": "invoice.finance.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition",
+      "fallback"
+    ],
+    "head_score_delta": 0.308803
+  },
+  {
+    "id": "formal_blind_000013",
+    "ground_truth_fqdn": "issue.invoice.finance.cn",
+    "top1_fqdn": "invoice.finance.cn",
+    "primary_rank": 2,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition",
+      "fallback",
+      "cross_domain_overlap",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.145394
+  },
+  {
+    "id": "formal_blind_000014",
+    "ground_truth_fqdn": "tax.finance.cn",
+    "top1_fqdn": "tax.finance.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": 0.858589
+  },
+  {
+    "id": "formal_blind_000015",
+    "ground_truth_fqdn": "tax.finance.cn",
+    "top1_fqdn": "tax.finance.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.555049
+  },
+  {
+    "id": "formal_blind_000016",
+    "ground_truth_fqdn": "budget.finance.cn",
+    "top1_fqdn": "budget.finance.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000017",
+    "ground_truth_fqdn": "invest.finance.cn",
+    "top1_fqdn": "invest.finance.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000018",
+    "ground_truth_fqdn": "meeting.productivity.cn",
+    "top1_fqdn": "meeting.productivity.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000019",
+    "ground_truth_fqdn": "summary.meeting.productivity.cn",
+    "top1_fqdn": "docs.productivity.cn",
+    "primary_rank": 3,
+    "l1_hit_top1": true,
+    "l2_hit_top1": false,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition",
+      "cross_domain_overlap",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.671048
+  },
+  {
+    "id": "formal_blind_000020",
+    "ground_truth_fqdn": "docs.productivity.cn",
+    "top1_fqdn": "docs.productivity.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000021",
+    "ground_truth_fqdn": "docs.productivity.cn",
+    "top1_fqdn": "risk.security.cn",
+    "primary_rank": 2,
+    "l1_hit_top1": false,
+    "l2_hit_top1": false,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.1865
+  },
+  {
+    "id": "formal_blind_000022",
+    "ground_truth_fqdn": "price.commerce.cn",
+    "top1_fqdn": "price.commerce.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.002182
+  },
+  {
+    "id": "formal_blind_000023",
+    "ground_truth_fqdn": "coupon.commerce.cn",
+    "top1_fqdn": "coupon.commerce.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000024",
+    "ground_truth_fqdn": "xian.itinerary.travel.cn",
+    "top1_fqdn": "activity.travel.cn",
+    "primary_rank": 3,
+    "l1_hit_top1": true,
+    "l2_hit_top1": false,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E5_candidate_noise",
+    "confusion_sources": [
+      "C3_sibling_competition",
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.015825
+  },
+  {
+    "id": "formal_blind_000025",
+    "ground_truth_fqdn": "chengdu.hotel.travel.cn",
+    "top1_fqdn": "hotel.travel.cn",
+    "primary_rank": 3,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.057764
+  },
+  {
+    "id": "formal_blind_000026",
+    "ground_truth_fqdn": "flight.travel.cn",
+    "top1_fqdn": "chengdu.hotel.travel.cn",
+    "primary_rank": null,
+    "l1_hit_top1": true,
+    "l2_hit_top1": false,
+    "union_coverage_top10": 0.0,
+    "error_bucket": "E2_l2",
+    "confusion_sources": [
+      "C3_sibling_competition",
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition"
+    ],
+    "head_score_delta": 0.0
+  },
+  {
+    "id": "formal_blind_000027",
+    "ground_truth_fqdn": "restaurant.travel.cn",
+    "top1_fqdn": "restaurant.travel.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C3_sibling_competition",
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": 0.015825
+  },
+  {
+    "id": "formal_blind_000028",
+    "ground_truth_fqdn": "activity.travel.cn",
+    "top1_fqdn": "activity.travel.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "OK",
+    "confusion_sources": [
+      "C3_sibling_competition",
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition"
+    ],
+    "head_score_delta": 0.015825
+  },
+  {
+    "id": "formal_blind_000029",
+    "ground_truth_fqdn": "transport.travel.cn",
+    "top1_fqdn": "transport.travel.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "sibling_competition",
+      "multi_intent"
+    ],
+    "head_score_delta": 0.192735
+  },
+  {
+    "id": "formal_blind_000030",
+    "ground_truth_fqdn": "weather.cn",
+    "top1_fqdn": "weather.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": null,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C4_governance_fallback"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": 0.207483
+  },
+  {
+    "id": "formal_blind_000031",
+    "ground_truth_fqdn": "nutrition.health.cn",
+    "top1_fqdn": "nutrition.health.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "OK",
+    "confusion_sources": [
+      "C1_multi_intent",
+      "C5_cross_domain_overlap"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": 0.0
+  },
+  {
+    "id": "formal_blind_000032",
+    "ground_truth_fqdn": "fitness.health.cn",
+    "top1_fqdn": "fitness.health.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000033",
+    "ground_truth_fqdn": "clinic.health.cn",
+    "top1_fqdn": "clinic.health.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000034",
+    "ground_truth_fqdn": "course.education.cn",
+    "top1_fqdn": "course.education.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": null
+  },
+  {
+    "id": "formal_blind_000035",
+    "ground_truth_fqdn": "tutoring.education.cn",
+    "top1_fqdn": "tutoring.education.cn",
+    "primary_rank": 1,
+    "l1_hit_top1": true,
+    "l2_hit_top1": true,
+    "union_coverage_top10": 1.0,
+    "error_bucket": "E6_unjustified_confusion",
+    "confusion_sources": [
+      "C0_low_confusion"
+    ],
+    "intended_confusion_types": [
+      "cross_domain_overlap"
+    ],
+    "head_score_delta": null
+  }
+]

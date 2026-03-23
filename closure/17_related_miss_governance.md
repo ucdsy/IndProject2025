@@ -5,10 +5,10 @@
 > 适用范围: `clean Stage A` related 决策修正、`clean Stage R` related 召回修正、以及 `Stage B` 升级样本池准备。
 >
 > 当前口径:
-> - `Stage A clean` 以 `sa_clean_v6_20260314_related2` 为准
-> - `Stage A llm mock` 以 `sa_llm_v1_20260314_tight7_related2` 为准
-> - `Stage R` 冻结输入仍为 `sr_clean_v1_20260307`
-> - 允许并行参考 `sr_clean_v2` 方案，但不得覆盖当前冻结 snapshot
+> - 本文前半部分保留 `Stage A clean v6 / Stage R v1` 冻结线上的 related miss 治理判断
+> - 当前 live repo 的 `Stage A clean` 主线已前移到 `sa_clean_v8_20260314_riskschema_on_sr_v2`
+> - 当前 `Stage R` 主线已前移到 `sr_clean_v2_20260314_related2`
+> - 因此，本文应主要作为责任边界与误差治理方法记录阅读，不应再被当作当前主结果表
 
 ## 1. 分类定义
 

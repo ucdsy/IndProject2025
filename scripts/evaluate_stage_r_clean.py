@@ -340,12 +340,22 @@ def build_variant_summary(
 ) -> dict[str, Any]:
     snapshots = build_snapshots(samples, resolver, top_k, stage_r_version=f"{stage_r_version}.{name}", config=config)
     metrics, _ = compute_core_metrics(samples, snapshots, resolver, top_k)
+    baseline_dict = {
+        key: value
+        for key, value in StageRCleanConfig().__dict__.items()
+        if not key.startswith("_")
+    }
+    config_dict = {
+        key: value
+        for key, value in config.__dict__.items()
+        if not key.startswith("_")
+    }
     return {
         "variant": name,
         "config_overrides": {
             key: value
-            for key, value in config.__dict__.items()
-            if value != StageRCleanConfig().__dict__[key]
+            for key, value in config_dict.items()
+            if value != baseline_dict[key]
         },
         "PrimaryRecall@10": metrics["PrimaryRecall@10"],
         "UnionCoverage@10": metrics["UnionCoverage@10"],
@@ -383,10 +393,22 @@ def run_sensitivity(
 ) -> list[dict[str, Any]]:
     variants = {
         "baseline": baseline,
-        "alias_weight_minus15": replace(baseline, query_alias_weight=round(baseline.query_alias_weight * 0.85, 6)),
-        "alias_weight_plus15": replace(baseline, query_alias_weight=round(baseline.query_alias_weight * 1.15, 6)),
-        "context_weight_minus15": replace(baseline, context_match_weight=round(baseline.context_match_weight * 0.85, 6)),
-        "context_weight_plus15": replace(baseline, context_match_weight=round(baseline.context_match_weight * 1.15, 6)),
+        "lexical_signal_minus15": replace(
+            baseline,
+            lexical_signal_scale=round(baseline.lexical_signal_scale * 0.85, 6),
+        ),
+        "lexical_signal_plus15": replace(
+            baseline,
+            lexical_signal_scale=round(baseline.lexical_signal_scale * 1.15, 6),
+        ),
+        "context_signal_minus15": replace(
+            baseline,
+            context_signal_scale=round(baseline.context_signal_scale * 0.85, 6),
+        ),
+        "context_signal_plus15": replace(
+            baseline,
+            context_signal_scale=round(baseline.context_signal_scale * 1.15, 6),
+        ),
     }
     return [
         build_variant_summary(samples, resolver, top_k, stage_r_version, name, config)

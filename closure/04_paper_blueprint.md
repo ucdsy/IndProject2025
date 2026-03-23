@@ -35,3 +35,18 @@
 - 专利: 更强调“系统/流程/模块”与可落地的实施例。
 - 论文: 更强调“实验对比 + 机制分析 + 可复现”。
 - 共享素材: 架构图、流程图、数据结构图、实验表格（但对外披露注意内部敏感信息与脱敏）。
+
+## 6. 当前结果口径补充（2026-03-23）
+- `Stage B` 当前不应再写成“全局 accuracy booster”。
+- 更准确的论文表述应为:
+  - `Stage A` 负责 fast-path routing
+  - `Stage B` 负责异质性多智能体 slow-path 审核/纠错尝试
+  - 当前 revealed split 上存在 exploratory gain
+  - fresh `holdout2` 上尚未证成稳定净增益
+- 因此，若论文必须强调异质性多智能体协作框架，方法写作重点应转向:
+  - `uncertainty handoff`
+  - `semantic packet enrichment`
+  - `candidate-internal evidence augmentation`
+- 也就是说，后续方法节的主增量不再是继续堆 runtime knob，而是:
+  - 把 `Stage A LLM` 的困惑点和语义摘要正式传给 `Stage B`
+  - 让 `Stage B` 在候选内做更有信息量的复核

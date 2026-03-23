@@ -4,6 +4,7 @@ import copy
 import json
 import os
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Any, Protocol
 
@@ -33,7 +34,13 @@ class StageBConfig:
     related_min_explicit_support: float = 0.55
     cross_l1_related_min_score: float = 0.55
     llm_temperature: float = 0.0
+    domain_expert_temperature: float | None = 0.50
+    governance_risk_temperature: float | None = 0.2
+    hierarchy_resolver_temperature: float | None = 0.35
+    user_preference_temperature: float | None = 0.7
     llm_max_tokens: int = 1200
+    parallel_role_calls: bool = True
+    max_parallel_roles: int = 4
 
 
 class StageBLLMClient(Protocol):
@@ -47,7 +54,7 @@ class StageBLLMClient(Protocol):
 ROLE_NAMES = (
     "DomainExpert",
     "GovernanceRisk",
-    "CostLatency",
+    "HierarchyResolver",
     "UserPreference",
 )
 
@@ -116,15 +123,6 @@ def _should_retry_without_json_mode(exc: Exception) -> bool:
     )
 
 
-class MockStageBLLMClient:
-    provider = "mock"
-    model = "mock-stage-b"
-
-    def adjudicate(self, role_name: str, packet: dict[str, Any], config: StageBConfig) -> tuple[dict[str, Any], str]:
-        decision = _default_role_decision(role_name=role_name, packet=packet, config=config)
-        return decision, json.dumps(decision, ensure_ascii=False)
-
-
 class OpenAICompatibleStageBLLMClient:
     def __init__(
         self,
@@ -146,7 +144,7 @@ class OpenAICompatibleStageBLLMClient:
         request_kwargs = {
             "model": self.model,
             "messages": messages,
-            "temperature": config.llm_temperature,
+            "temperature": _role_temperature(role_name, config),
             "max_tokens": config.llm_max_tokens,
         }
         try:
@@ -165,8 +163,6 @@ class OpenAICompatibleStageBLLMClient:
 
 def make_stage_b_llm_client(provider: str, model: str | None = None) -> StageBLLMClient:
     provider = provider.lower()
-    if provider == "mock":
-        return MockStageBLLMClient()
     if provider == "deepseek":
         api_key = os.getenv("DEEPSEEK_API_KEY")
         if not api_key:
@@ -189,6 +185,17 @@ def make_stage_b_llm_client(provider: str, model: str | None = None) -> StageBLL
             timeout=45.0,
         )
     raise ValueError(f"Unsupported provider: {provider}")
+
+
+def _role_temperature(role_name: str, config: StageBConfig) -> float:
+    override_map = {
+        "DomainExpert": config.domain_expert_temperature,
+        "GovernanceRisk": config.governance_risk_temperature,
+        "HierarchyResolver": config.hierarchy_resolver_temperature,
+        "UserPreference": config.user_preference_temperature,
+    }
+    override = override_map.get(role_name)
+    return config.llm_temperature if override is None else float(override)
 
 
 def _candidate_records(trace: dict[str, Any], resolver: NamespaceResolver) -> list[dict[str, Any]]:
@@ -448,17 +455,21 @@ def _role_score(role_name: str, record: dict[str, Any]) -> float:
             value -= 0.12
         if record["is_high_risk"] and explicit_support > 0.0:
             value += 0.05
-    elif role_name == "CostLatency":
+    elif role_name == "HierarchyResolver":
         value = (
-            0.26 * score_r_norm
-            + 0.18 * node_type_fit
-            + 0.16 * specificity_fit
-            + 0.12 * context_fit
-            + 0.10 * explicit_support
-            + 0.08 * evidence_diversity
-            - 0.16 * penalty_total
+            0.24 * hierarchy_fit
+            + 0.20 * specificity_fit
+            + 0.16 * relationship_bonus
+            + 0.12 * primary_fit
+            + 0.10 * context_fit
+            + 0.08 * explicit_support
+            + 0.06 * score_r_norm
+            + 0.04 * evidence_diversity
+            - 0.18 * penalty_total
         )
-        value += 0.05 if not is_segment else -0.03
+        value += 0.04 if is_segment else 0.0
+        if hierarchy_fit >= 0.40:
+            value += 0.03
     else:
         value = (
             0.30 * explicit_support
@@ -590,11 +601,24 @@ def _propose_related_from_votes(
     return related[:3]
 
 
+def _role_focus(role_name: str) -> str:
+    if role_name == "DomainExpert":
+        return "重点判断 query 核心任务与候选能力是否直接匹配。"
+    if role_name == "GovernanceRisk":
+        return "重点判断治理、高风险、跨域约束是否支持当前主路由。"
+    if role_name == "HierarchyResolver":
+        return "重点判断 parent-child、base-segment、sibling competition 与粒度是否匹配。"
+    if role_name == "UserPreference":
+        return "重点判断用户表述中的显式偏好、主次意图和 related 线索。"
+    return ""
+
+
 def _role_system_prompt(role_name: str) -> str:
     return (
         "你是 AgentDNS Stage B 的慢路径共识角色。"
         "你只能在给定候选集合内做结构化判断，不能发明新 fqdn。"
         f"你当前扮演的角色是 {role_name}。"
+        f"{_role_focus(role_name)}"
         "请在 query / Stage A 结果 / candidates 的约束下，给出最合理的 primary 与 related 提案。"
         "如果你不同意 Stage A，可以明确改判，但必须基于候选内证据。"
         "你必须显式声明自己是支持 Stage A 原判，还是建议 override。"
@@ -718,9 +742,7 @@ def _collect_llm_votes(
     config: StageBConfig,
     resolver: NamespaceResolver,
 ) -> tuple[list[dict[str, Any]], list[str]]:
-    votes: list[dict[str, Any]] = []
-    issues: list[str] = []
-    for role_name in role_names:
+    def collect_one(role_name: str) -> tuple[dict[str, Any], list[str]]:
         try:
             raw_vote, raw_response = client.adjudicate(role_name, packet, config)
             vote, vote_issues = _sanitize_role_vote(role_name, raw_vote, packet, resolver=resolver)
@@ -738,6 +760,29 @@ def _collect_llm_votes(
             raw_response = str(exc)
         vote["round"] = packet["round_index"]
         vote["raw_response"] = raw_response
+        return vote, vote_issues
+
+    votes: list[dict[str, Any]] = []
+    issues: list[str] = []
+    if config.parallel_role_calls and len(role_names) > 1 and client.provider != "mock":
+        max_workers = max(1, min(config.max_parallel_roles, len(role_names)))
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_by_role = {
+                role_name: executor.submit(collect_one, role_name)
+                for role_name in role_names
+            }
+            results = {
+                role_name: future.result()
+                for role_name, future in future_by_role.items()
+            }
+        for role_name in role_names:
+            vote, vote_issues = results[role_name]
+            votes.append(vote)
+            issues.extend(vote_issues)
+        return votes, issues
+
+    for role_name in role_names:
+        vote, vote_issues = collect_one(role_name)
         votes.append(vote)
         issues.extend(vote_issues)
     return votes, issues

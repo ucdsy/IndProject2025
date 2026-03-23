@@ -16,13 +16,13 @@
 | 2026-03-06 | R-CLEAN-02 | 基于 `formal_v1_1_20260306` 重跑 clean `Stage R` snapshot；继续坚持 descriptor-only lexical+metadata recall，不读取 descriptor `examples`，不使用 `evidence_lexicon.json` | `formal/dev` 上 `PrimaryRecall@10=0.9800`、`RelatedCoverage@10=0.6897`；blind/challenge snapshot 已按新数据重导出 | `R-CLEAN-01` 对应旧版 formal 数据；后续主表与调参一律引用 patch 后 snapshot 与 summary |
 | 2026-03-06 | CLEANUP-01 | 清理旧 `bootstrap Stage R/A` 工程链；移除旧 `stage_r.py` / `stage_a.py`、对应脚本/测试、旧 snapshot 与 Stage A 产物；保留 `formal` 数据、clean `Stage R`、canonical contract 与执行日志 | 剩余可运行入口已收敛到 `scripts/validate_formal_dataset.py`、`scripts/audit_knowledge_sources.py`、`scripts/run_stage_r_clean_snapshot.py`；formal validator 复跑 `ok=true`，`warnings=[]` | 旧 bootstrap 结果只保留为历史记录，不再作为默认入口或误导性“可运行基线”继续存在 |
 | 2026-03-10 | R-FREEZE-01 | 冻结当前 `dev` snapshot 版本为 `sr_clean_v1_20260307`，新增机器可读 freeze 清单，并把 README / guardrails / execution log 同步为同一结论 | `clean Stage A v1` 只能消费 `artifacts/stage_r_clean/dev.sr_clean_v1_20260307.jsonl`；后续若继续迭代 `Stage R`，必须升 `stage_r_version`，不得覆盖当前冻结基线 | 冻结清单：`artifacts/stage_r_clean/dev.snapshot_freeze.json` |
-| 2026-03-__ | R01 | baseline: single-agent |  |  |
-| 2026-03-__ | R02 | baseline: vote |  |  |
-| 2026-03-__ | R03 | baseline: debate |  |  |
-| 2026-03-__ | R04 | ours: feedback-consensus |  |  |
-| 2026-03-__ | R05 | ours ablation: -heterogeneity |  |  |
-| 2026-03-__ | R06 | ours ablation: -feedback |  |  |
-| 2026-03-__ | R07 | ours ablation: -trust-id |  |  |
+| 2026-03-14 | R-CLEAN-03 | 升级到 `sr_clean_v2_20260314_related2`；补 related 覆盖并重跑 `dev / blind / challenge` | dev: `PrimaryRecall@10=1.0000`、`RelatedCoverage@10=1.0000`；blind: `0.9714 / 1.0000`；challenge: `0.9167 / 1.0000` | 当前 `Stage R` 主召回基线切换到 `v2_related2` |
+| 2026-03-14 | A-CLEAN-03 | `sa_clean_v8_20260314_riskschema_on_sr_v2`；完成 high-risk schema 化与 current `dev` 闭环 | dev: `PrimaryAcc@1=1.0000`、`AcceptablePrimary@1=1.0000`、`RelatedRecall=1.0000`、`RelatedPrecision=1.0000`、`escalation_rate=0.5400` | 当前 deterministic fast path 可视为实现完成，但不等于验证完成 |
+| 2026-03-15 | A-BLIND-01 | 对 `sa_clean_v8_20260314_riskschema_on_sr_v2` 做 blind 单次揭盲 | blind: `PrimaryAcc@1=0.8286`、`AcceptablePrimary@1=0.8571`、`RelatedRecall=0.8333`、`RelatedPrecision=0.9091`、`error_buckets={OK:30, decision_primary_miss:4, stage_r_primary_miss:1}` | `formal/dev` 上的 `1.0` 已被打破；当前应解释为 `dev-set closure`, not validated complete |
+| 2026-03-17 | B-BOOT-01 | 生成 `Stage B seed pool`，落最小 harness、trace writer、evaluator | `samples=17`、`stage_b_applied=17`、`stage_b_changed_primary=0`、`StageBPrimaryAcc@1=0.7059` | 当前 `Stage B v0` 已离开纯文档阶段，但默认保守，不主动改判 |
+| 2026-03-20 | B-CHALLENGE-01 | 用 `challenge_compare_deepseek_20260320` 对 `A_clean -> B` 与 `A_llm -> B` 做探索性 challenge 对照 | clean: `0.2917 -> 0.3750`；llm: `0.4167 -> 0.4583`；challenge `related` 仍为 `0.0` | 当前 `Stage B` 在 challenge 上有小幅提升，但尚不足以支撑“慢路径已验证完成” |
+| 2026-03-22 | DATA-HOLDOUT2-01 | 基于 `closure/23_holdout2_data_spec.md` 新建 unrevealed `holdout2`；新增 `scripts/build_holdout2_dataset.py`、`scripts/validate_holdout2_dataset.py` 与 split 级 schema | `holdout2=54`；bucket 分布 `12/10/10/8/8/6`；`distinct_base_fqdn=25`；`l3_ratio=0.3148`；`multi_intent_ratio=0.3704` | `holdout2` 与当前 `formal/dev`、`formal/blind`、`formal/challenge` 做到 family-disjoint；用途是给后续 `Stage A vNext / Stage B` 提供新的单次 join 正式验证，不可用于继续按已揭盲错例补样本 |
+| 2026-03-22 | DATA-HOLDOUT2-VALIDATE-01 | 重跑 `holdout2` validator；校验 schema、input/label 对齐、family/query disjoint、bucket 配额、base coverage、manifest 回算与 coverage csv 一致性 | `ok=true`，`warnings=[]`；`family_disjoint=true`；`query_text_disjoint=true`；`coverage_csv_matches=true` | 已生成 `artifacts/dataset/holdout2_validation_report.json`；当前可将 `holdout2_input.jsonl` 交算法组开发读取，`holdout2_labels.jsonl` 保持冻结直到版本冻结后单次 join |
 
 ## 运行元数据清单
 每次跑实验至少记录这些字段，避免最后写报告/论文时“数据找不到”：
@@ -37,10 +37,10 @@
 - randomness: seed, temperature, top_p
 - cost: tokens, latency, $ cost (if API)
 
-## 主张-证据对照表
+## 主张-证据对照表（当前状态）
 | 主张 | 证据（实验/表格） | 状态 |
 |---|---|---|
-| 协作机制优于单智能体 | R01 vs R04 的主指标对比表 | TODO |
-| 反馈驱动优于无反馈 | R04 vs R06 | TODO |
-| 异质性有贡献 | R04 vs R05 | TODO |
-| 可信标识提升审计能力且成本可控 | R04 vs R07 + 轨迹完整率/篡改检测结果 | TODO |
+| 协作机制优于单智能体 | 尚无统一 frozen lineage 主结果表 | 未完成 |
+| 反馈驱动优于无反馈 | 尚无统一 frozen lineage 消融表 | 未完成 |
+| 异质性有贡献 | 尚无统一 frozen lineage 消融表 | 未完成 |
+| 可信标识提升审计能力且成本可控 | 尚无正式主表，当前只有 trace/schema 与工程可行性证据 | 未完成 |

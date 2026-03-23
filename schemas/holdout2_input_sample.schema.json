@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdns.local/schemas/holdout2_input_sample.schema.json",
+  "title": "Holdout2InputSample",
+  "type": "object",
+  "required": [
+    "id",
+    "namespace_version",
+    "query",
+    "context",
+    "metadata",
+    "source_bucket",
+    "difficulty_tag"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "namespace_version": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "context": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "source_bucket": {
+      "type": "string",
+      "enum": [
+        "hierarchy_sibling",
+        "cross_domain",
+        "multi_intent",
+        "high_risk",
+        "fast_path",
+        "long_tail"
+      ]
+    },
+    "difficulty_tag": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

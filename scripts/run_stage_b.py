@@ -35,7 +35,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--stage-b-version", default=StageBConfig().stage_b_version)
     parser.add_argument("--prompt-version", default=StageBConfig().prompt_version)
-    parser.add_argument("--provider", choices=["deterministic", "mock", "deepseek", "openai"], default="mock")
+    parser.add_argument("--provider", choices=["deterministic", "deepseek", "openai"], default="deepseek")
     parser.add_argument("--model", default=None, help="Stage B LLM model name.")
     parser.add_argument("--max-samples", type=int, default=None, help="Optional limit for smoke runs.")
     return parser.parse_args()
