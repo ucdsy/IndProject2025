@@ -245,7 +245,7 @@ Stage A 的“L1/L2/L3 怎么选”:
 #### 5.3.1 角色集合（v1 固定 4 个，避免膨胀）
 - `DomainExpert`（领域专家）
 - `GovernanceRisk`（治理/风险）
-- `CostLatency`（成本/调用控制）
+- `HierarchyResolver`（层级/粒度消歧）
 - `UserPreference`（用户偏好代理，规则/标签近似即可）
 
 #### 5.3.2 共识循环（最多 2-3 轮）

@@ -29,6 +29,10 @@
   - `Stage A clean = sa_clean_v2_20260314`
   - `Stage A llm = sa_llm_v2_20260323_uncertainty`
   - `Stage B = stage_b_v1_20260323_packetv2`
+- 当前主表与当前代码默认 runtime 不是同一概念:
+  - 对外 canonical 主结果以 `review_packetv2_20260323/` 为准
+  - 后续 `max_tokens / role temperatures` 调整只记入 `artifacts/stage_b/ablations_20260323/`
+  - 因此，不应默认把当前 `main` 的 `Stage BConfig` 直接等同于本节主表运行配置
 - 已有当前主结果目录:
   - `artifacts/routing_ab/review_packetv2_20260323/`
   - `artifacts/stage_b/ablations_20260323/`
@@ -111,10 +115,15 @@
 - 不利于日志化与答辩
 
 ### 4.2 做结构化多角色共识
-最小角色集采用文档既有口径:
+说明:
+- bootstrap 起草阶段曾短暂写成 `CostLatency`
+- 当前 live repo 与当前对外口径统一采用以下 4 角色
+- 若后文看到 `CostLatency`，应将其视为历史草案残留，而不是当前实现定义
+
+最小角色集采用当前实现口径:
 - `DomainExpert`
 - `GovernanceRisk`
-- `CostLatency`
+- `HierarchyResolver`
 - `UserPreference`
 
 最小循环:

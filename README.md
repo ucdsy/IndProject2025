@@ -30,6 +30,8 @@
 ## 3. 当前主结果（review packet v2）
 
 - 当前 `Stage A / Stage B` revealed 对照的主引用目录唯一以 `artifacts/routing_ab/review_packetv2_20260323/` 为准。
+- 当前 `main` 代码中 `Stage B` 的默认 runtime 参数已包含后续敏感性调整（例如更高 `llm_max_tokens` 与角色温度）。
+- 这些 runtime knob 变动**不自动覆盖**本节主表；若无特别说明，对外主结果仍以 `review_packetv2_20260323` 为 canonical frozen result，后续 runtime 变体只记入 `artifacts/stage_b/ablations_20260323/`。
 
 | split | `A_clean` | `A_clean -> B` | `A_llm_v2` | `A_llm_v2 -> B` |
 |---|---:|---:|---:|---:|

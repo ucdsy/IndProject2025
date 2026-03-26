@@ -346,13 +346,13 @@ Stage B 只处理:
 冻结 4 个角色:
 - `DomainExpert`
 - `GovernanceRisk`
-- `CostLatency`
+- `HierarchyResolver`
 - `UserPreference`
 
 角色分工:
 - `DomainExpert`: 主任务与能力归属
 - `GovernanceRisk`: 风险/治理边界
-- `CostLatency`: 压制不必要的过细路由和成本膨胀
+- `HierarchyResolver`: 处理 `sibling / parent-child / base-segment` 的层级与粒度消歧
 - `UserPreference`: 次要诉求和上下文偏好
 
 ### 3.7 角色消息结构

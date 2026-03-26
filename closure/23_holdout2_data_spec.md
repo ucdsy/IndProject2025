@@ -1,10 +1,15 @@
-# `holdout2` 数据规格书（供数据负责人执行）
+# `holdout2` 数据规格书（历史规格；`holdout2` 已揭盲）
 
 > 目的: 在 `formal/dev`、`formal/blind`、`formal/challenge` 已分别于 **2026-03-15** 与 **2026-03-20** 揭盲后，补充一份新的、未参与当前调参的正式验证集，用于重新评估 `Stage A / Stage B` 是否存在真实泛化增益。
 >
 > 适用范围: `Stage A vNext`、`Stage B` 后续版本的正式验证。
 >
 > 口径: 本规格书服务于 **新的 unrevealed split**。任何基于当前 `dev / blind / challenge` 的继续调参结果，都只能算 `exploratory`，不能替代本规格书定义的 `holdout2`。
+>
+> 当前状态补充:
+> - 本文记录的是 `holdout2` 生成前交给数据负责人的历史规格。
+> - `holdout2` 已于 **2026-03-22** 完成单次 join / 揭盲。
+> - 因此，本文现在应被阅读为“数据生成与泄漏治理依据”，而不是当前仍待执行的未揭盲计划。
 
 ## 1. 结论先行
 - 需要新增一份 **`family-disjoint`、未揭盲、可单次 join** 的 `holdout2`。
