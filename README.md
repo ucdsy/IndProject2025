@@ -10,6 +10,7 @@
   - `closure/19_stage_a_blind_error_analysis.md`
   - `closure/20_stage_b_bootstrap_plan.md`
   - `closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md`
+  - `closure/25_stage_c_agentdnsdemo_integration_plan.md`
 - 结项交付与讲法:
   - `closure/01_deliverables_checklist.md`
   - `closure/02_taskbook_mapping.md`

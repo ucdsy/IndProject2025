@@ -284,7 +284,9 @@ v1 不需要，原因:
 - 口径: “Stage C 的 agent selection 未来可用 contextual bandit 做曝光与质量的探索-利用平衡；v1 先用可解释的公平曝光/多样性规则，并报告 exposure 分布。”
 
 ## 6. Stage C：agent discovery 与排序（必须有，快、可缓存）
-执行细化: 见 `closure/14_execution_spec_and_review_gate.md`
+执行细化:
+- 规格约束: 见 `closure/14_execution_spec_and_review_gate.md`
+- 双仓实施: 见 `closure/25_stage_c_agentdnsdemo_integration_plan.md`
 Stage C 是“落到真实地址”的最后一跳:
 - 输入: `selected_primary_fqdn`
 - 输出: `chosen_agent_fqdn` + `endpoint`（以及可审计的打分依据）

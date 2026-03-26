@@ -9,6 +9,8 @@
   - `Stage B` 从 bootstrap 到 `packetv2` 的当前状态
 - `24_stage_a_uncertainty_and_stage_b_packet_v2_design.md`
   - `Stage A llm v2` 与 `Stage B packetv2` 的设计背景
+- `25_stage_c_agentdnsdemo_integration_plan.md`
+  - `Stage C` 与 `AgentDNSDemo` 的双仓实施说明
 - `14_execution_spec_and_review_gate.md`
   - 执行边界与评审门槛
 - `13_design_doc_agentdns_routing.md`

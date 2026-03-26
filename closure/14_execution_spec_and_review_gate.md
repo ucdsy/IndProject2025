@@ -443,6 +443,7 @@ F(c) = w_task * S_task(c)
 - `escalation_rate` 必须受控
 
 ## 4. Stage C：下一跳发现
+工程实施与双仓分工: 见 `closure/25_stage_c_agentdnsdemo_integration_plan.md`
 ### 4.1 职责
 - 输入: `selected_primary_fqdn`, `agent_registry_snapshot`
 - 输出:
