@@ -429,3 +429,35 @@
 ### 14.5 对应设计文档
 - 当前正式设计见:
   - `closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md`
+
+## 15. 2026-03-30 `Stage B` 协作消融证据链
+
+### 15.1 当前缺的不是新 split，而是协作对照链
+- 当前 `A_llm_v2` 已证明自己是更强的 fast path。
+- 当前 `Stage B packetv2` 已在多个 split 上显示出小幅、零回归优先的 primary 增益。
+- 但若要正式支撑“异质性多智能体协作”，还缺以下标准对照:
+  - `A_llm_v2 -> B_single`
+  - `A_llm_v2 -> B_homogeneous`
+  - `A_llm_v2 -> B_heterogeneous`
+  - `A_llm_v2 -> B_heterogeneous_no_handoff`
+
+### 15.2 为什么不采用 `R -> B` 直连
+- 当前 `Stage B packetv2` 已明确依赖:
+  - `Stage A uncertainty handoff`
+  - `Stage A` 语义摘要与困惑点
+- 因此，直接做 `R -> B` 会改变 `Stage B` 的输入契约。
+- 这类实验可以作为 alternate architecture exploratory，但不属于当前体系的干净消融。
+
+### 15.3 当前最标准的实验比较对象
+- 系统级基线:
+  - `R -> A_clean`
+  - `R -> A_llm_v2`
+- 慢路径协作消融:
+  - `R -> A_llm_v2 -> B_single`
+  - `R -> A_llm_v2 -> B_homogeneous`
+  - `R -> A_llm_v2 -> B_heterogeneous`
+  - `R -> A_llm_v2 -> B_heterogeneous_no_handoff`
+
+### 15.4 对应正式设计文档
+- 当前协作消融标准设计见:
+  - `closure/28_stage_b_collaboration_ablation_design.md`

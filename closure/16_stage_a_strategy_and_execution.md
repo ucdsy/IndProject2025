@@ -1004,3 +1004,25 @@
   - 而是“候选内只有分数摘要，缺少语义摘要和结构化负证据”
 - 对应正式设计已单独落文档:
   - `closure/24_stage_a_uncertainty_and_stage_b_packet_v2_design.md`
+
+### 10.30 2026-03-30 `Stage B` 协作证据链补强方向冻结
+- 当前项目若要正面支撑“异质性多智能体协作”，不能只报:
+  - `A_clean`
+  - `A_llm_v2`
+  - `A_llm_v2 -> B`
+- 当前进一步冻结的实验判断是:
+  - 不采用 `R -> B` 直连作为当前体系主消融
+  - 原因是 `Stage B packetv2` 已依赖 `Stage A uncertainty handoff`
+  - 拿掉 `Stage A` 会改变 `Stage B` 的输入契约，不再是当前系统的干净对照
+- 当前更标准的证据链应是:
+  - `A_llm_v2 -> B_single`
+  - `A_llm_v2 -> B_homogeneous`
+  - `A_llm_v2 -> B_heterogeneous`
+  - `A_llm_v2 -> B_heterogeneous_no_handoff`
+- 该组实验的目标不是再换系统，而是回答:
+  - 二次复核本身是否有价值
+  - 光靠多 reviewer 是否足够
+  - 异质角色分工是否优于同质多 reviewer
+  - `uncertainty handoff` 是否是 `Stage B` 增益来源
+- 对应正式设计文档:
+  - `closure/28_stage_b_collaboration_ablation_design.md`

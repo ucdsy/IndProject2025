@@ -11,8 +11,8 @@
 
 ## 3. 最小结果集（没有这些不建议投稿）
 必须至少产出:
-- Table 1: 主结果（single-agent / vote / debate / ours）在主指标上的对比
-- Table 2: 消融（-heterogeneity / -feedback / -trust-id）
+- Table 1: 系统主结果（`A_clean / A_llm_v2 / A_llm_v2->B_heterogeneous`）在主指标上的对比
+- Table 2: `Stage B` 协作消融（`B_single / B_homogeneous / B_heterogeneous / B_heterogeneous_no_handoff`）
 - Table 3: 成本（token/latency/调用次数）
 - Figure 1: 系统架构图（生成-选择-共识-可信标识-可视化）
 - Figure 2: Case study（展示 1 个样例的多轮轨迹与最终解释）
@@ -50,3 +50,21 @@
 - 也就是说，后续方法节的主增量不再是继续堆 runtime knob，而是:
   - 把 `Stage A LLM` 的困惑点和语义摘要正式传给 `Stage B`
   - 让 `Stage B` 在候选内做更有信息量的复核
+
+## 7. 协作证据链补强（2026-03-30）
+- 若论文需要正面支撑“异质性多智能体协作”，不能只报:
+  - `A_clean`
+  - `A_llm_v2`
+  - `A_llm_v2->B`
+- 还必须补齐同输入条件下的 `Stage B` 协作消融:
+  - `A_llm_v2 -> B_single`
+  - `A_llm_v2 -> B_homogeneous`
+  - `A_llm_v2 -> B_heterogeneous`
+  - `A_llm_v2 -> B_heterogeneous_no_handoff`
+- 该组实验的目的不是再换系统，而是证明:
+  - 第二次复核本身是否有价值
+  - 光靠多 reviewer 是否足够
+  - 异质角色分工是否优于同质多 reviewer
+  - `uncertainty handoff` 是否是 `Stage B` 增益来源
+- 正式设计见:
+  - `closure/28_stage_b_collaboration_ablation_design.md`
