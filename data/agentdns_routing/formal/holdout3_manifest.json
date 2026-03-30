@@ -1,0 +1,99 @@
+{
+  "dataset_version": "holdout3_v0_20260330",
+  "namespace_version": "ns_v1_20260311",
+  "status": "unrevealed_seeded",
+  "paths": {
+    "input": "data/agentdns_routing/formal/holdout3_input.jsonl",
+    "labels": "data/agentdns_routing/formal/holdout3_labels.jsonl",
+    "coverage_status": "data/agentdns_routing/formal/holdout3_coverage_status.csv",
+    "skeleton_audit": "data/agentdns_routing/formal/holdout3_skeleton_audit.csv"
+  },
+  "reveal_protocol": {
+    "single_join": true,
+    "development_may_read_input_only": true,
+    "post_reveal_requires_version_bump": true
+  },
+  "targets": {
+    "total_samples": 400,
+    "eval_bucket_counts": {
+      "ordinary_fast_path": 80,
+      "sibling_hierarchy": 80,
+      "primary_secondary_disentanglement": 80,
+      "cross_domain_overlap": 80,
+      "high_risk_governance": 80
+    },
+    "intent_form_counts": {
+      "direct_request": 80,
+      "scene_description": 80,
+      "stepwise_instruction": 80,
+      "constraint_first": 80,
+      "goal_then_support": 80
+    },
+    "min_intent_forms_per_bucket": 4,
+    "min_surface_styles_per_bucket": 4,
+    "max_bucket_skeleton_share": 0.2,
+    "min_distinct_base_fqdn": 25,
+    "max_l1_ratio": 0.35,
+    "multi_intent_ratio_range": [
+      0.3,
+      0.45
+    ],
+    "l3_ratio_min": 0.25,
+    "skeleton_overlap_flag_count_max": 0
+  },
+  "current_stats": {
+    "total_samples": 400,
+    "distinct_base_fqdn": 25,
+    "l3_ratio": 0.34,
+    "multi_intent_ratio": 0.34,
+    "high_risk_case_count": 110,
+    "eval_bucket_counts": {
+      "ordinary_fast_path": 80,
+      "sibling_hierarchy": 80,
+      "primary_secondary_disentanglement": 80,
+      "cross_domain_overlap": 80,
+      "high_risk_governance": 80
+    },
+    "intent_form_counts": {
+      "direct_request": 80,
+      "scene_description": 80,
+      "stepwise_instruction": 80,
+      "constraint_first": 80,
+      "goal_then_support": 80
+    },
+    "surface_style_counts": {
+      "colloquial": 66,
+      "formal": 67,
+      "enterprise": 67,
+      "compressed": 67,
+      "indirect": 67,
+      "mixed": 66
+    },
+    "l1_counts": {
+      "travel": 83,
+      "weather": 11,
+      "finance": 80,
+      "health": 36,
+      "productivity": 46,
+      "education": 20,
+      "commerce": 26,
+      "security": 72,
+      "gov": 26
+    },
+    "max_l1_ratio": 0.2075,
+    "max_bucket_skeleton_share": 0.0375,
+    "skeleton_overlap_flag_count": 0,
+    "ood_like_count": 0
+  },
+  "family_disjoint_against": [
+    "data/agentdns_routing/formal/dev.jsonl",
+    "data/agentdns_routing/formal/blind_input.jsonl",
+    "data/agentdns_routing/formal/challenge_input.jsonl",
+    "data/agentdns_routing/formal/holdout2_input.jsonl"
+  ],
+  "provenance": {
+    "spec": "closure/27_holdout3_data_spec.md",
+    "built_on": "2026-03-30"
+  },
+  "last_validation_report": "artifacts/dataset/holdout3_validation_report.json"
+}

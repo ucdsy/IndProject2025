@@ -41,6 +41,7 @@
 - `08_dataset_spec_and_labeling.md`
 - `09_eval_protocol.md`
 - `23_holdout2_data_spec.md`
+- `27_holdout3_data_spec.md`
 
 ## 5. 其他参考
 - `11_agent_registry_and_naming.md`

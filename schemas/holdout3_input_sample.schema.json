@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdns.local/schemas/holdout3_input_sample.schema.json",
+  "title": "Holdout3InputSample",
+  "type": "object",
+  "required": [
+    "id",
+    "namespace_version",
+    "query",
+    "context",
+    "metadata",
+    "source_bucket",
+    "difficulty_tag",
+    "intent_form",
+    "surface_style"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "namespace_version": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "context": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "source_bucket": {
+      "type": "string",
+      "enum": [
+        "ordinary_fast_path",
+        "sibling_hierarchy",
+        "primary_secondary_disentanglement",
+        "cross_domain_overlap",
+        "high_risk_governance"
+      ]
+    },
+    "difficulty_tag": {
+      "type": "string"
+    },
+    "intent_form": {
+      "type": "string",
+      "enum": [
+        "direct_request",
+        "scene_description",
+        "stepwise_instruction",
+        "constraint_first",
+        "goal_then_support"
+      ]
+    },
+    "surface_style": {
+      "type": "string",
+      "enum": [
+        "colloquial",
+        "formal",
+        "enterprise",
+        "compressed",
+        "indirect",
+        "mixed"
+      ]
+    }
+  },
+  "additionalProperties": false
+}
