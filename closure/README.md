@@ -11,6 +11,8 @@
   - `Stage A llm v2` 与 `Stage B packetv2` 的设计背景
 - `25_stage_c_agentdnsdemo_integration_plan.md`
   - `Stage C` 与 `AgentDNSDemo` 的双仓实施说明
+- `26_conversation_orchestrator_design.md`
+  - 多轮对话编排层设计，负责记忆、补槽与是否重新路由的控制
 - `14_execution_spec_and_review_gate.md`
   - 执行边界与评审门槛
 - `13_design_doc_agentdns_routing.md`
