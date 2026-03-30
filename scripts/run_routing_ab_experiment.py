@@ -50,6 +50,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stage-a-llm-base-stage-a-version", default=None)
     parser.add_argument("--stage-b-version", default=StageBConfig().stage_b_version)
     parser.add_argument("--stage-b-prompt-version", default=StageBConfig().prompt_version)
+    parser.add_argument(
+        "--b-collaboration-mode",
+        choices=["single", "homogeneous", "heterogeneous"],
+        default=StageBConfig().collaboration_mode,
+    )
+    parser.add_argument("--b-no-semantic-handoff", action="store_true")
     parser.add_argument("--a-llm-provider", choices=["deepseek", "openai"], default="deepseek")
     parser.add_argument("--a-llm-model", default=None)
     parser.add_argument("--b-provider", choices=["deterministic", "deepseek", "openai"], default="deepseek")
@@ -213,7 +219,22 @@ def main() -> None:
         a_llm_summary["summary_path"] = summary_path
         results["a_llm"] = {"trace_path": trace_path, "summary_path": summary_path, "summary": a_llm_summary}
 
-    b_config = StageBConfig(stage_b_version=args.stage_b_version, prompt_version=args.stage_b_prompt_version)
+    b_config = StageBConfig(
+        stage_b_version=args.stage_b_version,
+        prompt_version=args.stage_b_prompt_version,
+        collaboration_mode=args.b_collaboration_mode,
+        include_semantic_handoff=not args.b_no_semantic_handoff,
+    )
+
+    def _b_role_temperatures() -> dict[str, float | None]:
+        if b_config.collaboration_mode in {"single", "homogeneous"}:
+            return {"GeneralReviewer": b_config.general_reviewer_temperature}
+        return {
+            "DomainExpert": b_config.domain_expert_temperature,
+            "GovernanceRisk": b_config.governance_risk_temperature,
+            "HierarchyResolver": b_config.hierarchy_resolver_temperature,
+            "UserPreference": b_config.user_preference_temperature,
+        }
 
     if "a_clean_b" in requested:
         b_client = None if args.b_provider == "deterministic" else make_stage_b_llm_client(args.b_provider, args.b_model)
@@ -232,12 +253,9 @@ def main() -> None:
         a_clean_b_summary["provider"] = b_client.provider if b_client else "deterministic"
         a_clean_b_summary["model"] = b_client.model if b_client else b_config.deterministic_decision_mode
         a_clean_b_summary["llm_temperature"] = b_config.llm_temperature
-        a_clean_b_summary["role_temperatures"] = {
-            "DomainExpert": b_config.domain_expert_temperature,
-            "GovernanceRisk": b_config.governance_risk_temperature,
-            "HierarchyResolver": b_config.hierarchy_resolver_temperature,
-            "UserPreference": b_config.user_preference_temperature,
-        }
+        a_clean_b_summary["collaboration_mode"] = b_config.collaboration_mode
+        a_clean_b_summary["semantic_handoff_enabled"] = bool(b_config.include_semantic_handoff)
+        a_clean_b_summary["role_temperatures"] = _b_role_temperatures()
         a_clean_b_summary["parallel_role_calls"] = b_config.parallel_role_calls
         a_clean_b_summary["max_parallel_roles"] = b_config.max_parallel_roles
         a_clean_b_summary["input_path"] = args.input
@@ -276,12 +294,9 @@ def main() -> None:
         a_llm_b_summary["provider"] = b_client.provider if b_client else "deterministic"
         a_llm_b_summary["model"] = b_client.model if b_client else b_config.deterministic_decision_mode
         a_llm_b_summary["llm_temperature"] = b_config.llm_temperature
-        a_llm_b_summary["role_temperatures"] = {
-            "DomainExpert": b_config.domain_expert_temperature,
-            "GovernanceRisk": b_config.governance_risk_temperature,
-            "HierarchyResolver": b_config.hierarchy_resolver_temperature,
-            "UserPreference": b_config.user_preference_temperature,
-        }
+        a_llm_b_summary["collaboration_mode"] = b_config.collaboration_mode
+        a_llm_b_summary["semantic_handoff_enabled"] = bool(b_config.include_semantic_handoff)
+        a_llm_b_summary["role_temperatures"] = _b_role_temperatures()
         a_llm_b_summary["parallel_role_calls"] = b_config.parallel_role_calls
         a_llm_b_summary["max_parallel_roles"] = b_config.max_parallel_roles
         a_llm_b_summary["input_path"] = args.input

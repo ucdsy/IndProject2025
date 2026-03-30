@@ -527,15 +527,124 @@ class StageBTestCase(unittest.TestCase):
     def test_role_temperature_can_be_overridden_per_agent(self) -> None:
         config = StageBConfig(
             llm_temperature=0.0,
+            general_reviewer_temperature=0.3,
             domain_expert_temperature=0.2,
             governance_risk_temperature=0.0,
             user_preference_temperature=0.15,
             hierarchy_resolver_temperature=0.25,
         )
+        self.assertEqual(_role_temperature("GeneralReviewer", config), 0.3)
+        self.assertEqual(_role_temperature("GeneralReviewer_3", config), 0.3)
         self.assertEqual(_role_temperature("GovernanceRisk", config), 0.0)
         self.assertEqual(_role_temperature("DomainExpert", config), 0.2)
         self.assertEqual(_role_temperature("UserPreference", config), 0.15)
         self.assertEqual(_role_temperature("HierarchyResolver", config), 0.25)
+
+    def test_single_mode_emits_one_general_reviewer_vote(self) -> None:
+        stage_a_trace = build_stage_a_llm_trace(
+            sample=self.samples["formal_dev_000007"],
+            snapshot=self.snapshots["formal_dev_000007"],
+            resolver=self.resolver,
+            client=_HeuristicStageATestClient(),
+            config=StageALLMConfig(stage_a_version="sa_llm_single_mode_test"),
+        )
+        stage_a_trace["stage_a"]["escalate_to_stage_b"] = True
+        stage_a_trace["stage_a"]["escalation_reasons"] = ["low_confidence"]
+        client = _ScriptedStageBLLMClient(
+            round1={
+                "GeneralReviewer": {
+                    "proposal_primary_fqdn": stage_a_trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.84,
+                    "rationale": "GeneralReviewer: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                }
+            }
+        )
+        trace = build_stage_b_trace(
+            sample=self.samples["formal_dev_000007"],
+            trace=stage_a_trace,
+            resolver=self.resolver,
+            config=StageBConfig(stage_b_version="stage_b_single_mode_test", collaboration_mode="single"),
+            client=client,
+        )
+        round1_agents = [vote["agent"] for vote in trace["stage_b"]["agent_votes"] if vote["round"] == 1]
+        self.assertEqual(round1_agents, ["GeneralReviewer"])
+        self.assertEqual(trace["stage_b"]["trust_trace"]["collaboration_mode"], "single")
+
+    def test_homogeneous_mode_emits_four_general_reviewers(self) -> None:
+        stage_a_trace = build_stage_a_llm_trace(
+            sample=self.samples["formal_dev_000007"],
+            snapshot=self.snapshots["formal_dev_000007"],
+            resolver=self.resolver,
+            client=_HeuristicStageATestClient(),
+            config=StageALLMConfig(stage_a_version="sa_llm_homogeneous_mode_test"),
+        )
+        stage_a_trace["stage_a"]["escalate_to_stage_b"] = True
+        stage_a_trace["stage_a"]["escalation_reasons"] = ["low_confidence"]
+        client = _ScriptedStageBLLMClient(
+            round1={
+                role: {
+                    "proposal_primary_fqdn": stage_a_trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.81,
+                    "rationale": f"{role}: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                }
+                for role in ("GeneralReviewer_1", "GeneralReviewer_2", "GeneralReviewer_3", "GeneralReviewer_4")
+            }
+        )
+        trace = build_stage_b_trace(
+            sample=self.samples["formal_dev_000007"],
+            trace=stage_a_trace,
+            resolver=self.resolver,
+            config=StageBConfig(stage_b_version="stage_b_homogeneous_mode_test", collaboration_mode="homogeneous"),
+            client=client,
+        )
+        round1_agents = [vote["agent"] for vote in trace["stage_b"]["agent_votes"] if vote["round"] == 1]
+        self.assertEqual(
+            round1_agents,
+            ["GeneralReviewer_1", "GeneralReviewer_2", "GeneralReviewer_3", "GeneralReviewer_4"],
+        )
+        self.assertEqual(trace["stage_b"]["trust_trace"]["collaboration_mode"], "homogeneous")
+
+    def test_no_semantic_handoff_blanks_stage_a_semantic_packet(self) -> None:
+        trace = build_stage_a_llm_trace(
+            sample=self.samples["formal_dev_000007"],
+            snapshot=self.snapshots["formal_dev_000007"],
+            resolver=self.resolver,
+            client=_HeuristicStageATestClient(),
+            config=StageALLMConfig(stage_a_version="sa_llm_no_handoff_stage_b_test"),
+        )
+        trace["stage_a"]["escalate_to_stage_b"] = True
+        trace["stage_a"]["escalation_reasons"] = ["low_confidence", "cross_domain_semantic_overlap"]
+        client = _CapturingScriptedStageBLLMClient(
+            round1={
+                role: {
+                    "proposal_primary_fqdn": trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.8,
+                    "rationale": f"{role}: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                }
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
+            }
+        )
+        build_stage_b_trace(
+            sample=self.samples["formal_dev_000007"],
+            trace=trace,
+            resolver=self.resolver,
+            config=StageBConfig(stage_b_version="stage_b_no_handoff_test", include_semantic_handoff=False),
+            client=client,
+        )
+        packet = client.packets[0]
+        self.assertFalse(packet["stage_a"]["semantic_handoff_enabled"])
+        self.assertEqual(packet["stage_a"]["semantic_handoff"]["uncertainty_summary"], "")
+        self.assertEqual(packet["stage_a"]["semantic_handoff"]["confusion_points"], [])
+        self.assertEqual(packet["stage_a"]["semantic_handoff"]["challenger_notes"], [])
 
     def test_parallel_vote_collection_preserves_role_order(self) -> None:
         stage_a_trace = build_routing_run_trace(

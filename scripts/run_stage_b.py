@@ -37,6 +37,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--prompt-version", default=StageBConfig().prompt_version)
     parser.add_argument("--provider", choices=["deterministic", "deepseek", "openai"], default="deepseek")
     parser.add_argument("--model", default=None, help="Stage B LLM model name.")
+    parser.add_argument(
+        "--collaboration-mode",
+        choices=["single", "homogeneous", "heterogeneous"],
+        default=StageBConfig().collaboration_mode,
+        help="Stage B reviewer collaboration protocol.",
+    )
+    parser.add_argument(
+        "--no-semantic-handoff",
+        action="store_true",
+        help="Disable Stage A semantic handoff fields when building the Stage B packet.",
+    )
     parser.add_argument("--max-samples", type=int, default=None, help="Optional limit for smoke runs.")
     return parser.parse_args()
 
@@ -48,7 +59,12 @@ def main() -> None:
         samples = samples[: args.max_samples]
     trace_by_sample_id = {row["sample_id"]: row for row in load_jsonl(args.traces)}
     resolver = NamespaceResolver.from_jsonl(args.descriptors)
-    config = StageBConfig(stage_b_version=args.stage_b_version, prompt_version=args.prompt_version)
+    config = StageBConfig(
+        stage_b_version=args.stage_b_version,
+        prompt_version=args.prompt_version,
+        collaboration_mode=args.collaboration_mode,
+        include_semantic_handoff=not args.no_semantic_handoff,
+    )
     client = None if args.provider == "deterministic" else make_stage_b_llm_client(args.provider, args.model)
 
     traces: list[dict] = []
@@ -74,6 +90,17 @@ def main() -> None:
     summary["trace_input_path"] = args.traces
     summary["provider"] = client.provider if client else "deterministic"
     summary["model"] = client.model if client else config.deterministic_decision_mode
+    summary["collaboration_mode"] = config.collaboration_mode
+    summary["semantic_handoff_enabled"] = bool(config.include_semantic_handoff)
+    if config.collaboration_mode in {"single", "homogeneous"}:
+        summary["role_temperatures"] = {"GeneralReviewer": config.general_reviewer_temperature}
+    else:
+        summary["role_temperatures"] = {
+            "DomainExpert": config.domain_expert_temperature,
+            "GovernanceRisk": config.governance_risk_temperature,
+            "HierarchyResolver": config.hierarchy_resolver_temperature,
+            "UserPreference": config.user_preference_temperature,
+        }
     summary["trace_validation"] = validate_traces(traces, ROOT)
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
 

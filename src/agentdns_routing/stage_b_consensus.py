@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 import os
 import uuid
 from concurrent.futures import ThreadPoolExecutor
@@ -34,6 +35,9 @@ class StageBConfig:
     related_min_explicit_support: float = 0.55
     cross_l1_related_min_score: float = 0.55
     llm_temperature: float = 0.0
+    collaboration_mode: str = "heterogeneous"
+    include_semantic_handoff: bool = True
+    general_reviewer_temperature: float | None = 0.35
     domain_expert_temperature: float | None = 0.50
     governance_risk_temperature: float | None = 0.2
     hierarchy_resolver_temperature: float | None = 0.35
@@ -57,6 +61,7 @@ ROLE_NAMES = (
     "HierarchyResolver",
     "UserPreference",
 )
+BASE_ROLE_COUNT = len(ROLE_NAMES)
 
 OVERRIDE_POSITIONS = ("support_stage_a", "propose_override")
 OVERRIDE_BASIS_TAGS = (
@@ -66,6 +71,36 @@ OVERRIDE_BASIS_TAGS = (
     "multi_intent_separation",
     "hierarchy_disambiguation",
 )
+
+
+def _role_family(role_name: str) -> str:
+    if role_name == "GeneralReviewer" or role_name.startswith("GeneralReviewer_"):
+        return "GeneralReviewer"
+    return role_name
+
+
+def _role_names(config: StageBConfig) -> tuple[str, ...]:
+    mode = str(config.collaboration_mode or "heterogeneous").lower()
+    if mode == "single":
+        return ("GeneralReviewer",)
+    if mode == "homogeneous":
+        return tuple(f"GeneralReviewer_{idx}" for idx in range(1, BASE_ROLE_COUNT + 1))
+    return ROLE_NAMES
+
+
+def _required_vote_count(base_threshold: int, role_count: int) -> int:
+    scaled = math.ceil(base_threshold * role_count / BASE_ROLE_COUNT)
+    return max(1, min(role_count, scaled))
+
+
+def _role_temperature_map(config: StageBConfig) -> dict[str, float | None]:
+    return {
+        "GeneralReviewer": config.general_reviewer_temperature,
+        "DomainExpert": config.domain_expert_temperature,
+        "GovernanceRisk": config.governance_risk_temperature,
+        "HierarchyResolver": config.hierarchy_resolver_temperature,
+        "UserPreference": config.user_preference_temperature,
+    }
 
 
 def _safe_float(value: Any, default: float = 0.0) -> float:
@@ -188,13 +223,7 @@ def make_stage_b_llm_client(provider: str, model: str | None = None) -> StageBLL
 
 
 def _role_temperature(role_name: str, config: StageBConfig) -> float:
-    override_map = {
-        "DomainExpert": config.domain_expert_temperature,
-        "GovernanceRisk": config.governance_risk_temperature,
-        "HierarchyResolver": config.hierarchy_resolver_temperature,
-        "UserPreference": config.user_preference_temperature,
-    }
-    override = override_map.get(role_name)
+    override = _role_temperature_map(config).get(_role_family(role_name))
     return config.llm_temperature if override is None else float(override)
 
 
@@ -354,7 +383,19 @@ def _positive_evidence_card(record: dict[str, Any]) -> list[str]:
     return items
 
 
-def _stage_a_semantic_handoff(stage_a: dict[str, Any]) -> dict[str, Any]:
+def _stage_a_semantic_handoff(stage_a: dict[str, Any], *, enabled: bool = True) -> dict[str, Any]:
+    if not enabled:
+        return {
+            "scene_context": "",
+            "primary_intent": "",
+            "secondary_intents": [],
+            "primary_rationale": "",
+            "secondary_rationale": "",
+            "uncertainty_summary": "",
+            "confusion_points": [],
+            "override_sensitivity": "",
+            "challenger_notes": [],
+        }
     llm_decision = stage_a.get("llm_decision", {})
     challenger_notes = llm_decision.get("challenger_notes", [])
     if not isinstance(challenger_notes, list):
@@ -506,6 +547,7 @@ def _default_role_decision(role_name: str, packet: dict[str, Any], config: Stage
 
 
 def _role_score(role_name: str, record: dict[str, Any]) -> float:
+    role_family = _role_family(role_name)
     score_r_norm = record["score_r_norm"]
     primary_fit = record["primary_fit"]
     context_fit = record["context_fit"]
@@ -518,7 +560,20 @@ def _role_score(role_name: str, record: dict[str, Any]) -> float:
     penalty_total = record["penalty_total"]
     is_segment = record.get("node_kind") == "segment"
 
-    if role_name == "DomainExpert":
+    if role_family == "GeneralReviewer":
+        value = (
+            0.26 * primary_fit
+            + 0.16 * context_fit
+            + 0.12 * hierarchy_fit
+            + 0.12 * specificity_fit
+            + 0.10 * explicit_support
+            + 0.08 * score_r_norm
+            + 0.08 * relationship_bonus
+            + 0.06 * evidence_diversity
+            + 0.04 * node_type_fit
+            - 0.18 * penalty_total
+        )
+    elif role_family == "DomainExpert":
         value = (
             0.34 * primary_fit
             + 0.16 * context_fit
@@ -529,7 +584,7 @@ def _role_score(role_name: str, record: dict[str, Any]) -> float:
             + 0.08 * relationship_bonus
             - 0.18 * penalty_total
         )
-    elif role_name == "GovernanceRisk":
+    elif role_family == "GovernanceRisk":
         value = (
             0.26 * primary_fit
             + 0.16 * context_fit
@@ -543,7 +598,7 @@ def _role_score(role_name: str, record: dict[str, Any]) -> float:
             value -= 0.12
         if record["is_high_risk"] and explicit_support > 0.0:
             value += 0.05
-    elif role_name == "HierarchyResolver":
+    elif role_family == "HierarchyResolver":
         value = (
             0.24 * hierarchy_fit
             + 0.20 * specificity_fit
@@ -573,6 +628,7 @@ def _role_score(role_name: str, record: dict[str, Any]) -> float:
 
 
 def _role_rationale(role_name: str, record: dict[str, Any]) -> str:
+    role_family = _role_family(role_name)
     reasons: list[str] = []
     if record["primary_hits"]:
         reasons.append("explicit_primary_hits")
@@ -588,7 +644,7 @@ def _role_rationale(role_name: str, record: dict[str, Any]) -> str:
         reasons.append("high_risk")
     if not reasons:
         reasons.append("score_balance")
-    return f"{role_name}: " + ", ".join(reasons[:3])
+    return f"{role_family}: " + ", ".join(reasons[:3])
 
 
 def _propose_related(
@@ -613,6 +669,7 @@ def _allow_new_related_candidate(
     *,
     fqdn: str,
     related_vote_count: int,
+    role_count: int,
     record: dict[str, Any],
     selected_primary_fqdn: str,
     selected_related: list[str],
@@ -622,7 +679,7 @@ def _allow_new_related_candidate(
 ) -> bool:
     if fqdn == selected_primary_fqdn:
         return False
-    if related_vote_count < config.related_vote_threshold:
+    if related_vote_count < _required_vote_count(config.related_vote_threshold, role_count):
         return False
     if _is_chain_duplicate(selected_primary_fqdn, fqdn, resolver):
         return False
@@ -653,6 +710,7 @@ def _propose_related_from_votes(
     records: list[dict[str, Any]],
     resolver: NamespaceResolver,
     config: StageBConfig,
+    role_count: int,
 ) -> list[str]:
     record_by_fqdn = {row["fqdn"]: row for row in records}
     selected_primary_record = record_by_fqdn.get(selected_primary_fqdn, {})
@@ -677,6 +735,7 @@ def _propose_related_from_votes(
         if _allow_new_related_candidate(
             fqdn=fqdn,
             related_vote_count=count,
+            role_count=role_count,
             record=record,
             selected_primary_fqdn=selected_primary_fqdn,
             selected_related=related,
@@ -690,22 +749,26 @@ def _propose_related_from_votes(
 
 
 def _role_focus(role_name: str) -> str:
-    if role_name == "DomainExpert":
+    role_family = _role_family(role_name)
+    if role_family == "GeneralReviewer":
+        return "重点综合判断 incumbent 与 challenger 的主任务匹配度、粒度、约束和相关 secondary 线索。"
+    if role_family == "DomainExpert":
         return "重点判断 query 核心任务与候选能力是否直接匹配。"
-    if role_name == "GovernanceRisk":
+    if role_family == "GovernanceRisk":
         return "重点判断治理、高风险、跨域约束是否支持当前主路由。"
-    if role_name == "HierarchyResolver":
+    if role_family == "HierarchyResolver":
         return "重点判断 parent-child、base-segment、sibling competition 与粒度是否匹配。"
-    if role_name == "UserPreference":
+    if role_family == "UserPreference":
         return "重点判断用户表述中的显式偏好、主次意图和 related 线索。"
     return ""
 
 
 def _role_system_prompt(role_name: str) -> str:
+    role_family = _role_family(role_name)
     return (
         "你是 AgentDNS Stage B 的慢路径共识角色。"
         "你仍然只能在给定候选集合内输出最终提案，不能发明新 fqdn。"
-        f"你当前扮演的角色是 {role_name}。"
+        f"你当前扮演的角色是 {role_family}。"
         f"{_role_focus(role_name)}"
         "请结合 query、Stage A 的语义交接、以及候选内证据卡，比较 incumbent 与主要 challenger。"
         "如果你认为 Stage A 原判存在明显弱点，可以建议 override；如果证据仍不足，也可以保留原判。"
@@ -792,7 +855,8 @@ def _build_consensus_packet(
             "escalation_reasons": list(stage_a.get("escalation_reasons", [])),
             "query_packet": stage_a.get("query_packet", {}),
             "decision_packet": stage_a.get("decision_packet", {}),
-            "semantic_handoff": _stage_a_semantic_handoff(stage_a),
+            "semantic_handoff": _stage_a_semantic_handoff(stage_a, enabled=config.include_semantic_handoff),
+            "semantic_handoff_enabled": bool(config.include_semantic_handoff),
             "routing_top_k": list(stage_a.get("routing_top_k", []))[:5],
         },
         "round_index": round_index,
@@ -888,7 +952,7 @@ def _collect_llm_votes(
 
     votes: list[dict[str, Any]] = []
     issues: list[str] = []
-    if config.parallel_role_calls and len(role_names) > 1 and client.provider != "mock":
+    if config.parallel_role_calls and len(role_names) > 1:
         max_workers = max(1, min(config.max_parallel_roles, len(role_names)))
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_by_role = {
@@ -934,6 +998,7 @@ def _aggregate_feedback_scores(
     agent_votes: list[dict[str, Any]],
     score_key: str,
     stage_a_primary: str | None,
+    role_count: int,
 ) -> list[dict[str, Any]]:
     feedback_scores: list[dict[str, Any]] = []
     for record in records:
@@ -941,8 +1006,8 @@ def _aggregate_feedback_scores(
         related_votes = [vote for vote in agent_votes if record["fqdn"] in vote.get("proposal_related_fqdns", [])]
         support_votes = [vote for vote in primary_votes if vote.get("override_position") == "support_stage_a"]
         override_votes = [vote for vote in primary_votes if vote.get("override_position") == "propose_override"]
-        vote_ratio = len(primary_votes) / len(ROLE_NAMES)
-        related_vote_ratio = len(related_votes) / len(ROLE_NAMES)
+        vote_ratio = len(primary_votes) / max(role_count, 1)
+        related_vote_ratio = len(related_votes) / max(role_count, 1)
         avg_role_score = sum(vote.get("confidence", 0.0) for vote in primary_votes) / len(primary_votes) if primary_votes else 0.0
         consensus_score = (
             0.40 * vote_ratio
@@ -1026,6 +1091,7 @@ def _resolve_primary_decision(
     record_by_fqdn: dict[str, dict[str, Any]],
     resolver: NamespaceResolver,
     config: StageBConfig,
+    role_count: int,
 ) -> tuple[str | None, dict[str, Any], list[str]]:
     notes: list[str] = []
     if not final_scores:
@@ -1059,7 +1125,8 @@ def _resolve_primary_decision(
         stage_a_record = record_by_fqdn.get(stage_a_primary, {})
         if not config.allow_primary_override:
             block_reasons.append("override_disabled")
-        if winner["vote_count"] < config.override_vote_threshold:
+        required_override_votes = _required_vote_count(config.override_vote_threshold, role_count)
+        if winner["vote_count"] < required_override_votes:
             block_reasons.append("insufficient_round1_votes")
         if winner["consensus_score_final"] < stage_a_consensus_score + config.override_score_delta:
             block_reasons.append("insufficient_score_delta")
@@ -1067,7 +1134,7 @@ def _resolve_primary_decision(
             block_reasons.append("insufficient_explicit_support")
         if any(sensitive_flags.values()):
             round2_vote_count = round2_score_map.get(winner["fqdn"], {}).get("vote_count", 0)
-            if round2_vote_count < config.override_vote_threshold:
+            if round2_vote_count < required_override_votes:
                 block_reasons.append("sensitive_override_requires_round2_consensus")
             if not winner_record.get("primary_hits"):
                 block_reasons.append("sensitive_override_requires_primary_hits")
@@ -1110,7 +1177,7 @@ def _selected_margin_and_confidence(
     return margin, confidence
 
 
-def _analyze_stage_b_skipped(stage_a: dict[str, Any]) -> dict[str, Any]:
+def _analyze_stage_b_skipped(stage_a: dict[str, Any], config: StageBConfig) -> dict[str, Any]:
     selected_primary = stage_a.get("selected_primary_fqdn")
     selected_related = list(stage_a.get("selected_related_fqdns", []))
     return {
@@ -1130,6 +1197,8 @@ def _analyze_stage_b_skipped(stage_a: dict[str, Any]) -> dict[str, Any]:
             "stage_a_confidence": round(float(stage_a.get("confidence", 0.0)), 6),
             "stage_a_margin": round(float(stage_a.get("margin", 0.0)), 6),
             "escalation_reasons": [],
+            "collaboration_mode": config.collaboration_mode,
+            "semantic_handoff_enabled": bool(config.include_semantic_handoff),
             "notes": ["Stage B skipped because Stage A did not escalate."],
         },
         "constraint_check": {"pass": True, "reasons": []},
@@ -1144,6 +1213,8 @@ def _analyze_stage_b_deterministic(
     config: StageBConfig,
 ) -> dict[str, Any]:
     stage_a = trace["stage_a"]
+    role_names = _role_names(config)
+    role_count = len(role_names)
     records = _candidate_records(trace, resolver)
     if not records:
         return {
@@ -1163,6 +1234,8 @@ def _analyze_stage_b_deterministic(
                 "stage_a_confidence": round(float(stage_a.get("confidence", 0.0)), 6),
                 "stage_a_margin": round(float(stage_a.get("margin", 0.0)), 6),
                 "escalation_reasons": list(stage_a.get("escalation_reasons", [])),
+                "collaboration_mode": config.collaboration_mode,
+                "semantic_handoff_enabled": bool(config.include_semantic_handoff),
                 "notes": ["No candidates available for Stage B consensus."],
             },
             "constraint_check": {"pass": False, "reasons": ["empty_stage_b_candidates"]},
@@ -1180,7 +1253,7 @@ def _analyze_stage_b_deterministic(
         round_index=1,
     )
     round1_votes, round1_issues = _collect_deterministic_votes(
-        ROLE_NAMES,
+        role_names,
         round1_packet,
         resolver=resolver,
         config=config,
@@ -1190,6 +1263,7 @@ def _analyze_stage_b_deterministic(
         round1_votes,
         score_key="consensus_score_round1",
         stage_a_primary=stage_a_primary,
+        role_count=role_count,
     )
 
     agent_votes: list[dict[str, Any]] = list(round1_votes)
@@ -1229,7 +1303,7 @@ def _analyze_stage_b_deterministic(
             )
             round2_packet["round1_feedback"] = feedback_scores[:2]
             round2_votes, round2_issues = _collect_deterministic_votes(
-                ROLE_NAMES,
+                role_names,
                 round2_packet,
                 resolver=resolver,
                 config=config,
@@ -1241,6 +1315,7 @@ def _analyze_stage_b_deterministic(
                 round2_votes,
                 score_key="consensus_score_round2",
                 stage_a_primary=stage_a_primary,
+                role_count=role_count,
             )
             round2_score_map = {row["fqdn"]: row for row in round2_scores}
             if sensitive_round2:
@@ -1274,6 +1349,7 @@ def _analyze_stage_b_deterministic(
         record_by_fqdn=record_by_fqdn,
         resolver=resolver,
         config=config,
+        role_count=role_count,
     )
     notes.extend(override_notes)
 
@@ -1315,6 +1391,8 @@ def _analyze_stage_b_deterministic(
             "stage_a_margin": round(float(stage_a.get("margin", 0.0)), 6),
             "escalation_reasons": list(stage_a.get("escalation_reasons", [])),
             "candidate_count": len(records),
+            "collaboration_mode": config.collaboration_mode,
+            "semantic_handoff_enabled": bool(config.include_semantic_handoff),
             "disagreement": disagreement,
             "override_attempted": override_trace["override_attempted"],
             "override_allowed": override_trace["override_allowed"],
@@ -1353,6 +1431,8 @@ def _analyze_stage_b_llm(
     config: StageBConfig,
 ) -> dict[str, Any]:
     stage_a = trace["stage_a"]
+    role_names = _role_names(config)
+    role_count = len(role_names)
     records = _candidate_records(trace, resolver)
     if not records:
         return {
@@ -1372,6 +1452,8 @@ def _analyze_stage_b_llm(
                 "stage_a_confidence": round(float(stage_a.get("confidence", 0.0)), 6),
                 "stage_a_margin": round(float(stage_a.get("margin", 0.0)), 6),
                 "escalation_reasons": list(stage_a.get("escalation_reasons", [])),
+                "collaboration_mode": config.collaboration_mode,
+                "semantic_handoff_enabled": bool(config.include_semantic_handoff),
                 "notes": ["No candidates available for Stage B consensus."],
                 "backend": config.decision_mode,
             },
@@ -1385,12 +1467,13 @@ def _analyze_stage_b_llm(
 
     stage_a_primary = stage_a.get("selected_primary_fqdn")
     round1_packet = _build_consensus_packet(sample, trace, records, resolver, config, round_index=1)
-    round1_votes, round1_issues = _collect_llm_votes(ROLE_NAMES, round1_packet, client, config, resolver=resolver)
+    round1_votes, round1_issues = _collect_llm_votes(role_names, round1_packet, client, config, resolver=resolver)
     round1_scores = _aggregate_feedback_scores(
         records,
         round1_votes,
         score_key="consensus_score_round1",
         stage_a_primary=stage_a_primary,
+        role_count=role_count,
     )
 
     all_votes = list(round1_votes)
@@ -1429,7 +1512,7 @@ def _analyze_stage_b_llm(
                 round2_candidates=round2_candidates,
             )
             round2_packet["round1_feedback"] = round1_scores[:2]
-            round2_votes, round2_issues = _collect_llm_votes(ROLE_NAMES, round2_packet, client, config, resolver=resolver)
+            round2_votes, round2_issues = _collect_llm_votes(role_names, round2_packet, client, config, resolver=resolver)
             all_votes.extend(round2_votes)
             round1_issues.extend(round2_issues)
             round2_scores = _aggregate_feedback_scores(
@@ -1437,6 +1520,7 @@ def _analyze_stage_b_llm(
                 round2_votes,
                 score_key="consensus_score_round2",
                 stage_a_primary=stage_a_primary,
+                role_count=role_count,
             )
             if sensitive_round2:
                 notes.append("Round 2 was triggered because a sensitive override attempt requires re-adjudicating winner vs Stage A primary.")
@@ -1473,6 +1557,7 @@ def _analyze_stage_b_llm(
         record_by_fqdn=record_by_fqdn,
         resolver=resolver,
         config=config,
+        role_count=role_count,
     )
     notes.extend(override_notes)
 
@@ -1483,6 +1568,7 @@ def _analyze_stage_b_llm(
         records=records,
         resolver=resolver,
         config=config,
+        role_count=role_count,
     )
 
     margin, confidence = _selected_margin_and_confidence(final_scores, selected_primary, config)
@@ -1519,6 +1605,8 @@ def _analyze_stage_b_llm(
             "stage_a_margin": round(float(stage_a.get("margin", 0.0)), 6),
             "escalation_reasons": list(stage_a.get("escalation_reasons", [])),
             "candidate_count": len(records),
+            "collaboration_mode": config.collaboration_mode,
+            "semantic_handoff_enabled": bool(config.include_semantic_handoff),
             "disagreement": disagreement,
             "override_attempted": override_trace["override_attempted"],
             "override_allowed": override_trace["override_allowed"],
@@ -1559,7 +1647,7 @@ def analyze_stage_b(
     config = config or StageBConfig()
     stage_a = trace["stage_a"]
     if not stage_a.get("escalate_to_stage_b"):
-        return _analyze_stage_b_skipped(stage_a)
+        return _analyze_stage_b_skipped(stage_a, config)
     if client is None:
         return _analyze_stage_b_deterministic(trace=trace, resolver=resolver, config=config)
     return _analyze_stage_b_llm(sample=sample, trace=trace, resolver=resolver, client=client, config=config)
