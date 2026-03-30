@@ -513,16 +513,158 @@ class StageBTestCase(unittest.TestCase):
             sample=self.samples["formal_dev_000007"],
             trace=trace,
             resolver=self.resolver,
-            config=StageBConfig(stage_b_version="stage_b_packet_capture_test"),
+            config=StageBConfig(stage_b_version="stage_b_packet_capture_test", parallel_role_calls=False),
             client=client,
         )
-        packet = client.packets[0]
-        self.assertIn("semantic_handoff", packet["stage_a"])
-        self.assertTrue(packet["stage_a"]["semantic_handoff"]["uncertainty_summary"])
-        self.assertIn("competition_view", packet["candidates"][0])
-        self.assertIn("positive_evidence_card", packet["candidates"][0])
-        self.assertIn("negative_evidence_card", packet["candidates"][0])
-        self.assertIn("secondary_recovery_card", packet["candidates"][0])
+        packet_by_role = {packet["role_view"]["role_family"]: packet for packet in client.packets[:4]}
+        domain_packet = packet_by_role["DomainExpert"]
+        self.assertIn("semantic_handoff", domain_packet["stage_a"])
+        self.assertTrue(domain_packet["stage_a"]["semantic_handoff"]["primary_rationale"])
+        self.assertIn("competition_view", domain_packet["candidates"][0])
+        self.assertIn("positive_evidence_card", domain_packet["candidates"][0])
+        self.assertIn("negative_evidence_card", domain_packet["candidates"][0])
+        user_packet = packet_by_role["UserPreference"]
+        self.assertIn("secondary_recovery_card", user_packet["candidates"][0])
+
+    def test_heterogeneous_role_packets_are_specialized(self) -> None:
+        trace = build_stage_a_llm_trace(
+            sample=self.samples["formal_dev_000007"],
+            snapshot=self.snapshots["formal_dev_000007"],
+            resolver=self.resolver,
+            client=_HeuristicStageATestClient(),
+            config=StageALLMConfig(stage_a_version="sa_llm_stage_b_specialized_packet_test"),
+        )
+        trace["stage_a"]["escalate_to_stage_b"] = True
+        trace["stage_a"]["escalation_reasons"] = ["low_confidence", "multi_intent_conflict"]
+        client = _CapturingScriptedStageBLLMClient(
+            round1={
+                role: {
+                    "proposal_primary_fqdn": trace["stage_a"]["selected_primary_fqdn"],
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.8,
+                    "rationale": f"{role}: keep",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                }
+                for role in ("DomainExpert", "GovernanceRisk", "HierarchyResolver", "UserPreference")
+            }
+        )
+        build_stage_b_trace(
+            sample=self.samples["formal_dev_000007"],
+            trace=trace,
+            resolver=self.resolver,
+            config=StageBConfig(stage_b_version="stage_b_specialized_packet_test", parallel_role_calls=False),
+            client=client,
+        )
+        packet_by_role = {packet["role_view"]["role_family"]: packet for packet in client.packets[:4]}
+        self.assertNotEqual(
+            packet_by_role["DomainExpert"]["role_view"]["focus_candidates"],
+            packet_by_role["GovernanceRisk"]["role_view"]["focus_candidates"],
+        )
+        self.assertIn("primary_rationale", packet_by_role["DomainExpert"]["stage_a"]["semantic_handoff"])
+        self.assertEqual(packet_by_role["GovernanceRisk"]["stage_a"]["semantic_handoff"]["primary_rationale"], "")
+        self.assertIn("parent_fqdn", packet_by_role["HierarchyResolver"]["candidates"][0])
+        self.assertNotIn("parent_fqdn", packet_by_role["UserPreference"]["candidates"][0])
+
+    def test_hierarchical_override_requires_hierarchy_resolver_confirmation(self) -> None:
+        base_trace = build_routing_run_trace(
+            sample=self.samples["formal_dev_000039"],
+            snapshot=self.snapshots["formal_dev_000039"],
+            resolver=self.resolver,
+            config=self.stage_a_config,
+        )
+        base_trace = self._force_stage_a_escalation(base_trace, reasons=["low_confidence", "small_margin"])
+        base_trace = self._mutate_candidate(
+            base_trace,
+            "hotel.travel.cn",
+            score_a=0.95,
+            primary_hits=["酒店"],
+            secondary_hits=[],
+            scene_hits=[],
+            specificity_fit=0.92,
+        )
+        client = _ScriptedStageBLLMClient(
+            round1={
+                "DomainExpert": {
+                    "proposal_primary_fqdn": "hotel.travel.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.92,
+                    "rationale": "DomainExpert: hotel_override",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["explicit_primary_evidence", "hierarchy_disambiguation"],
+                },
+                "GovernanceRisk": {
+                    "proposal_primary_fqdn": "hotel.travel.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.83,
+                    "rationale": "GovernanceRisk: clear",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["hierarchy_disambiguation"],
+                },
+                "HierarchyResolver": {
+                    "proposal_primary_fqdn": "chengdu.hotel.travel.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.88,
+                    "rationale": "HierarchyResolver: keep_segment",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                },
+                "UserPreference": {
+                    "proposal_primary_fqdn": "hotel.travel.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.81,
+                    "rationale": "UserPreference: generic_hotel",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["hierarchy_disambiguation"],
+                },
+            },
+            round2={
+                "DomainExpert": {
+                    "proposal_primary_fqdn": "hotel.travel.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.94,
+                    "rationale": "DomainExpert: hotel_override_round2",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["explicit_primary_evidence", "hierarchy_disambiguation"],
+                },
+                "GovernanceRisk": {
+                    "proposal_primary_fqdn": "hotel.travel.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.84,
+                    "rationale": "GovernanceRisk: clear_round2",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["hierarchy_disambiguation"],
+                },
+                "HierarchyResolver": {
+                    "proposal_primary_fqdn": "chengdu.hotel.travel.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.9,
+                    "rationale": "HierarchyResolver: keep_segment_round2",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                },
+                "UserPreference": {
+                    "proposal_primary_fqdn": "hotel.travel.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.83,
+                    "rationale": "UserPreference: generic_hotel_round2",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["hierarchy_disambiguation"],
+                },
+            },
+        )
+        trace = build_stage_b_trace(
+            sample=self.samples["formal_dev_000039"],
+            trace=base_trace,
+            resolver=self.resolver,
+            config=StageBConfig(
+                stage_b_version="stage_b_hierarchy_confirmation_test",
+                override_score_delta=0.01,
+            ),
+            client=client,
+        )
+        self.assertEqual(trace["stage_b"]["selected_primary_fqdn"], "chengdu.hotel.travel.cn")
+        self.assertIn("missing_hierarchy_confirmation", trace["stage_b"]["trust_trace"]["override_block_reasons"])
 
     def test_role_temperature_can_be_overridden_per_agent(self) -> None:
         config = StageBConfig(

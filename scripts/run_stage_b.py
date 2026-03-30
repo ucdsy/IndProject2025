@@ -49,6 +49,8 @@ def parse_args() -> argparse.Namespace:
         help="Disable Stage A semantic handoff fields when building the Stage B packet.",
     )
     parser.add_argument("--max-samples", type=int, default=None, help="Optional limit for smoke runs.")
+    parser.add_argument("--progress-every", type=int, default=25, help="Print progress every N samples.")
+    parser.add_argument("--checkpoint-every", type=int, default=50, help="Write a checkpoint trace file every N samples.")
     return parser.parse_args()
 
 
@@ -68,15 +70,33 @@ def main() -> None:
     client = None if args.provider == "deterministic" else make_stage_b_llm_client(args.provider, args.model)
 
     traces: list[dict] = []
-    for sample in samples:
+    split_name = Path(args.input).stem
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    checkpoint_path = output_dir / f"{split_name}.{config.stage_b_version}.checkpoint.jsonl"
+    for idx, sample in enumerate(samples, start=1):
         trace = trace_by_sample_id.get(sample["id"])
         if not trace:
             raise KeyError(f"Missing Stage A trace for sample_id={sample['id']}")
         traces.append(build_stage_b_trace(sample=sample, trace=trace, resolver=resolver, config=config, client=client))
+        if args.progress_every > 0 and idx % args.progress_every == 0:
+            print(
+                json.dumps(
+                    {
+                        "progress": {
+                            "completed": idx,
+                            "total": len(samples),
+                            "last_sample_id": sample["id"],
+                            "collaboration_mode": config.collaboration_mode,
+                        }
+                    },
+                    ensure_ascii=False,
+                ),
+                flush=True,
+            )
+        if args.checkpoint_every > 0 and idx % args.checkpoint_every == 0:
+            dump_jsonl(checkpoint_path, traces)
 
-    split_name = Path(args.input).stem
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
     trace_path = output_dir / f"{split_name}.{config.stage_b_version}.jsonl"
     summary_path = output_dir / f"{split_name}.{config.stage_b_version}.summary.json"
 

@@ -18,8 +18,8 @@ from .stage_a_clean import _clip, _is_chain_duplicate, _safe_primary
 
 @dataclass(frozen=True)
 class StageBConfig:
-    stage_b_version: str = "stage_b_v1_20260323_packetv2"
-    prompt_version: str = "stage_b_prompt_v3_20260323"
+    stage_b_version: str = "stage_b_v2_20260330_hetero"
+    prompt_version: str = "stage_b_prompt_v4_20260330"
     decision_mode: str = "llm_consensus_v1"
     deterministic_decision_mode: str = "consensus_minimal_v0"
     round2_margin_threshold: float = 0.10
@@ -62,6 +62,13 @@ ROLE_NAMES = (
     "UserPreference",
 )
 BASE_ROLE_COUNT = len(ROLE_NAMES)
+ROLE_VIEW_PRIORITY = {
+    "GeneralReviewer": "general_review",
+    "DomainExpert": "core_task_match",
+    "GovernanceRisk": "risk_and_boundary_check",
+    "HierarchyResolver": "hierarchy_and_granularity",
+    "UserPreference": "primary_secondary_split",
+}
 
 OVERRIDE_POSITIONS = ("support_stage_a", "propose_override")
 OVERRIDE_BASIS_TAGS = (
@@ -86,6 +93,10 @@ def _role_names(config: StageBConfig) -> tuple[str, ...]:
     if mode == "homogeneous":
         return tuple(f"GeneralReviewer_{idx}" for idx in range(1, BASE_ROLE_COUNT + 1))
     return ROLE_NAMES
+
+
+def _role_view_priority(role_name: str) -> str:
+    return ROLE_VIEW_PRIORITY.get(_role_family(role_name), "general_review")
 
 
 def _required_vote_count(base_threshold: int, role_count: int) -> int:
@@ -225,6 +236,311 @@ def make_stage_b_llm_client(provider: str, model: str | None = None) -> StageBLL
 def _role_temperature(role_name: str, config: StageBConfig) -> float:
     override = _role_temperature_map(config).get(_role_family(role_name))
     return config.llm_temperature if override is None else float(override)
+
+
+def _limited_candidate_fields(record: dict[str, Any], keep: tuple[str, ...]) -> dict[str, Any]:
+    return {key: copy.deepcopy(record.get(key)) for key in keep if key in record}
+
+
+def _role_semantic_handoff_view(stage_a_view: dict[str, Any], role_name: str) -> dict[str, Any]:
+    handoff = copy.deepcopy(stage_a_view.get("semantic_handoff", {}))
+    base = {
+        "scene_context": handoff.get("scene_context", ""),
+        "primary_intent": handoff.get("primary_intent", ""),
+        "secondary_intents": copy.deepcopy(handoff.get("secondary_intents", [])),
+        "primary_rationale": handoff.get("primary_rationale", ""),
+        "secondary_rationale": handoff.get("secondary_rationale", ""),
+        "uncertainty_summary": handoff.get("uncertainty_summary", ""),
+        "confusion_points": copy.deepcopy(handoff.get("confusion_points", [])),
+        "override_sensitivity": handoff.get("override_sensitivity", ""),
+        "challenger_notes": copy.deepcopy(handoff.get("challenger_notes", [])),
+    }
+    role_family = _role_family(role_name)
+    if role_family == "GeneralReviewer":
+        return base
+    if role_family == "DomainExpert":
+        keep = (
+            "scene_context",
+            "primary_intent",
+            "primary_rationale",
+            "override_sensitivity",
+            "challenger_notes",
+        )
+    elif role_family == "GovernanceRisk":
+        keep = (
+            "scene_context",
+            "uncertainty_summary",
+            "confusion_points",
+            "override_sensitivity",
+        )
+    elif role_family == "HierarchyResolver":
+        keep = (
+            "primary_intent",
+            "uncertainty_summary",
+            "confusion_points",
+            "challenger_notes",
+        )
+    else:
+        keep = (
+            "scene_context",
+            "primary_intent",
+            "secondary_intents",
+            "secondary_rationale",
+            "uncertainty_summary",
+            "confusion_points",
+            "challenger_notes",
+        )
+    return {
+        key: (copy.deepcopy(base[key]) if key in keep else ([] if isinstance(base[key], list) else ""))
+        for key in base
+    }
+
+
+def _role_stage_a_view(stage_a_view: dict[str, Any], role_name: str) -> dict[str, Any]:
+    role_family = _role_family(role_name)
+    if role_family == "GeneralReviewer":
+        return copy.deepcopy(stage_a_view)
+    shared = {
+        "selected_primary_fqdn": stage_a_view.get("selected_primary_fqdn"),
+        "selected_related_fqdns": copy.deepcopy(stage_a_view.get("selected_related_fqdns", [])),
+        "confidence": stage_a_view.get("confidence"),
+        "margin": stage_a_view.get("margin"),
+        "escalation_reasons": copy.deepcopy(stage_a_view.get("escalation_reasons", [])),
+        "semantic_handoff_enabled": bool(stage_a_view.get("semantic_handoff_enabled")),
+        "semantic_handoff": _role_semantic_handoff_view(stage_a_view, role_name),
+    }
+    if role_family in {"DomainExpert", "HierarchyResolver"}:
+        shared["routing_top_k"] = copy.deepcopy(stage_a_view.get("routing_top_k", []))[:4]
+    return shared
+
+
+def _top_candidates_for_role(
+    packet: dict[str, Any],
+    role_name: str,
+) -> list[str]:
+    role_family = _role_family(role_name)
+    candidates = list(packet.get("candidates", []))
+    stage_a_primary = packet.get("stage_a", {}).get("selected_primary_fqdn")
+    if role_family == "GeneralReviewer":
+        return [row["fqdn"] for row in candidates]
+    chosen: list[str] = []
+
+    def add_fqdn(fqdn: str | None) -> None:
+        if fqdn and fqdn not in chosen:
+            chosen.append(fqdn)
+
+    add_fqdn(stage_a_primary)
+    for fqdn in packet.get("round2_candidates", []) or []:
+        add_fqdn(fqdn)
+    ranked = sorted(candidates, key=lambda row: (row.get("score_a", 0.0), row.get("score_r_norm", 0.0)), reverse=True)
+    if role_family == "DomainExpert":
+        domain_ranked = sorted(
+            candidates,
+            key=lambda row: (
+                row.get("primary_fit", 0.0),
+                row.get("context_fit", 0.0),
+                row.get("explicit_support", 0.0),
+                row.get("score_a", 0.0),
+            ),
+            reverse=True,
+        )
+        for row in domain_ranked[:4]:
+            add_fqdn(row["fqdn"])
+    elif role_family == "GovernanceRisk":
+        for row in ranked:
+            relation = row.get("competition_view", {}).get("relation_to_stage_a_primary")
+            if row.get("is_high_risk") or relation == "cross_l1_competitor":
+                add_fqdn(row["fqdn"])
+        for row in ranked[:3]:
+            add_fqdn(row["fqdn"])
+    elif role_family == "HierarchyResolver":
+        hierarchy_ranked = sorted(
+            candidates,
+            key=lambda row: (
+                row.get("hierarchy_fit", 0.0),
+                row.get("specificity_fit", 0.0),
+                row.get("relationship_bonus", 0.0),
+                row.get("score_a", 0.0),
+            ),
+            reverse=True,
+        )
+        for row in hierarchy_ranked:
+            relation = row.get("competition_view", {}).get("relation_to_stage_a_primary")
+            if relation in {"same_chain_competitor", "same_l1_competitor", "incumbent"}:
+                add_fqdn(row["fqdn"])
+        for row in hierarchy_ranked[:4]:
+            add_fqdn(row["fqdn"])
+    else:
+        challenger_notes = packet.get("stage_a", {}).get("semantic_handoff", {}).get("challenger_notes", [])
+        for item in challenger_notes:
+            add_fqdn(item.get("fqdn") if isinstance(item, dict) else None)
+        preference_ranked = sorted(
+            candidates,
+            key=lambda row: (
+                1 if row.get("secondary_hits") else 0,
+                1 if row.get("primary_hits") else 0,
+                row.get("explicit_support", 0.0),
+                row.get("score_related", 0.0),
+            ),
+            reverse=True,
+        )
+        for row in preference_ranked[:5]:
+            add_fqdn(row["fqdn"])
+    return chosen[:5]
+
+
+def _candidate_view_for_role(record: dict[str, Any], role_name: str) -> dict[str, Any]:
+    role_family = _role_family(role_name)
+    common = (
+        "fqdn",
+        "score_a",
+        "score_related",
+        "score_r_norm",
+        "primary_fit",
+        "context_fit",
+        "hierarchy_fit",
+        "specificity_fit",
+        "evidence_diversity",
+        "node_type_fit",
+        "relationship_bonus",
+        "penalty_total",
+        "explicit_support",
+        "node_kind",
+        "is_high_risk",
+        "primary_hits",
+        "secondary_hits",
+        "scene_hits",
+    )
+    if role_family == "GeneralReviewer":
+        return copy.deepcopy(record)
+    if role_family == "DomainExpert":
+        keep = common + (
+            "desc",
+            "aliases",
+            "l1",
+            "l2",
+            "segment",
+            "primary_hits",
+            "positive_evidence_card",
+            "negative_evidence_card",
+            "stage_a_llm_task_fit",
+            "stage_a_llm_primary_fit",
+            "stage_a_llm_evidence_for",
+            "competition_view",
+        )
+    elif role_family == "GovernanceRisk":
+        keep = common + (
+            "l1",
+            "l2",
+            "segment",
+            "node_kind",
+            "negative_evidence_card",
+            "competition_view",
+            "stage_a_llm_evidence_against",
+        )
+    elif role_family == "HierarchyResolver":
+        keep = common + (
+            "l1",
+            "l2",
+            "segment",
+            "parent_fqdn",
+            "matched_phrases",
+            "positive_evidence_card",
+            "negative_evidence_card",
+            "competition_view",
+        )
+    else:
+        keep = common + (
+            "aliases",
+            "primary_hits",
+            "secondary_hits",
+            "scene_hits",
+            "positive_evidence_card",
+            "negative_evidence_card",
+            "secondary_recovery_card",
+            "competition_view",
+            "stage_a_llm_related_fit",
+            "stage_a_llm_specificity_judgement",
+            "stage_a_llm_evidence_for",
+            "stage_a_llm_evidence_against",
+        )
+    return _limited_candidate_fields(record, keep)
+
+
+def _role_decision_scope(role_name: str) -> dict[str, Any]:
+    role_family = _role_family(role_name)
+    if role_family == "GeneralReviewer":
+        return {
+            "priority": "general_review",
+            "must_confirm": ["main task match", "primary vs related split"],
+            "prefer_keep_when": ["evidence remains broadly ambiguous"],
+        }
+    if role_family == "DomainExpert":
+        return {
+            "priority": "core_task_match",
+            "must_confirm": ["who matches the main task best"],
+            "prefer_keep_when": ["the best challenger lacks stronger primary evidence"],
+        }
+    if role_family == "GovernanceRisk":
+        return {
+            "priority": "risk_and_boundary_check",
+            "must_confirm": ["whether an override violates high-risk or cross-domain constraints"],
+            "prefer_keep_when": ["risk or boundary evidence is missing"],
+        }
+    if role_family == "HierarchyResolver":
+        return {
+            "priority": "hierarchy_and_granularity",
+            "must_confirm": ["whether incumbent and challenger differ mainly by hierarchy or granularity"],
+            "prefer_keep_when": ["hierarchy evidence is weak or non-comparative"],
+        }
+    return {
+        "priority": "primary_secondary_split",
+        "must_confirm": ["whether the incumbent is actually a secondary or support intent"],
+        "prefer_keep_when": ["user preference or secondary anchors are not explicit enough"],
+    }
+
+
+def _build_role_packet(packet: dict[str, Any], role_name: str, config: StageBConfig) -> dict[str, Any]:
+    role_family = _role_family(role_name)
+    if str(config.collaboration_mode).lower() != "heterogeneous" or role_family == "GeneralReviewer":
+        role_packet = copy.deepcopy(packet)
+        role_packet["role_view"] = {
+            "role_family": role_family,
+            "priority": _role_view_priority(role_name),
+            "candidate_count": len(role_packet.get("candidates", [])),
+            "specialized": False,
+        }
+        return role_packet
+
+    role_packet: dict[str, Any] = {
+        "sample_id": packet.get("sample_id"),
+        "namespace_version": packet.get("namespace_version"),
+        "stage_r_version": packet.get("stage_r_version"),
+        "stage_a_version": packet.get("stage_a_version"),
+        "stage_b_version": packet.get("stage_b_version"),
+        "prompt_version": packet.get("prompt_version"),
+        "query": packet.get("query", ""),
+        "context": copy.deepcopy(packet.get("context", {})),
+        "round_index": packet.get("round_index", 1),
+        "stage_a": _role_stage_a_view(packet.get("stage_a", {}), role_name),
+        "role_scope": _role_decision_scope(role_name),
+        "role_view": {
+            "role_family": role_family,
+            "priority": _role_view_priority(role_name),
+            "specialized": True,
+        },
+    }
+    if packet.get("round2_candidates"):
+        role_packet["round2_candidates"] = copy.deepcopy(packet["round2_candidates"])
+    if packet.get("round1_feedback"):
+        role_packet["round1_feedback"] = copy.deepcopy(packet["round1_feedback"])
+
+    focus_fqdns = _top_candidates_for_role(packet, role_name)
+    focused_candidates = [row for row in packet.get("candidates", []) if row.get("fqdn") in set(focus_fqdns)]
+    role_packet["candidates"] = [_candidate_view_for_role(row, role_name) for row in focused_candidates]
+    role_packet["role_view"]["candidate_count"] = len(role_packet["candidates"])
+    role_packet["role_view"]["focus_candidates"] = [row.get("fqdn") for row in role_packet["candidates"]]
+    return role_packet
 
 
 def _candidate_records(trace: dict[str, Any], resolver: NamespaceResolver) -> list[dict[str, Any]]:
@@ -751,16 +1067,44 @@ def _propose_related_from_votes(
 def _role_focus(role_name: str) -> str:
     role_family = _role_family(role_name)
     if role_family == "GeneralReviewer":
-        return "重点综合判断 incumbent 与 challenger 的主任务匹配度、粒度、约束和相关 secondary 线索。"
+        return "你要综合判断 incumbent 与 challenger 的主任务匹配度、粒度、约束和相关 secondary 线索。"
     if role_family == "DomainExpert":
-        return "重点判断 query 核心任务与候选能力是否直接匹配。"
+        return "你只负责判断 query 核心任务与候选能力是否直接匹配，不要替风险或层级角色做决定。"
     if role_family == "GovernanceRisk":
-        return "重点判断治理、高风险、跨域约束是否支持当前主路由。"
+        return "你只负责判断治理、高风险、跨域边界是否允许 override；若风险证据不足，应保守支持原判。"
     if role_family == "HierarchyResolver":
-        return "重点判断 parent-child、base-segment、sibling competition 与粒度是否匹配。"
+        return "你只负责判断 parent-child、base-segment、sibling competition 与粒度是否匹配。"
     if role_family == "UserPreference":
-        return "重点判断用户表述中的显式偏好、主次意图和 related 线索。"
+        return "你只负责判断用户显式偏好、主次意图和 related 线索，不要替层级或风控角色做决定。"
     return ""
+
+
+def _role_prompt_rules(role_name: str) -> str:
+    role_family = _role_family(role_name)
+    if role_family == "GeneralReviewer":
+        return (
+            "你需要给出综合复核结论。"
+            "若 challenger 同时拥有更强主任务证据且没有明显结构性硬伤，可建议 override。"
+        )
+    if role_family == "DomainExpert":
+        return (
+            "你优先比较 incumbent 与 challenger 谁更像主任务。"
+            "如果 challenger 没有更强 primary evidence，请保守支持原判。"
+        )
+    if role_family == "GovernanceRisk":
+        return (
+            "你只做风险放行判断。"
+            "若没有明确看到 challenger 在 high-risk 或 cross-domain 上更安全，不要支持 override。"
+        )
+    if role_family == "HierarchyResolver":
+        return (
+            "你只处理层级和粒度冲突。"
+            "只有当 incumbent 明显 overspecific / underspecific 或 hierarchy mismatch 时，才支持 override。"
+        )
+    return (
+        "你只处理 primary / secondary 分离和用户偏好。"
+        "如果 incumbent 更像 secondary 或补充诉求，而 challenger 更像主任务，可支持 override。"
+    )
 
 
 def _role_system_prompt(role_name: str) -> str:
@@ -770,10 +1114,11 @@ def _role_system_prompt(role_name: str) -> str:
         "你仍然只能在给定候选集合内输出最终提案，不能发明新 fqdn。"
         f"你当前扮演的角色是 {role_family}。"
         f"{_role_focus(role_name)}"
+        f"{_role_prompt_rules(role_name)}"
         "请结合 query、Stage A 的语义交接、以及候选内证据卡，比较 incumbent 与主要 challenger。"
-        "如果你认为 Stage A 原判存在明显弱点，可以建议 override；如果证据仍不足，也可以保留原判。"
-        "请尽量说明 primary 为什么更像主任务，related 为什么更像次要诉求，以及当前最大的歧义点是什么。"
-        "你必须显式声明自己是支持 Stage A 原判，还是建议 override。"
+        "如果你的视图里没有足够证据支持 challenger，请保守支持 Stage A 原判。"
+        "请尽量说明 primary 为什么更像主任务，related 为什么更像次要诉求，以及你所负责维度上的最大歧义点。"
+        "你必须显式声明自己是支持 Stage A 原判，还是建议 override；不要替其他角色补做超出职责边界的判断。"
         "输出必须是单个 JSON 对象，不能附带散文解释。"
     )
 
@@ -791,7 +1136,8 @@ def _role_user_prompt(role_name: str, packet: dict[str, Any]) -> str:
         "7. override_position 只能是 support_stage_a 或 propose_override。\n"
         "8. 若 override_position=propose_override，可用的 override_basis_tags 仅限："
         "explicit_primary_evidence, specificity_gain, risk_requirement, multi_intent_separation, hierarchy_disambiguation。\n"
-        "9. 请优先利用 semantic_handoff、competition_view、positive_evidence_card、negative_evidence_card 做判断，不要只重复旧分数。\n"
+        "9. 请优先利用你当前 role_view 下可见的证据做判断，不要假设被隐藏的字段。\n"
+        "10. 若你的职责维度证据不足，请保守支持原判，而不是猜测。\n"
         f"当前角色：{role_name}\n\n"
         f"{json.dumps(packet, ensure_ascii=False, indent=2)}"
     )
@@ -929,15 +1275,16 @@ def _collect_llm_votes(
     client: StageBLLMClient,
     config: StageBConfig,
     resolver: NamespaceResolver,
-) -> tuple[list[dict[str, Any]], list[str]]:
-    def collect_one(role_name: str) -> tuple[dict[str, Any], list[str]]:
+) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
+    def collect_one(role_name: str) -> tuple[dict[str, Any], list[str], dict[str, Any]]:
+        role_packet = _build_role_packet(packet, role_name, config)
         try:
-            raw_vote, raw_response = client.adjudicate(role_name, packet, config)
-            vote, vote_issues = _sanitize_role_vote(role_name, raw_vote, packet, resolver=resolver)
+            raw_vote, raw_response = client.adjudicate(role_name, role_packet, config)
+            vote, vote_issues = _sanitize_role_vote(role_name, raw_vote, role_packet, resolver=resolver)
         except Exception as exc:  # pragma: no cover - integration/runtime behavior
             vote = {
                 "agent": role_name,
-                "proposal_primary_fqdn": packet["stage_a"]["selected_primary_fqdn"],
+                "proposal_primary_fqdn": role_packet["stage_a"]["selected_primary_fqdn"],
                 "proposal_related_fqdns": [],
                 "confidence": 0.0,
                 "rationale": f"{role_name}: llm_error:{type(exc).__name__}",
@@ -946,12 +1293,22 @@ def _collect_llm_votes(
             }
             vote_issues = [f"{role_name}:llm_error:{type(exc).__name__}"]
             raw_response = str(exc)
-        vote["round"] = packet["round_index"]
+        vote["round"] = role_packet["round_index"]
+        vote["role_family"] = _role_family(role_name)
+        vote["role_view_priority"] = role_packet.get("role_view", {}).get("priority")
         vote["raw_response"] = raw_response
-        return vote, vote_issues
+        return vote, vote_issues, {
+            "agent": role_name,
+            "role_family": _role_family(role_name),
+            "priority": role_packet.get("role_view", {}).get("priority"),
+            "specialized": role_packet.get("role_view", {}).get("specialized"),
+            "candidate_count": role_packet.get("role_view", {}).get("candidate_count"),
+            "focus_candidates": role_packet.get("role_view", {}).get("focus_candidates", []),
+        }
 
     votes: list[dict[str, Any]] = []
     issues: list[str] = []
+    packet_views: list[dict[str, Any]] = []
     if config.parallel_role_calls and len(role_names) > 1:
         max_workers = max(1, min(config.max_parallel_roles, len(role_names)))
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -964,16 +1321,18 @@ def _collect_llm_votes(
                 for role_name, future in future_by_role.items()
             }
         for role_name in role_names:
-            vote, vote_issues = results[role_name]
+            vote, vote_issues, packet_view = results[role_name]
             votes.append(vote)
             issues.extend(vote_issues)
-        return votes, issues
+            packet_views.append(packet_view)
+        return votes, issues, packet_views
 
     for role_name in role_names:
-        vote, vote_issues = collect_one(role_name)
+        vote, vote_issues, packet_view = collect_one(role_name)
         votes.append(vote)
         issues.extend(vote_issues)
-    return votes, issues
+        packet_views.append(packet_view)
+    return votes, issues, packet_views
 
 
 def _collect_deterministic_votes(
@@ -981,16 +1340,30 @@ def _collect_deterministic_votes(
     packet: dict[str, Any],
     resolver: NamespaceResolver,
     config: StageBConfig,
-) -> tuple[list[dict[str, Any]], list[str]]:
+) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
     votes: list[dict[str, Any]] = []
     issues: list[str] = []
+    packet_views: list[dict[str, Any]] = []
     for role_name in role_names:
-        raw_vote = _default_role_decision(role_name=role_name, packet=packet, config=config)
-        vote, vote_issues = _sanitize_role_vote(role_name, raw_vote, packet, resolver=resolver)
-        vote["round"] = packet["round_index"]
+        role_packet = _build_role_packet(packet, role_name, config)
+        raw_vote = _default_role_decision(role_name=role_name, packet=role_packet, config=config)
+        vote, vote_issues = _sanitize_role_vote(role_name, raw_vote, role_packet, resolver=resolver)
+        vote["round"] = role_packet["round_index"]
+        vote["role_family"] = _role_family(role_name)
+        vote["role_view_priority"] = role_packet.get("role_view", {}).get("priority")
         votes.append(vote)
         issues.extend(vote_issues)
-    return votes, issues
+        packet_views.append(
+            {
+                "agent": role_name,
+                "role_family": _role_family(role_name),
+                "priority": role_packet.get("role_view", {}).get("priority"),
+                "specialized": role_packet.get("role_view", {}).get("specialized"),
+                "candidate_count": role_packet.get("role_view", {}).get("candidate_count"),
+                "focus_candidates": role_packet.get("role_view", {}).get("focus_candidates", []),
+            }
+        )
+    return votes, issues, packet_views
 
 
 def _aggregate_feedback_scores(
@@ -1082,6 +1455,55 @@ def _aggregate_override_histogram(agent_votes: list[dict[str, Any]], stage_a_pri
     )
 
 
+def _override_supporting_role_families(
+    agent_votes: list[dict[str, Any]],
+    proposal_primary: str | None,
+) -> set[str]:
+    families: set[str] = set()
+    if not proposal_primary:
+        return families
+    for vote in agent_votes:
+        if (
+            vote.get("proposal_primary_fqdn") == proposal_primary
+            and vote.get("override_position") == "propose_override"
+        ):
+            families.add(_role_family(vote.get("agent", "")))
+    return families
+
+
+def _responsibility_block_reasons(
+    *,
+    config: StageBConfig,
+    winner: dict[str, Any],
+    stage_a_primary: str | None,
+    agent_votes: list[dict[str, Any]],
+    sensitive_flags: dict[str, bool],
+) -> list[str]:
+    if str(config.collaboration_mode).lower() != "heterogeneous":
+        return []
+    if not stage_a_primary or winner.get("fqdn") == stage_a_primary:
+        return []
+    support_families = _override_supporting_role_families(agent_votes, winner.get("fqdn"))
+    winner_tags = set((winner.get("override_basis_histogram") or {}).keys())
+    reasons: list[str] = []
+    if not ({"DomainExpert", "UserPreference"} & support_families):
+        reasons.append("missing_task_owner_confirmation")
+    if "multi_intent_separation" in winner_tags and "UserPreference" not in support_families:
+        reasons.append("missing_user_preference_confirmation")
+    if (
+        sensitive_flags.get("high_risk_override")
+        or sensitive_flags.get("cross_l1_override")
+        or "risk_requirement" in winner_tags
+    ) and "GovernanceRisk" not in support_families:
+        reasons.append("missing_governance_clearance")
+    if (
+        sensitive_flags.get("hierarchical_override")
+        or "hierarchy_disambiguation" in winner_tags
+    ) and "HierarchyResolver" not in support_families:
+        reasons.append("missing_hierarchy_confirmation")
+    return reasons
+
+
 def _resolve_primary_decision(
     *,
     stage_a_primary: str | None,
@@ -1092,6 +1514,7 @@ def _resolve_primary_decision(
     resolver: NamespaceResolver,
     config: StageBConfig,
     role_count: int,
+    agent_votes: list[dict[str, Any]],
 ) -> tuple[str | None, dict[str, Any], list[str]]:
     notes: list[str] = []
     if not final_scores:
@@ -1143,11 +1566,20 @@ def _resolve_primary_decision(
         if sensitive_flags.get("cross_l1_override"):
             if winner.get("stage_a_score", 0.0) < stage_a_record.get("score_a", 0.0) + config.cross_l1_stage_a_score_delta:
                 block_reasons.append("cross_l1_override_requires_stage_a_score_gain")
+        block_reasons.extend(
+            _responsibility_block_reasons(
+                config=config,
+                winner=winner,
+                stage_a_primary=stage_a_primary,
+                agent_votes=agent_votes,
+                sensitive_flags=sensitive_flags,
+            )
+        )
         override_allowed = not block_reasons
         if override_allowed:
-            notes.append("Stage B override was allowed after generic consensus checks passed.")
+            notes.append("Stage B override was allowed after consensus checks and role responsibility checks passed.")
         else:
-            notes.append("Stage B kept Stage A primary because generic override checks were not satisfied.")
+            notes.append("Stage B kept Stage A primary because consensus checks or role responsibility checks were not satisfied.")
             selected_primary = stage_a_primary
     return selected_primary, {
         "override_attempted": override_attempted,
@@ -1252,7 +1684,7 @@ def _analyze_stage_b_deterministic(
         config=config,
         round_index=1,
     )
-    round1_votes, round1_issues = _collect_deterministic_votes(
+    round1_votes, round1_issues, round1_packet_views = _collect_deterministic_votes(
         role_names,
         round1_packet,
         resolver=resolver,
@@ -1302,7 +1734,7 @@ def _analyze_stage_b_deterministic(
                 round2_candidates=round2_candidates,
             )
             round2_packet["round1_feedback"] = feedback_scores[:2]
-            round2_votes, round2_issues = _collect_deterministic_votes(
+            round2_votes, round2_issues, _round2_packet_views = _collect_deterministic_votes(
                 role_names,
                 round2_packet,
                 resolver=resolver,
@@ -1350,6 +1782,7 @@ def _analyze_stage_b_deterministic(
         resolver=resolver,
         config=config,
         role_count=role_count,
+        agent_votes=agent_votes,
     )
     notes.extend(override_notes)
 
@@ -1411,6 +1844,7 @@ def _analyze_stage_b_deterministic(
                 and vote.get("proposal_primary_fqdn") != stage_a_primary
             ),
             "override_basis_histogram": _aggregate_override_histogram(agent_votes, stage_a_primary),
+            "role_packet_views": round1_packet_views,
             "notes": notes,
             "backend": "deterministic_v0",
         },
@@ -1467,7 +1901,7 @@ def _analyze_stage_b_llm(
 
     stage_a_primary = stage_a.get("selected_primary_fqdn")
     round1_packet = _build_consensus_packet(sample, trace, records, resolver, config, round_index=1)
-    round1_votes, round1_issues = _collect_llm_votes(role_names, round1_packet, client, config, resolver=resolver)
+    round1_votes, round1_issues, round1_packet_views = _collect_llm_votes(role_names, round1_packet, client, config, resolver=resolver)
     round1_scores = _aggregate_feedback_scores(
         records,
         round1_votes,
@@ -1512,7 +1946,7 @@ def _analyze_stage_b_llm(
                 round2_candidates=round2_candidates,
             )
             round2_packet["round1_feedback"] = round1_scores[:2]
-            round2_votes, round2_issues = _collect_llm_votes(role_names, round2_packet, client, config, resolver=resolver)
+            round2_votes, round2_issues, _round2_packet_views = _collect_llm_votes(role_names, round2_packet, client, config, resolver=resolver)
             all_votes.extend(round2_votes)
             round1_issues.extend(round2_issues)
             round2_scores = _aggregate_feedback_scores(
@@ -1558,6 +1992,7 @@ def _analyze_stage_b_llm(
         resolver=resolver,
         config=config,
         role_count=role_count,
+        agent_votes=all_votes,
     )
     notes.extend(override_notes)
 
@@ -1625,6 +2060,7 @@ def _analyze_stage_b_llm(
                 and vote.get("proposal_primary_fqdn") != stage_a_primary
             ),
             "override_basis_histogram": _aggregate_override_histogram(all_votes, stage_a_primary),
+            "role_packet_views": round1_packet_views,
             "notes": notes,
             "backend": config.decision_mode,
         },
