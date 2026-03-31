@@ -666,6 +666,210 @@ class StageBTestCase(unittest.TestCase):
         self.assertEqual(trace["stage_b"]["selected_primary_fqdn"], "chengdu.hotel.travel.cn")
         self.assertIn("missing_hierarchy_confirmation", trace["stage_b"]["trust_trace"]["override_block_reasons"])
 
+    def test_heterogeneous_role_signals_are_recorded_in_feedback_scores(self) -> None:
+        base_trace = build_routing_run_trace(
+            sample=self.samples["formal_dev_000016"],
+            snapshot=self.snapshots["formal_dev_000016"],
+            resolver=self.resolver,
+            config=self.stage_a_config,
+        )
+        base_trace = self._force_stage_a_escalation(base_trace, reasons=["cross_domain_conflict", "high_risk"])
+        client = _ScriptedStageBLLMClient(
+            round1={
+                "DomainExpert": {
+                    "proposal_primary_fqdn": "tutoring.education.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.90,
+                    "rationale": "DomainExpert: tutoring core task",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["explicit_primary_evidence"],
+                    "role_signal_polarity": "support",
+                    "role_signal_target_fqdn": "tutoring.education.cn",
+                    "role_signal_strength": 0.90,
+                    "role_signal_note": "task_match favors challenger",
+                },
+                "GovernanceRisk": {
+                    "proposal_primary_fqdn": "invoice.finance.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.84,
+                    "rationale": "GovernanceRisk: tutoring riskier",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                    "role_signal_polarity": "block",
+                    "role_signal_target_fqdn": "tutoring.education.cn",
+                    "role_signal_strength": 0.88,
+                    "role_signal_note": "cross-domain risk block",
+                },
+                "HierarchyResolver": {
+                    "proposal_primary_fqdn": "invoice.finance.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.76,
+                    "rationale": "HierarchyResolver: no hierarchy issue",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                    "role_signal_polarity": "neutral",
+                    "role_signal_target_fqdn": None,
+                    "role_signal_strength": 0.0,
+                    "role_signal_note": "not hierarchy-sensitive",
+                },
+                "UserPreference": {
+                    "proposal_primary_fqdn": "tutoring.education.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.87,
+                    "rationale": "UserPreference: primary better matches tutoring",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["multi_intent_separation"],
+                    "role_signal_polarity": "support",
+                    "role_signal_target_fqdn": "tutoring.education.cn",
+                    "role_signal_strength": 0.87,
+                    "role_signal_note": "intent split favors challenger",
+                },
+            }
+        )
+        trace = build_stage_b_trace(
+            sample=self.samples["formal_dev_000016"],
+            trace=base_trace,
+            resolver=self.resolver,
+            config=StageBConfig(stage_b_version="stage_b_role_signal_test"),
+            client=client,
+        )
+        challenger_row = next(
+            row for row in trace["stage_b"]["feedback_scores"] if row["fqdn"] == "tutoring.education.cn"
+        )
+        self.assertGreater(challenger_row["role_signal_score"], 0.0)
+        self.assertIn("DomainExpert", challenger_row["role_signal_support_families"])
+        self.assertIn("UserPreference", challenger_row["role_signal_support_families"])
+        self.assertIn("GovernanceRisk", challenger_row["role_signal_block_families"])
+
+    def test_governance_block_signal_blocks_override(self) -> None:
+        base_trace = build_routing_run_trace(
+            sample=self.samples["formal_dev_000016"],
+            snapshot=self.snapshots["formal_dev_000016"],
+            resolver=self.resolver,
+            config=self.stage_a_config,
+        )
+        base_trace = self._force_stage_a_escalation(base_trace, reasons=["cross_domain_conflict", "high_risk"])
+        base_trace = self._mutate_candidate(
+            base_trace,
+            "tutoring.education.cn",
+            score_a=0.96,
+            primary_hits=["辅导", "导师"],
+            secondary_hits=[],
+            scene_hits=["培训"],
+            specificity_fit=0.94,
+        )
+        client = _ScriptedStageBLLMClient(
+            round1={
+                "DomainExpert": {
+                    "proposal_primary_fqdn": "tutoring.education.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.92,
+                    "rationale": "DomainExpert: tutoring override",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["explicit_primary_evidence", "risk_requirement"],
+                    "role_signal_polarity": "support",
+                    "role_signal_target_fqdn": "tutoring.education.cn",
+                    "role_signal_strength": 0.92,
+                    "role_signal_note": "task match favors challenger",
+                },
+                "GovernanceRisk": {
+                    "proposal_primary_fqdn": "invoice.finance.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.91,
+                    "rationale": "GovernanceRisk: block tutoring",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                    "role_signal_polarity": "block",
+                    "role_signal_target_fqdn": "tutoring.education.cn",
+                    "role_signal_strength": 0.91,
+                    "role_signal_note": "risk block",
+                },
+                "HierarchyResolver": {
+                    "proposal_primary_fqdn": "tutoring.education.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.78,
+                    "rationale": "HierarchyResolver: neutral",
+                    "override_position": "propose_override",
+                    "override_basis_tags": [],
+                    "role_signal_polarity": "neutral",
+                    "role_signal_target_fqdn": None,
+                    "role_signal_strength": 0.0,
+                    "role_signal_note": "no hierarchy issue",
+                },
+                "UserPreference": {
+                    "proposal_primary_fqdn": "tutoring.education.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.88,
+                    "rationale": "UserPreference: tutoring preferred",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["multi_intent_separation"],
+                    "role_signal_polarity": "support",
+                    "role_signal_target_fqdn": "tutoring.education.cn",
+                    "role_signal_strength": 0.88,
+                    "role_signal_note": "intent split supports challenger",
+                },
+            },
+            round2={
+                "DomainExpert": {
+                    "proposal_primary_fqdn": "tutoring.education.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.93,
+                    "rationale": "DomainExpert: tutoring override round2",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["explicit_primary_evidence", "risk_requirement"],
+                    "role_signal_polarity": "support",
+                    "role_signal_target_fqdn": "tutoring.education.cn",
+                    "role_signal_strength": 0.93,
+                    "role_signal_note": "task match round2",
+                },
+                "GovernanceRisk": {
+                    "proposal_primary_fqdn": "invoice.finance.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.92,
+                    "rationale": "GovernanceRisk: still block tutoring",
+                    "override_position": "support_stage_a",
+                    "override_basis_tags": [],
+                    "role_signal_polarity": "block",
+                    "role_signal_target_fqdn": "tutoring.education.cn",
+                    "role_signal_strength": 0.92,
+                    "role_signal_note": "risk block round2",
+                },
+                "HierarchyResolver": {
+                    "proposal_primary_fqdn": "tutoring.education.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.79,
+                    "rationale": "HierarchyResolver: neutral round2",
+                    "override_position": "propose_override",
+                    "override_basis_tags": [],
+                    "role_signal_polarity": "neutral",
+                    "role_signal_target_fqdn": None,
+                    "role_signal_strength": 0.0,
+                    "role_signal_note": "no hierarchy issue round2",
+                },
+                "UserPreference": {
+                    "proposal_primary_fqdn": "tutoring.education.cn",
+                    "proposal_related_fqdns": [],
+                    "confidence": 0.89,
+                    "rationale": "UserPreference: tutoring preferred round2",
+                    "override_position": "propose_override",
+                    "override_basis_tags": ["multi_intent_separation"],
+                    "role_signal_polarity": "support",
+                    "role_signal_target_fqdn": "tutoring.education.cn",
+                    "role_signal_strength": 0.89,
+                    "role_signal_note": "intent split round2",
+                },
+            },
+        )
+        trace = build_stage_b_trace(
+            sample=self.samples["formal_dev_000016"],
+            trace=base_trace,
+            resolver=self.resolver,
+            config=StageBConfig(stage_b_version="stage_b_governance_block_test"),
+            client=client,
+        )
+        self.assertEqual(trace["stage_b"]["selected_primary_fqdn"], "invoice.finance.cn")
+        self.assertIn("governance_blocked_override", trace["stage_b"]["trust_trace"]["override_block_reasons"])
+
     def test_role_temperature_can_be_overridden_per_agent(self) -> None:
         config = StageBConfig(
             llm_temperature=0.0,

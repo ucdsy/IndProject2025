@@ -18,8 +18,8 @@ from .stage_a_clean import _clip, _is_chain_duplicate, _safe_primary
 
 @dataclass(frozen=True)
 class StageBConfig:
-    stage_b_version: str = "stage_b_v2_20260330_hetero"
-    prompt_version: str = "stage_b_prompt_v4_20260330"
+    stage_b_version: str = "stage_b_v3_20260331_hetero"
+    prompt_version: str = "stage_b_prompt_v5_20260331"
     decision_mode: str = "llm_consensus_v1"
     deterministic_decision_mode: str = "consensus_minimal_v0"
     round2_margin_threshold: float = 0.10
@@ -78,6 +78,14 @@ OVERRIDE_BASIS_TAGS = (
     "multi_intent_separation",
     "hierarchy_disambiguation",
 )
+ROLE_SIGNAL_POLARITIES = ("support", "block", "neutral")
+ROLE_SIGNAL_WEIGHTS = {
+    "GeneralReviewer": 0.0,
+    "DomainExpert": 0.10,
+    "GovernanceRisk": 0.08,
+    "HierarchyResolver": 0.08,
+    "UserPreference": 0.10,
+}
 
 
 def _role_family(role_name: str) -> str:
@@ -97,6 +105,21 @@ def _role_names(config: StageBConfig) -> tuple[str, ...]:
 
 def _role_view_priority(role_name: str) -> str:
     return ROLE_VIEW_PRIORITY.get(_role_family(role_name), "general_review")
+
+
+def _role_signal_kind(role_name: str) -> str:
+    role_family = _role_family(role_name)
+    return {
+        "GeneralReviewer": "general_review",
+        "DomainExpert": "task_match",
+        "GovernanceRisk": "risk_clearance",
+        "HierarchyResolver": "hierarchy_judgement",
+        "UserPreference": "intent_split",
+    }.get(role_family, "general_review")
+
+
+def _role_signal_weight(role_name: str) -> float:
+    return ROLE_SIGNAL_WEIGHTS.get(_role_family(role_name), 0.0)
 
 
 def _required_vote_count(base_threshold: int, role_count: int) -> int:
@@ -119,6 +142,12 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         return _clip(float(value))
     except (TypeError, ValueError):
         return default
+
+
+def _coerce_role_signal_polarity(raw_value: Any) -> str:
+    if raw_value in ROLE_SIGNAL_POLARITIES:
+        return str(raw_value)
+    return "neutral"
 
 
 def _coerce_text_list(value: Any, limit: int = 3) -> list[str]:
@@ -859,6 +888,11 @@ def _default_role_decision(role_name: str, packet: dict[str, Any], config: Stage
         "rationale": _role_rationale(role_name, ranked[0]) if ranked else f"{role_name}: no_candidates",
         "override_position": override_position,
         "override_basis_tags": [],
+        "role_signal_kind": _role_signal_kind(role_name),
+        "role_signal_polarity": "support" if primary else "neutral",
+        "role_signal_target_fqdn": primary,
+        "role_signal_strength": _role_score(role_name, ranked[0]) if ranked else 0.0,
+        "role_signal_note": _role_rationale(role_name, ranked[0]) if ranked else "",
     }
 
 
@@ -1088,22 +1122,26 @@ def _role_prompt_rules(role_name: str) -> str:
         )
     if role_family == "DomainExpert":
         return (
-            "你优先比较 incumbent 与 challenger 谁更像主任务。"
-            "如果 challenger 没有更强 primary evidence，请保守支持原判。"
+            "你不是总裁决器。"
+            "你只比较 incumbent 与 challenger 谁更像主任务。"
+            "你必须给出 task_match 维度上的 support/block/neutral 信号，以及该信号指向的 candidate。"
         )
     if role_family == "GovernanceRisk":
         return (
+            "你不是总裁决器。"
             "你只做风险放行判断。"
-            "若没有明确看到 challenger 在 high-risk 或 cross-domain 上更安全，不要支持 override。"
+            "你必须给出 risk_clearance 维度上的 support/block/neutral 信号；若看到风险问题，应优先 block 风险更高的 candidate。"
         )
     if role_family == "HierarchyResolver":
         return (
+            "你不是总裁决器。"
             "你只处理层级和粒度冲突。"
-            "只有当 incumbent 明显 overspecific / underspecific 或 hierarchy mismatch 时，才支持 override。"
+            "你必须给出 hierarchy_judgement 维度上的 support/block/neutral 信号；只有当 incumbent 明显 overspecific / underspecific 或 hierarchy mismatch 时，才支持 challenger。"
         )
     return (
+        "你不是总裁决器。"
         "你只处理 primary / secondary 分离和用户偏好。"
-        "如果 incumbent 更像 secondary 或补充诉求，而 challenger 更像主任务，可支持 override。"
+        "你必须给出 intent_split 维度上的 support/block/neutral 信号；如果 incumbent 更像 secondary 或补充诉求，而 challenger 更像主任务，可支持 challenger。"
     )
 
 
@@ -1116,14 +1154,23 @@ def _role_system_prompt(role_name: str) -> str:
         f"{_role_focus(role_name)}"
         f"{_role_prompt_rules(role_name)}"
         "请结合 query、Stage A 的语义交接、以及候选内证据卡，比较 incumbent 与主要 challenger。"
-        "如果你的视图里没有足够证据支持 challenger，请保守支持 Stage A 原判。"
+        "如果你的视图里没有足够证据，请输出 neutral 或保守支持 Stage A 原判，而不是猜测。"
         "请尽量说明 primary 为什么更像主任务，related 为什么更像次要诉求，以及你所负责维度上的最大歧义点。"
-        "你必须显式声明自己是支持 Stage A 原判，还是建议 override；不要替其他角色补做超出职责边界的判断。"
+        "你必须显式给出角色信号（support/block/neutral），不要替其他角色补做超出职责边界的判断。"
         "输出必须是单个 JSON 对象，不能附带散文解释。"
     )
 
 
 def _role_user_prompt(role_name: str, packet: dict[str, Any]) -> str:
+    role_family = _role_family(role_name)
+    role_signal_lines = ""
+    if role_family != "GeneralReviewer":
+        role_signal_lines = (
+            "11. 你必须额外输出 role_signal_kind、role_signal_polarity、role_signal_target_fqdn、role_signal_strength、role_signal_note。\n"
+            "12. role_signal_kind 固定为你的职责维度；role_signal_polarity 只能是 support、block、neutral。\n"
+            "13. 如果你主要是在阻止某个 candidate，被 block 的对象应填在 role_signal_target_fqdn，proposal_primary_fqdn 可保持为你在本职责下更愿意支持的主候选。\n"
+            "14. 若你的职责维度证据不足，role_signal_polarity 应为 neutral，且不要凭空构造 override。\n"
+        )
     return (
         "请作为固定角色参与 Stage B 共识。\n"
         "要求：\n"
@@ -1138,6 +1185,7 @@ def _role_user_prompt(role_name: str, packet: dict[str, Any]) -> str:
         "explicit_primary_evidence, specificity_gain, risk_requirement, multi_intent_separation, hierarchy_disambiguation。\n"
         "9. 请优先利用你当前 role_view 下可见的证据做判断，不要假设被隐藏的字段。\n"
         "10. 若你的职责维度证据不足，请保守支持原判，而不是猜测。\n"
+        f"{role_signal_lines}"
         f"当前角色：{role_name}\n\n"
         f"{json.dumps(packet, ensure_ascii=False, indent=2)}"
     )
@@ -1257,6 +1305,24 @@ def _sanitize_role_vote(
         resolver=resolver,
     )
 
+    role_signal_kind = _role_signal_kind(role_name)
+    raw_role_signal_polarity = raw.get("role_signal_polarity")
+    role_signal_polarity = _coerce_role_signal_polarity(raw_role_signal_polarity)
+    role_signal_target = raw.get("role_signal_target_fqdn")
+    if role_signal_target not in candidate_set:
+        role_signal_target = proposal_primary if proposal_primary in candidate_set else None
+    if (
+        _role_family(role_name) != "GeneralReviewer"
+        and raw_role_signal_polarity is None
+        and role_signal_polarity == "neutral"
+        and role_signal_target
+    ):
+        role_signal_polarity = "support"
+    role_signal_strength = _safe_float(raw.get("role_signal_strength", raw.get("confidence", 0.0)))
+    role_signal_note = str(raw.get("role_signal_note", "")).strip()[:200]
+    if not role_signal_note:
+        role_signal_note = rationale[:200]
+
     vote = {
         "agent": role_name,
         "proposal_primary_fqdn": proposal_primary,
@@ -1265,6 +1331,11 @@ def _sanitize_role_vote(
         "rationale": rationale,
         "override_position": override_position,
         "override_basis_tags": override_basis_tags,
+        "role_signal_kind": role_signal_kind,
+        "role_signal_polarity": role_signal_polarity,
+        "role_signal_target_fqdn": role_signal_target,
+        "role_signal_strength": role_signal_strength,
+        "role_signal_note": role_signal_note,
     }
     return vote, issues
 
@@ -1290,6 +1361,11 @@ def _collect_llm_votes(
                 "rationale": f"{role_name}: llm_error:{type(exc).__name__}",
                 "override_position": "support_stage_a",
                 "override_basis_tags": [],
+                "role_signal_kind": _role_signal_kind(role_name),
+                "role_signal_polarity": "neutral",
+                "role_signal_target_fqdn": None,
+                "role_signal_strength": 0.0,
+                "role_signal_note": f"{role_name}: llm_error",
             }
             vote_issues = [f"{role_name}:llm_error:{type(exc).__name__}"]
             raw_response = str(exc)
@@ -1366,12 +1442,47 @@ def _collect_deterministic_votes(
     return votes, issues, packet_views
 
 
+def _role_signal_contribution(
+    vote: dict[str, Any],
+    record_fqdn: str,
+) -> float:
+    target = vote.get("role_signal_target_fqdn")
+    if not target or target != record_fqdn:
+        return 0.0
+    polarity = vote.get("role_signal_polarity")
+    if polarity not in {"support", "block"}:
+        return 0.0
+    signed = 1.0 if polarity == "support" else -1.0
+    return signed * _role_signal_weight(vote.get("agent", "")) * _clip(vote.get("role_signal_strength", 0.0))
+
+
+def _role_signal_families(
+    agent_votes: list[dict[str, Any]],
+    proposal_primary: str | None,
+    *,
+    polarity: str,
+    minimum_strength: float = 0.45,
+) -> set[str]:
+    families: set[str] = set()
+    if not proposal_primary:
+        return families
+    for vote in agent_votes:
+        if (
+            vote.get("role_signal_target_fqdn") == proposal_primary
+            and vote.get("role_signal_polarity") == polarity
+            and _clip(vote.get("role_signal_strength", 0.0)) >= minimum_strength
+        ):
+            families.add(_role_family(vote.get("agent", "")))
+    return families
+
+
 def _aggregate_feedback_scores(
     records: list[dict[str, Any]],
     agent_votes: list[dict[str, Any]],
     score_key: str,
     stage_a_primary: str | None,
     role_count: int,
+    collaboration_mode: str,
 ) -> list[dict[str, Any]]:
     feedback_scores: list[dict[str, Any]] = []
     for record in records:
@@ -1382,6 +1493,14 @@ def _aggregate_feedback_scores(
         vote_ratio = len(primary_votes) / max(role_count, 1)
         related_vote_ratio = len(related_votes) / max(role_count, 1)
         avg_role_score = sum(vote.get("confidence", 0.0) for vote in primary_votes) / len(primary_votes) if primary_votes else 0.0
+        signal_score = 0.0
+        signal_support_families: set[str] = set()
+        signal_block_families: set[str] = set()
+        if str(collaboration_mode).lower() == "heterogeneous":
+            for vote in agent_votes:
+                signal_score += _role_signal_contribution(vote, record["fqdn"])
+            signal_support_families = _role_signal_families(agent_votes, record["fqdn"], polarity="support")
+            signal_block_families = _role_signal_families(agent_votes, record["fqdn"], polarity="block")
         consensus_score = (
             0.40 * vote_ratio
             + 0.25 * avg_role_score
@@ -1389,6 +1508,7 @@ def _aggregate_feedback_scores(
             + 0.10 * record["explicit_support"]
             + 0.10 * related_vote_ratio
         )
+        consensus_score += signal_score
         feedback_scores.append(
             {
                 "fqdn": record["fqdn"],
@@ -1402,6 +1522,9 @@ def _aggregate_feedback_scores(
                 "override_basis_histogram": _histogram(
                     [tag for vote in override_votes for tag in vote.get("override_basis_tags", [])]
                 ),
+                "role_signal_score": round(signal_score, 6),
+                "role_signal_support_families": sorted(signal_support_families),
+                "role_signal_block_families": sorted(signal_block_families),
                 score_key: round(_clip(consensus_score), 6),
             }
         )
@@ -1484,6 +1607,8 @@ def _responsibility_block_reasons(
     if not stage_a_primary or winner.get("fqdn") == stage_a_primary:
         return []
     support_families = _override_supporting_role_families(agent_votes, winner.get("fqdn"))
+    support_families |= _role_signal_families(agent_votes, winner.get("fqdn"), polarity="support")
+    block_families = _role_signal_families(agent_votes, winner.get("fqdn"), polarity="block")
     winner_tags = set((winner.get("override_basis_histogram") or {}).keys())
     reasons: list[str] = []
     if not ({"DomainExpert", "UserPreference"} & support_families):
@@ -1496,11 +1621,17 @@ def _responsibility_block_reasons(
         or "risk_requirement" in winner_tags
     ) and "GovernanceRisk" not in support_families:
         reasons.append("missing_governance_clearance")
+    if "GovernanceRisk" in block_families:
+        reasons.append("governance_blocked_override")
     if (
         sensitive_flags.get("hierarchical_override")
         or "hierarchy_disambiguation" in winner_tags
     ) and "HierarchyResolver" not in support_families:
         reasons.append("missing_hierarchy_confirmation")
+    if "HierarchyResolver" in block_families and (
+        sensitive_flags.get("hierarchical_override") or "hierarchy_disambiguation" in winner_tags
+    ):
+        reasons.append("hierarchy_blocked_override")
     return reasons
 
 
@@ -1696,6 +1827,7 @@ def _analyze_stage_b_deterministic(
         score_key="consensus_score_round1",
         stage_a_primary=stage_a_primary,
         role_count=role_count,
+        collaboration_mode=config.collaboration_mode,
     )
 
     agent_votes: list[dict[str, Any]] = list(round1_votes)
@@ -1748,6 +1880,7 @@ def _analyze_stage_b_deterministic(
                 score_key="consensus_score_round2",
                 stage_a_primary=stage_a_primary,
                 role_count=role_count,
+                collaboration_mode=config.collaboration_mode,
             )
             round2_score_map = {row["fqdn"]: row for row in round2_scores}
             if sensitive_round2:
@@ -1908,6 +2041,7 @@ def _analyze_stage_b_llm(
         score_key="consensus_score_round1",
         stage_a_primary=stage_a_primary,
         role_count=role_count,
+        collaboration_mode=config.collaboration_mode,
     )
 
     all_votes = list(round1_votes)
@@ -1955,6 +2089,7 @@ def _analyze_stage_b_llm(
                 score_key="consensus_score_round2",
                 stage_a_primary=stage_a_primary,
                 role_count=role_count,
+                collaboration_mode=config.collaboration_mode,
             )
             if sensitive_round2:
                 notes.append("Round 2 was triggered because a sensitive override attempt requires re-adjudicating winner vs Stage A primary.")
