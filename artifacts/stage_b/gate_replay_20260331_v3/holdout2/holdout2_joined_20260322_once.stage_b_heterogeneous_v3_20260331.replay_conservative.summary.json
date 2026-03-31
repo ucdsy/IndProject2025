@@ -1,0 +1,31 @@
+{
+  "replay_mode": "conservative",
+  "trace_path": "/Users/xizhuxizhu/Desktop/IndProj04_hetero_v3/artifacts/stage_b/gate_replay_20260331_v3/holdout2/holdout2_joined_20260322_once.stage_b_heterogeneous_v3_20260331.jsonl",
+  "samples": 54,
+  "PrimaryAcc@1": 0.9074,
+  "AcceptablePrimary@1": 0.9074,
+  "stage_b_changed_primary": 1,
+  "stage_b_fixed_primary": 1,
+  "stage_b_regressed_primary": 0,
+  "reason_histogram": {
+    "keep_stage_a_top": 18,
+    "no_stage_b": 34,
+    "sensitive_override_requires_primary_hits|sensitive_override_requires_stronger_explicit_support": 1,
+    "override": 1
+  },
+  "changed_samples": [
+    {
+      "sample_id": "holdout2_000030",
+      "stage_a_primary_fqdn": "hotel.travel.cn",
+      "stage_b_trace_primary_fqdn": "transport.travel.cn",
+      "simulated_primary_fqdn": "transport.travel.cn",
+      "ground_truth_fqdn": "transport.travel.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    }
+  ]
+}

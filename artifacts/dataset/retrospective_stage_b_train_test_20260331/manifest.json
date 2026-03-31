@@ -1,0 +1,183 @@
+{
+  "protocol": "retrospective_stratified_split",
+  "seed": 20260331,
+  "test_ratio": 0.2,
+  "split_sources": {
+    "dev": {
+      "labels": "data/agentdns_routing/formal/dev.jsonl",
+      "trace": "artifacts/stage_b/gate_replay_20260331_v3/dev/dev.stage_b_heterogeneous_v3_20260331.jsonl"
+    },
+    "blind": {
+      "labels": "artifacts/dataset/blind_joined_20260315_once.jsonl",
+      "trace": "artifacts/stage_b/gate_replay_20260331_v3/blind/blind_joined_20260315_once.stage_b_heterogeneous_v3_20260331.jsonl"
+    },
+    "challenge": {
+      "labels": "artifacts/dataset/challenge_joined_20260320_once.jsonl",
+      "trace": "artifacts/stage_b/gate_replay_20260331_v3/challenge/challenge_joined_20260320_once.stage_b_heterogeneous_v3_20260331.jsonl"
+    },
+    "holdout2": {
+      "labels": "artifacts/dataset/holdout2_joined_20260322_once.jsonl",
+      "trace": "artifacts/stage_b/gate_replay_20260331_v3/holdout2/holdout2_joined_20260322_once.stage_b_heterogeneous_v3_20260331.jsonl"
+    },
+    "holdout3": {
+      "labels": "artifacts/dataset/holdout3_joined_20260330_once.jsonl",
+      "trace": "artifacts/stage_b/collab_ablations_20260331_v3/holdout3_heterogeneous/holdout3_joined_20260330_once.stage_b_heterogeneous_v3_20260331.jsonl"
+    }
+  },
+  "split_manifest": {
+    "dev": {
+      "samples": 50,
+      "train": 40,
+      "test": 10,
+      "test_ratio": 0.2
+    },
+    "blind": {
+      "samples": 35,
+      "train": 28,
+      "test": 7,
+      "test_ratio": 0.2
+    },
+    "challenge": {
+      "samples": 24,
+      "train": 19,
+      "test": 5,
+      "test_ratio": 0.2083
+    },
+    "holdout2": {
+      "samples": 54,
+      "train": 43,
+      "test": 11,
+      "test_ratio": 0.2037
+    },
+    "holdout3": {
+      "samples": 400,
+      "train": 320,
+      "test": 80,
+      "test_ratio": 0.2
+    }
+  },
+  "train_samples": 450,
+  "test_samples": 113,
+  "selected_mode_on_train": "aggressive",
+  "train_summary": {
+    "base": {
+      "correct": 396,
+      "total": 450,
+      "PrimaryAcc@1": 0.88
+    },
+    "conservative": {
+      "correct": 401,
+      "total": 450,
+      "PrimaryAcc@1": 0.8911
+    },
+    "aggressive": {
+      "correct": 404,
+      "total": 450,
+      "PrimaryAcc@1": 0.8978
+    }
+  },
+  "test_summary": {
+    "base": {
+      "correct": 100,
+      "total": 113,
+      "PrimaryAcc@1": 0.885
+    },
+    "conservative": {
+      "correct": 101,
+      "total": 113,
+      "PrimaryAcc@1": 0.8938
+    },
+    "aggressive": {
+      "correct": 105,
+      "total": 113,
+      "PrimaryAcc@1": 0.9292
+    }
+  },
+  "test_breakdown": {
+    "dev": {
+      "base": {
+        "correct": 10,
+        "total": 10,
+        "PrimaryAcc@1": 1.0
+      },
+      "conservative": {
+        "correct": 10,
+        "total": 10,
+        "PrimaryAcc@1": 1.0
+      },
+      "aggressive": {
+        "correct": 10,
+        "total": 10,
+        "PrimaryAcc@1": 1.0
+      }
+    },
+    "blind": {
+      "base": {
+        "correct": 6,
+        "total": 7,
+        "PrimaryAcc@1": 0.8571
+      },
+      "conservative": {
+        "correct": 6,
+        "total": 7,
+        "PrimaryAcc@1": 0.8571
+      },
+      "aggressive": {
+        "correct": 6,
+        "total": 7,
+        "PrimaryAcc@1": 0.8571
+      }
+    },
+    "challenge": {
+      "base": {
+        "correct": 4,
+        "total": 5,
+        "PrimaryAcc@1": 0.8
+      },
+      "conservative": {
+        "correct": 4,
+        "total": 5,
+        "PrimaryAcc@1": 0.8
+      },
+      "aggressive": {
+        "correct": 4,
+        "total": 5,
+        "PrimaryAcc@1": 0.8
+      }
+    },
+    "holdout2": {
+      "base": {
+        "correct": 11,
+        "total": 11,
+        "PrimaryAcc@1": 1.0
+      },
+      "conservative": {
+        "correct": 11,
+        "total": 11,
+        "PrimaryAcc@1": 1.0
+      },
+      "aggressive": {
+        "correct": 11,
+        "total": 11,
+        "PrimaryAcc@1": 1.0
+      }
+    },
+    "holdout3": {
+      "base": {
+        "correct": 69,
+        "total": 80,
+        "PrimaryAcc@1": 0.8625
+      },
+      "conservative": {
+        "correct": 70,
+        "total": 80,
+        "PrimaryAcc@1": 0.875
+      },
+      "aggressive": {
+        "correct": 74,
+        "total": 80,
+        "PrimaryAcc@1": 0.925
+      }
+    }
+  }
+}

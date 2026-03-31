@@ -4,7 +4,12 @@
 >
 > 定位: 本文不是新算法设计页，而是标准化消融实验设计页。核心目标不是再改系统架构，而是在**相同输入契约**下，证明异质性多智能体协作是否优于单智能体与同质多智能体。
 >
-> 当前分支: `codex/stage-b-ablation-experiments`
+> 历史设计分支: `codex/stage-b-ablation-experiments`
+>
+> 2026-03-31 状态补充:
+> - 旧 `single / homogeneous / heterogeneous_v2` 已完成。
+> - `heterogeneous_v3` 与跨 split gate replay 的结果，已单独整理到 `29_stage_b_retrospective_eval_and_registry.md`。
+> - 本页保留为“消融设计页”，不承担最终结果汇总职能。
 
 ## 1. 要回答的核心问题
 - `Stage A llm v2` 已经证明自己是当前更强的 fast path。

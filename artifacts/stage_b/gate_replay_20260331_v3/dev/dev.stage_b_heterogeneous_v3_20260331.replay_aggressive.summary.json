@@ -1,0 +1,71 @@
+{
+  "replay_mode": "aggressive",
+  "trace_path": "/Users/xizhuxizhu/Desktop/IndProj04_hetero_v3/artifacts/stage_b/gate_replay_20260331_v3/dev/dev.stage_b_heterogeneous_v3_20260331.jsonl",
+  "samples": 50,
+  "PrimaryAcc@1": 0.88,
+  "AcceptablePrimary@1": 0.9,
+  "stage_b_changed_primary": 4,
+  "stage_b_fixed_primary": 0,
+  "stage_b_regressed_primary": 4,
+  "reason_histogram": {
+    "no_stage_b": 33,
+    "keep_stage_a_top": 11,
+    "override": 4,
+    "sensitive_override_requires_primary_hits|sensitive_override_requires_stronger_explicit_support": 1,
+    "insufficient_explicit_support": 1
+  },
+  "changed_samples": [
+    {
+      "sample_id": "formal_dev_000008",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_trace_primary_fqdn": "compliance.security.cn",
+      "simulated_primary_fqdn": "account.compliance.security.cn",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": true,
+        "hierarchical_override": true,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "formal_dev_000024",
+      "stage_a_primary_fqdn": "summary.meeting.productivity.cn",
+      "stage_b_trace_primary_fqdn": "summary.meeting.productivity.cn",
+      "simulated_primary_fqdn": "meeting.productivity.cn",
+      "ground_truth_fqdn": "summary.meeting.productivity.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": true,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "formal_dev_000025",
+      "stage_a_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_trace_primary_fqdn": "meeting.productivity.cn",
+      "simulated_primary_fqdn": "schedule.meeting.productivity.cn",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": true,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "formal_dev_000036",
+      "stage_a_primary_fqdn": "itinerary.travel.cn",
+      "stage_b_trace_primary_fqdn": "itinerary.travel.cn",
+      "simulated_primary_fqdn": "xian.itinerary.travel.cn",
+      "ground_truth_fqdn": "itinerary.travel.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": true,
+        "cross_l1_override": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,3943 @@
+[
+  {
+    "id": "formal_dev_000001",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000002",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000003",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000004",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000005",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000006",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000007",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000008",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_dev_000009",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000010",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000011",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000012",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000013",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000014",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000015",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000016",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000017",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000018",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000019",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000020",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000021",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000022",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000023",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000024",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_dev_000025",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_dev_000026",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000027",
+    "split": "dev",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_dev_000028",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000029",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000030",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000031",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000032",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000033",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000034",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000035",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000036",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_dev_000037",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000038",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000039",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000040",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000041",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000042",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000043",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000044",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000045",
+    "split": "dev",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_dev_000046",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000047",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000048",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000049",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_dev_000050",
+    "split": "dev",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000001",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000002",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000003",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000004",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000005",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000006",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000007",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000008",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000009",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000010",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000011",
+    "split": "blind",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_blind_000012",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000013",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000014",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000015",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000016",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000017",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000018",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000019",
+    "split": "blind",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_blind_000020",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000021",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000022",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000023",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000024",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000025",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000026",
+    "split": "blind",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_blind_000027",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000028",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000029",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000030",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000031",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000032",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000033",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000034",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_blind_000035",
+    "split": "blind",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000001",
+    "split": "challenge",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_challenge_000002",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000003",
+    "split": "challenge",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_challenge_000004",
+    "split": "challenge",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_challenge_000005",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000006",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000007",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000008",
+    "split": "challenge",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_challenge_000009",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000010",
+    "split": "challenge",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000011",
+    "split": "challenge",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_challenge_000012",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000013",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000014",
+    "split": "challenge",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_challenge_000015",
+    "split": "challenge",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_challenge_000016",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000017",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000018",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000019",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000020",
+    "split": "challenge",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "formal_challenge_000021",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000022",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000023",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "formal_challenge_000024",
+    "split": "challenge",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000001",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000002",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000003",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000004",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000005",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000006",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000007",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000008",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000009",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000010",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000011",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000012",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000013",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000014",
+    "split": "holdout2",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout2_000015",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000016",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000017",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000018",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000019",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000020",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000021",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000022",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000023",
+    "split": "holdout2",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout2_000024",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000025",
+    "split": "holdout2",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout2_000026",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000027",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000028",
+    "split": "holdout2",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout2_000029",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000030",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000031",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000032",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000033",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000034",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000035",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000036",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000037",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000038",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000039",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000040",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000041",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000042",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000043",
+    "split": "holdout2",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout2_000044",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000045",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000046",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000047",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000048",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000049",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000050",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000051",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000052",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000053",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout2_000054",
+    "split": "holdout2",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000001",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000002",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000003",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000004",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000005",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000006",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000007",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000008",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000009",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000010",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000011",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000012",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000013",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000014",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000015",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000016",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000017",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000018",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000019",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000020",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000021",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000022",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000023",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000024",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000025",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000026",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000027",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000028",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000029",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000030",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000031",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000032",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000033",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000034",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000035",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000036",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000037",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000038",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000039",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000040",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000041",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000042",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000043",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000044",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000045",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000046",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000047",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000048",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000049",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000050",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000051",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000052",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000053",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000054",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000055",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000056",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000057",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000058",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000059",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000060",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000061",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000062",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000063",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000064",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000065",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000066",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000067",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000068",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000069",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000070",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000071",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000072",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000073",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000074",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000075",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000076",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000077",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000078",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000079",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000080",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000081",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000082",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000083",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000084",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000085",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000086",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000087",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000088",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000089",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000090",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000091",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000092",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000093",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000094",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000095",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000096",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000097",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000098",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000099",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000100",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000101",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000102",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000103",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000104",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000105",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000106",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000107",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000108",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000109",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000110",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000111",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000112",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000113",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000114",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000115",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000116",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000117",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000118",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000119",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000120",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000121",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000122",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000123",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000124",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000125",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000126",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000127",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000128",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000129",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000130",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000131",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000132",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000133",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000134",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000135",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000136",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000137",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000138",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000139",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000140",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000141",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000142",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000143",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000144",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000145",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000146",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000147",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000148",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000149",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000150",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000151",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000152",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000153",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000154",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000155",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000156",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000157",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000158",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000159",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000160",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000161",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000162",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000163",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000164",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000165",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000166",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000167",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000168",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000169",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000170",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000171",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000172",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000173",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000174",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000175",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000176",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000177",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000178",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000179",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000180",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000181",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000182",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000183",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000184",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000185",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000186",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000187",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000188",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000189",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000190",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000191",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000192",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000193",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000194",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000195",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000196",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000197",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000198",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000199",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000200",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000201",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000202",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000203",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000204",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000205",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000206",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000207",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000208",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000209",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000210",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000211",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000212",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000213",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000214",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000215",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000216",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000217",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000218",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000219",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000220",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000221",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000222",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000223",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000224",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000225",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000226",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000227",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000228",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000229",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000230",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000231",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000232",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000233",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000234",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000235",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000236",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000237",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000238",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000239",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000240",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000241",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000242",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000243",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000244",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000245",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000246",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000247",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000248",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000249",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000250",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000251",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000252",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000253",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000254",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000255",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000256",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000257",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000258",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000259",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000260",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000261",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000262",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000263",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000264",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000265",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000266",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000267",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000268",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000269",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000270",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000271",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000272",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000273",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000274",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000275",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000276",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000277",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000278",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000279",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000280",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000281",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000282",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000283",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000284",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000285",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000286",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000287",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000288",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000289",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000290",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000291",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000292",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000293",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000294",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000295",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000296",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000297",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000298",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000299",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000300",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000301",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000302",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000303",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000304",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000305",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000306",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000307",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000308",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000309",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000310",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000311",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000312",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000313",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000314",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000315",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000316",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000317",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000318",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000319",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000320",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000321",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000322",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000323",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000324",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000325",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000326",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000327",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000328",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000329",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000330",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000331",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000332",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000333",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000334",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000335",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000336",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000337",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000338",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000339",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000340",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000341",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000342",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000343",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000344",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000345",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000346",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000347",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000348",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000349",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000350",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000351",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000352",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000353",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000354",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000355",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000356",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000357",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000358",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000359",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000360",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000361",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000362",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000363",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000364",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000365",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000366",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000367",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000368",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000369",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000370",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000371",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000372",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000373",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000374",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000375",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000376",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000377",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000378",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000379",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000380",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000381",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000382",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000383",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000384",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000385",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000386",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000387",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000388",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000389",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000390",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000391",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000392",
+    "split": "holdout3",
+    "base_correct": 0,
+    "conservative_correct": 0,
+    "aggressive_correct": 0
+  },
+  {
+    "id": "holdout3_000393",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000394",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000395",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000396",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000397",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000398",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000399",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  },
+  {
+    "id": "holdout3_000400",
+    "split": "holdout3",
+    "base_correct": 1,
+    "conservative_correct": 1,
+    "aggressive_correct": 1
+  }
+]

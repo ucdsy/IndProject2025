@@ -11,6 +11,8 @@
   - `Stage A llm v2` 与 `Stage B packetv2` 的设计背景
 - `28_stage_b_collaboration_ablation_design.md`
   - `Stage B` 的 `single / homogeneous / heterogeneous / no-handoff` 标准消融设计
+- `29_stage_b_retrospective_eval_and_registry.md`
+  - `Stage B hetero-v3`、gate replay 与 retrospective train/test 的结果索引页
 - `25_stage_c_agentdnsdemo_integration_plan.md`
   - `Stage C` 与 `AgentDNSDemo` 的双仓实施说明
 - `26_conversation_orchestrator_design.md`
