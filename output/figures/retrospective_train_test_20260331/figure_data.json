@@ -1,0 +1,342 @@
+{
+  "pooled_main": {
+    "A_clean": {
+      "train": {
+        "n": 450,
+        "PrimaryAcc@1": 0.8156,
+        "AcceptablePrimary@1": 0.8489,
+        "RelatedRecall": 0.2822,
+        "RelatedPrecision": 0.3833
+      },
+      "test": {
+        "n": 113,
+        "PrimaryAcc@1": 0.7876,
+        "AcceptablePrimary@1": 0.8142,
+        "RelatedRecall": 0.2895,
+        "RelatedPrecision": 0.3793
+      }
+    },
+    "A_clean->B": {
+      "train": {
+        "n": 450,
+        "PrimaryAcc@1": 0.8244,
+        "AcceptablePrimary@1": 0.8578,
+        "RelatedRecall": 0.2822,
+        "RelatedPrecision": 0.3898,
+        "changed": 5,
+        "fixed": 4,
+        "regressed": 1
+      },
+      "test": {
+        "n": 113,
+        "PrimaryAcc@1": 0.8053,
+        "AcceptablePrimary@1": 0.8319,
+        "RelatedRecall": 0.2895,
+        "RelatedPrecision": 0.3793,
+        "changed": 2,
+        "fixed": 2,
+        "regressed": 0
+      }
+    },
+    "A_llm_v2": {
+      "train": {
+        "n": 450,
+        "PrimaryAcc@1": 0.8756,
+        "AcceptablePrimary@1": 0.9089,
+        "RelatedRecall": 0.3129,
+        "RelatedPrecision": 0.408
+      },
+      "test": {
+        "n": 113,
+        "PrimaryAcc@1": 0.8761,
+        "AcceptablePrimary@1": 0.9027,
+        "RelatedRecall": 0.3684,
+        "RelatedPrecision": 0.4242
+      }
+    },
+    "A_llm_v2->B": {
+      "train": {
+        "n": 450,
+        "PrimaryAcc@1": 0.8844,
+        "AcceptablePrimary@1": 0.9178,
+        "RelatedRecall": 0.3129,
+        "RelatedPrecision": 0.418,
+        "changed": 4,
+        "fixed": 4,
+        "regressed": 0
+      },
+      "test": {
+        "n": 113,
+        "PrimaryAcc@1": 0.885,
+        "AcceptablePrimary@1": 0.9115,
+        "RelatedRecall": 0.3684,
+        "RelatedPrecision": 0.4242,
+        "changed": 1,
+        "fixed": 1,
+        "regressed": 0
+      }
+    }
+  },
+  "pooled_gate": {
+    "base": {
+      "train": 0.88,
+      "test": 0.885
+    },
+    "conservative": {
+      "train": 0.8911,
+      "test": 0.8938
+    },
+    "aggressive": {
+      "train": 0.8978,
+      "test": 0.9292
+    }
+  },
+  "holdout3_ablation": {
+    "A_llm_v2 fastpath": {
+      "train": {
+        "n": 320,
+        "PrimaryAcc@1": 0.8781,
+        "AcceptablePrimary@1": 0.925,
+        "RelatedRecall": 0.0901,
+        "RelatedPrecision": 0.1205
+      },
+      "test": {
+        "n": 80,
+        "PrimaryAcc@1": 0.8625,
+        "AcceptablePrimary@1": 0.8875,
+        "RelatedRecall": 0.16,
+        "RelatedPrecision": 0.1818
+      }
+    },
+    "single_v2": {
+      "train": {
+        "n": 320,
+        "PrimaryAcc@1": 0.8875,
+        "AcceptablePrimary@1": 0.9344,
+        "RelatedRecall": 0.0901,
+        "RelatedPrecision": 0.125,
+        "changed": 3,
+        "fixed": 3,
+        "regressed": 0
+      },
+      "test": {
+        "n": 80,
+        "PrimaryAcc@1": 0.8625,
+        "AcceptablePrimary@1": 0.8875,
+        "RelatedRecall": 0.16,
+        "RelatedPrecision": 0.1818,
+        "changed": 0,
+        "fixed": 0,
+        "regressed": 0
+      }
+    },
+    "homogeneous_v2": {
+      "train": {
+        "n": 320,
+        "PrimaryAcc@1": 0.8844,
+        "AcceptablePrimary@1": 0.9313,
+        "RelatedRecall": 0.0901,
+        "RelatedPrecision": 0.1235,
+        "changed": 2,
+        "fixed": 2,
+        "regressed": 0
+      },
+      "test": {
+        "n": 80,
+        "PrimaryAcc@1": 0.8625,
+        "AcceptablePrimary@1": 0.8875,
+        "RelatedRecall": 0.16,
+        "RelatedPrecision": 0.1818,
+        "changed": 0,
+        "fixed": 0,
+        "regressed": 0
+      }
+    },
+    "heterogeneous_v2": {
+      "train": {
+        "n": 320,
+        "PrimaryAcc@1": 0.8781,
+        "AcceptablePrimary@1": 0.925,
+        "RelatedRecall": 0.0901,
+        "RelatedPrecision": 0.1205,
+        "changed": 0,
+        "fixed": 0,
+        "regressed": 0
+      },
+      "test": {
+        "n": 80,
+        "PrimaryAcc@1": 0.8625,
+        "AcceptablePrimary@1": 0.8875,
+        "RelatedRecall": 0.16,
+        "RelatedPrecision": 0.1818,
+        "changed": 0,
+        "fixed": 0,
+        "regressed": 0
+      }
+    },
+    "heterogeneous_v3": {
+      "train": {
+        "n": 320,
+        "PrimaryAcc@1": 0.8844,
+        "AcceptablePrimary@1": 0.9313,
+        "RelatedRecall": 0.0901,
+        "RelatedPrecision": 0.1235,
+        "changed": 2,
+        "fixed": 2,
+        "regressed": 0
+      },
+      "test": {
+        "n": 80,
+        "PrimaryAcc@1": 0.8625,
+        "AcceptablePrimary@1": 0.8875,
+        "RelatedRecall": 0.16,
+        "RelatedPrecision": 0.1818,
+        "changed": 0,
+        "fixed": 0,
+        "regressed": 0
+      }
+    },
+    "heterogeneous_v3 + aggressive": {
+      "train": {
+        "PrimaryAcc@1": 0.9187,
+        "AcceptablePrimary@1": 0.9313,
+        "changed": 13,
+        "fixed": 13,
+        "regressed": 0
+      },
+      "test": {
+        "PrimaryAcc@1": 0.925,
+        "AcceptablePrimary@1": 0.8875,
+        "changed": 5,
+        "fixed": 5,
+        "regressed": 0
+      }
+    }
+  },
+  "holdout3_gate": {
+    "base": {
+      "train": 0.8844,
+      "test": 0.8625
+    },
+    "conservative": {
+      "train": 0.9094,
+      "test": 0.875
+    },
+    "aggressive": {
+      "train": 0.9187,
+      "test": 0.925
+    }
+  },
+  "holdout3_bucket_test": {
+    "A_llm_v2 fastpath": {
+      "cross_domain_overlap": 0.9286,
+      "high_risk_governance": 0.875,
+      "ordinary_fast_path": 0.8947,
+      "primary_secondary_disentanglement": 0.8125,
+      "sibling_hierarchy": 0.8
+    },
+    "single_v2": {
+      "cross_domain_overlap": 0.9286,
+      "high_risk_governance": 0.875,
+      "ordinary_fast_path": 0.8947,
+      "primary_secondary_disentanglement": 0.8125,
+      "sibling_hierarchy": 0.8
+    },
+    "homogeneous_v2": {
+      "cross_domain_overlap": 0.9286,
+      "high_risk_governance": 0.875,
+      "ordinary_fast_path": 0.8947,
+      "primary_secondary_disentanglement": 0.8125,
+      "sibling_hierarchy": 0.8
+    },
+    "heterogeneous_v3": {
+      "cross_domain_overlap": 0.9286,
+      "high_risk_governance": 0.875,
+      "ordinary_fast_path": 0.8947,
+      "primary_secondary_disentanglement": 0.8125,
+      "sibling_hierarchy": 0.8
+    },
+    "heterogeneous_v3 + aggressive": {
+      "cross_domain_overlap": 1.0,
+      "high_risk_governance": 0.875,
+      "ordinary_fast_path": 0.9474,
+      "primary_secondary_disentanglement": 0.9375,
+      "sibling_hierarchy": 0.8667
+    }
+  },
+  "execution_proxy": {
+    "single_v2": {
+      "slow_path_rate": 0.4525,
+      "stage_b_applied": 181,
+      "changed": 3,
+      "fixed": 3,
+      "regressed": 0
+    },
+    "homogeneous_v2": {
+      "slow_path_rate": 0.4525,
+      "stage_b_applied": 181,
+      "changed": 2,
+      "fixed": 2,
+      "regressed": 0
+    },
+    "heterogeneous_v2": {
+      "slow_path_rate": 0.4525,
+      "stage_b_applied": 181,
+      "changed": 0,
+      "fixed": 0,
+      "regressed": 0
+    },
+    "heterogeneous_v3": {
+      "slow_path_rate": 0.4525,
+      "stage_b_applied": 181,
+      "changed": 2,
+      "fixed": 2,
+      "regressed": 0
+    },
+    "heterogeneous_v3 + aggressive": {
+      "slow_path_rate": 0.4525,
+      "stage_b_applied": 181,
+      "changed": 18,
+      "fixed": 18,
+      "regressed": 0
+    }
+  },
+  "case_studies": [
+    {
+      "id": "holdout3_000173",
+      "eval_bucket": "primary_secondary_disentanglement",
+      "query": "这边先说重点：先看看怎么接驳最省事；另外，把航班或活动再对一遍。相关背景是：西安这一段到站后还要二次换乘，但接驳路线还没收住。",
+      "ground_truth_fqdn": "transport.travel.cn",
+      "stage_a_llm_v2": "flight.travel.cn",
+      "single_v2": "transport.travel.cn",
+      "homogeneous_v2": "flight.travel.cn",
+      "heterogeneous_v3": "flight.travel.cn",
+      "heterogeneous_v3_aggressive": "transport.travel.cn",
+      "note": "主次分离难例：weather.cn 是相关但非主标签，主标签仍为 transport.travel.cn。"
+    },
+    {
+      "id": "holdout3_000213",
+      "eval_bucket": "primary_secondary_disentanglement",
+      "query": "我想先把重点拎出来：先看看有什么券或优惠能用；另外，顺手比一眼价格。其他情况是“买会议麦克风这单如果不看优惠规则，明显会多花一笔”。",
+      "ground_truth_fqdn": "coupon.commerce.cn",
+      "stage_a_llm_v2": "price.commerce.cn",
+      "single_v2": "coupon.commerce.cn",
+      "homogeneous_v2": "coupon.commerce.cn",
+      "heterogeneous_v3": "coupon.commerce.cn",
+      "heterogeneous_v3_aggressive": "coupon.commerce.cn",
+      "note": "主次分离难例：budget.finance.cn 是相关但非主标签，主标签仍为 coupon.commerce.cn。"
+    },
+    {
+      "id": "holdout3_000303",
+      "eval_bucket": "cross_domain_overlap",
+      "query": "我先说重点：帮我挑几个能塞进去的活动；另外，顺手看住处是否也该调整。背景和其他信息是“在杭州临时多出一个晚上，想塞进一个不折腾的活动”。",
+      "ground_truth_fqdn": "activity.travel.cn",
+      "stage_a_llm_v2": "hotel.travel.cn",
+      "single_v2": "activity.travel.cn",
+      "homogeneous_v2": "activity.travel.cn",
+      "heterogeneous_v3": "activity.travel.cn",
+      "heterogeneous_v3_aggressive": "activity.travel.cn",
+      "note": "跨域重叠难例：transport.travel.cn 与主任务共现，但主标签仍为 activity.travel.cn。"
+    }
+  ]
+}
