@@ -17,6 +17,7 @@ def attach_stage_a_final_fields(trace: dict[str, Any], source: str | None = None
     trace["final_primary_fqdn"] = stage_a.get("selected_primary_fqdn")
     trace["final_related_fqdns"] = list(stage_a.get("selected_related_fqdns", []))
     trace["final_decision_source"] = source or infer_stage_a_source(trace)
+    trace["final_related_source"] = source or infer_stage_a_source(trace)
     return trace
 
 
@@ -31,6 +32,7 @@ def attach_stage_b_final_fields(trace: dict[str, Any]) -> dict[str, Any]:
             stage_b.get("final_related_fqdns", stage_b.get("selected_related_fqdns", []))
         )
         trace["final_decision_source"] = "stage_b"
+        trace["final_related_source"] = "stage_b"
         return trace
     return attach_stage_a_final_fields(trace)
 

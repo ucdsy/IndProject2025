@@ -1,0 +1,56 @@
+{
+  "labeled": true,
+  "samples": 1,
+  "PrimaryAcc@1": 1.0,
+  "AcceptablePrimary@1": 1.0,
+  "RelatedRecall": 0.0,
+  "RelatedRecall@Covered": 0.0,
+  "RelatedPrecision": 0.0,
+  "avg_extra_related": 1.0,
+  "related_overpredict_rate": 1.0,
+  "escalation_rate": 1.0,
+  "error_buckets": {
+    "decision_related_overpredict": 1
+  },
+  "per_sample": [
+    {
+      "id": "formal_blind_000004",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "selected_primary_fqdn": "policy.gov.cn",
+      "selected_related_fqdns": [
+        "docs.productivity.cn"
+      ],
+      "acceptable_hit": true,
+      "related_hit_count": 0,
+      "related_total": 0,
+      "related_covered_by_stage_r": 0,
+      "related_missing_stage_r": [],
+      "related_missing_stage_a": [],
+      "extra_related_fqdns": [
+        "docs.productivity.cn"
+      ],
+      "confidence": 0.69348,
+      "margin": 0.397351,
+      "escalate_to_stage_b": true,
+      "escalation_reasons": [
+        "multi_intent_conflict"
+      ],
+      "final_decision_source": "stage_a_llm",
+      "final_related_source": "related_v2_llm",
+      "error_bucket": "decision_related_overpredict"
+    }
+  ],
+  "method": "related_only_from_frozen_traces",
+  "related_version": "related_v2_20260401",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "input_path": "artifacts/dataset/retrospective_stage_b_train_test_20260331/test_joined.jsonl",
+  "trace_files": [
+    "artifacts/routing_ab/review_packetv2_20260323/dev_compare_deepseek_packetv2_iter1_20260323/dev.sa_llm_v2_20260323_uncertainty.jsonl",
+    "artifacts/routing_ab/review_packetv2_20260323/blind_compare_deepseek_packetv2_iter1_20260323/blind_joined_20260315_once.sa_llm_v2_20260323_uncertainty.jsonl",
+    "artifacts/routing_ab/review_packetv2_20260323/challenge_compare_deepseek_packetv2_iter1_20260323/challenge_joined_20260320_once.sa_llm_v2_20260323_uncertainty.jsonl",
+    "artifacts/routing_ab/review_packetv2_20260323/holdout2_samplewise_packetv2_iter1_20260323/holdout2.sa_llm_v2_20260323_uncertainty.jsonl",
+    "artifacts/routing_ab/holdout3_compare_deepseek_packetv2_20260330/holdout3_joined_20260330_once.sa_llm_v2_20260323_uncertainty.jsonl"
+  ],
+  "sample_filter": null
+}

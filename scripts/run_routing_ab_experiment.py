@@ -13,6 +13,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from agentdns_routing.namespace import NamespaceResolver
+from agentdns_routing.related_v2 import make_related_llm_client
 from agentdns_routing.stage_a_clean import StageACleanConfig, build_routing_run_trace as build_a_clean_trace
 from agentdns_routing.stage_a_eval import evaluate_traces, validate_traces
 from agentdns_routing.stage_a_llm import (
@@ -157,12 +158,21 @@ def main() -> None:
     a_clean_traces: list[dict] = []
     if {"a_clean", "a_clean_b"} & requested:
         a_clean_config = StageACleanConfig(stage_a_version=args.stage_a_clean_version)
+        related_client_for_clean = None
+        if args.b_provider != "deterministic":
+            related_client_for_clean = make_related_llm_client(args.b_provider, args.b_model)
         for sample in samples:
             snapshot = snapshots.get(sample["id"])
             if not snapshot:
                 raise KeyError(f"Missing Stage R snapshot for sample_id={sample['id']}")
             a_clean_traces.append(
-                build_a_clean_trace(sample=sample, snapshot=snapshot, resolver=resolver, config=a_clean_config)
+                build_a_clean_trace(
+                    sample=sample,
+                    snapshot=snapshot,
+                    resolver=resolver,
+                    config=a_clean_config,
+                    related_client=related_client_for_clean,
+                )
             )
         a_clean_summary = evaluate_traces(samples, a_clean_traces)
         a_clean_summary["method"] = "stage_a_clean"
@@ -179,6 +189,7 @@ def main() -> None:
         results["a_clean"] = {"trace_path": trace_path, "summary_path": summary_path, "summary": a_clean_summary}
 
     a_llm_traces: list[dict] = []
+    related_client_for_a_llm = None
     if {"a_llm", "a_llm_b"} & requested:
         a_llm_config = StageALLMConfig(
             stage_a_version=args.stage_a_llm_version,
@@ -186,6 +197,7 @@ def main() -> None:
             base_stage_a_version=args.stage_a_llm_base_stage_a_version or args.stage_a_clean_version,
         )
         a_llm_client = make_llm_client(provider=args.a_llm_provider, model=args.a_llm_model)
+        related_client_for_a_llm = make_related_llm_client(provider=args.a_llm_provider, model=args.a_llm_model)
         for sample in samples:
             snapshot = snapshots.get(sample["id"])
             if not snapshot:
@@ -197,6 +209,7 @@ def main() -> None:
                     resolver=resolver,
                     client=a_llm_client,
                     config=a_llm_config,
+                    related_client=related_client_for_a_llm,
                 )
             )
         a_llm_summary = evaluate_traces(samples, a_llm_traces)
@@ -238,10 +251,18 @@ def main() -> None:
 
     if "a_clean_b" in requested:
         b_client = None if args.b_provider == "deterministic" else make_stage_b_llm_client(args.b_provider, args.b_model)
+        related_client_for_b = None if args.b_provider == "deterministic" else make_related_llm_client(args.b_provider, args.b_model)
         if not a_clean_traces:
             raise RuntimeError("a_clean traces are required for a_clean_b chain")
         a_clean_b_traces = [
-            build_stage_b_trace(sample=sample, trace=trace, resolver=resolver, config=b_config, client=b_client)
+            build_stage_b_trace(
+                sample=sample,
+                trace=trace,
+                resolver=resolver,
+                config=b_config,
+                client=b_client,
+                related_client=related_client_for_b,
+            )
             for sample, trace in zip(samples, a_clean_traces)
         ]
         a_clean_b_summary = evaluate_stage_b(samples, a_clean_b_traces)
@@ -282,7 +303,14 @@ def main() -> None:
         if not a_llm_traces:
             raise RuntimeError("a_llm traces are required for a_llm_b chain")
         a_llm_b_traces = [
-            build_stage_b_trace(sample=sample, trace=trace, resolver=resolver, config=b_config, client=b_client)
+            build_stage_b_trace(
+                sample=sample,
+                trace=trace,
+                resolver=resolver,
+                config=b_config,
+                client=b_client,
+                related_client=related_client_for_a_llm,
+            )
             for sample, trace in zip(samples, a_llm_traces)
         ]
         a_llm_b_summary = evaluate_stage_b(samples, a_llm_b_traces)

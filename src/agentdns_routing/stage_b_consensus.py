@@ -12,6 +12,7 @@ from typing import Any, Protocol
 from openai import OpenAI
 
 from .namespace import NamespaceResolver, validate_fqdn
+from .related_v2 import RelatedV2Config, RelatedV2LLMClient, attach_related_v2_final_fields
 from .routing_chain import attach_stage_b_final_fields
 from .stage_a_clean import _clip, _is_chain_duplicate, _safe_primary
 
@@ -2230,6 +2231,9 @@ def build_stage_b_trace(
     resolver: NamespaceResolver,
     config: StageBConfig | None = None,
     client: StageBLLMClient | None = None,
+    related_config: RelatedV2Config | None = None,
+    related_client: RelatedV2LLMClient | None = None,
+    with_related_v2: bool = True,
 ) -> dict[str, Any]:
     config = config or StageBConfig()
     stage_b = analyze_stage_b(sample=sample, trace=trace, resolver=resolver, config=config, client=client)
@@ -2237,4 +2241,13 @@ def build_stage_b_trace(
     stage_b_trace["run_id"] = f"run_{config.stage_b_version}_{sample['id']}_{uuid.uuid4().hex[:8]}"
     stage_b_trace["stage_b_version"] = config.stage_b_version
     stage_b_trace["stage_b"] = stage_b
-    return attach_stage_b_final_fields(stage_b_trace)
+    stage_b_trace = attach_stage_b_final_fields(stage_b_trace)
+    if not with_related_v2:
+        return stage_b_trace
+    return attach_related_v2_final_fields(
+        sample=sample,
+        trace=stage_b_trace,
+        resolver=resolver,
+        config=related_config,
+        client=related_client,
+    )

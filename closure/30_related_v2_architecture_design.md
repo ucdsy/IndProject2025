@@ -1,15 +1,15 @@
 # Related v2 架构设计（2026-04-01）
 
-> 目的: 将 `related` 从当前与 `primary` 近似共用的 `R -> A -> B` 对称链中拆出来，改成“主标签条件下的独立 retrieval + adjudication”子系统。
+> 目的: 将 `related` 从当前与 `primary` 近似共用的 `R -> A -> B` 对称链中拆出来，改成 **query-anchored、primary-aware、LLM-centered** 的独立 related 子系统。
 >
 > 设计结论:
-> - `primary` 继续保留现有 `R_primary -> A_primary -> B_primary`
+> - `primary` 继续保留现有冻结主线 `R_primary -> A_primary -> B_primary`
 > - `related` 不建议改成裸 `A -> B`
 > - 正确方向是:
->   - `A_primary`
+>   - `A_primary / B_primary` 先定最终 `primary`
 >   - `intent split / secondary extraction`
->   - `R_related(primary-conditioned)`
->   - `A_related`
+>   - `related candidate builder`
+>   - `A_related(LLM adjudication)`
 >   - `B_related` 仅作低频复核
 
 ## 1. 背景与问题
@@ -47,13 +47,13 @@
 ### 2.2 建议采用的做法
 - `primary` 与 `related` 分成两条职责不同的子链:
   - `primary`: 单标签主决策
-  - `related`: 主标签条件下的补充标签检索与多标签判定
+  - `related`: 以原 query 为锚点的多意图拆分、候选召回与多标签判定
 
 一句话:
 
 > `related` 不该继续和 `primary` 共用同一条对称链，
-> 但也不该变成无检索的裸 `A -> B`；
-> 它应当成为“主标签条件下的二阶段 related 子系统”。
+> 也不该变成无检索的裸 `A -> B`；
+> 它应当成为“**query 锚定检索 + primary 感知约束 + LLM 多标签判定**”的 related 子系统。
 
 ## 3. Related v2 总体结构
 
@@ -68,7 +68,7 @@ Primary 主线继续负责:
 - primary 相关的不确定性升级
 
 ### 3.2 Related 子线独立
-- `A_primary` 输出主标签后，进入 `related` 子线:
+- `A_primary / B_primary` 输出最终主标签后，进入 `related` 子线:
 
 ```text
 query/context
@@ -77,8 +77,8 @@ query/context
   -> (optional) B_primary
   -> finalized_primary
   -> secondary_intent_extraction
-  -> R_related(primary-conditioned)
-  -> A_related
+  -> related_candidate_builder
+  -> A_related(LLM)
   -> (optional) B_related
   -> selected_related_fqdns
 ```
@@ -93,35 +93,41 @@ flowchart TD
     AP --> FP["finalized_primary_fqdn"]
     BP --> FP
 
-    FP --> SE["secondary_intent_extraction<br/>主次意图拆分"]
-    SE --> RR["R_related(primary-conditioned)<br/>围绕主标签的 related 检索"]
-    RR --> AR["A_related<br/>条件多标签判定"]
+    Q --> SE["secondary_intent_extraction<br/>主次意图拆分"]
+    FP --> SE
+    SE --> RR["related candidate builder<br/>候选组织而非独立检索阶段"]
+    RR --> AR["A_related(LLM)<br/>多标签语义判定"]
+    FP --> AR
     AR --> BR{"B_related?<br/>仅 related 难例复核"}
     AR --> SR["selected_related_fqdns"]
     BR --> SR
 
     AP -. uncertainty handoff .-> SE
-    FP -. primary-conditioned packet .-> RR
+    Q -. query themes .-> RR
     RR -. related candidates .-> AR
+    FP -. primary-aware constraints .-> AR
 ```
 
 ### 3.2.2 `related` 子线细化图
 
 ```mermaid
 flowchart LR
-    P["finalized_primary_fqdn"] --> RRP["R_related planner"]
-    I["secondary_intents"] --> RRP
-    C["query / context"] --> RRP
+    C["query / context"] --> IS["intent splitter"]
+    P["finalized_primary_fqdn"] --> IS
+    IS --> I["secondary_intents"]
+    C --> RRP["related candidate builder"]
+    I --> RRP
 
     RRP --> RC["related_candidates"]
-    RC --> AR["A_related"]
+    RC --> AR["A_related(LLM adjudication)"]
     P --> AR
     I --> AR
+    C --> AR
 
     AR --> D1["selected_related_fqdns"]
     AR --> D2["related_rationales"]
     AR --> D3["related_confidence"]
-    AR --> D4["related_confusion_points"]
+    AR --> D4["why_related_not_primary / confusion_points"]
 
     D1 --> BR{"B_related review?"}
     D3 --> BR
@@ -129,13 +135,56 @@ flowchart LR
     BR --> OUT["final related set"]
 ```
 
+### 3.2.3 在线运行时调度图
+
+上面的两张图表达的是**逻辑依赖**。在线执行时不建议全串行，而应采用:
+
+- `A_primary` 先给出 provisional primary
+- 立即并行启动 `related_v2` candidate builder + adjudication 预取
+- `B_primary` 只在升级样本上继续运行
+- 若 `B_primary` 未改 primary，则直接复用预取结果
+- 若 `B_primary` 改了 primary，则仅对 `related_v2` 重算
+
+```mermaid
+flowchart LR
+    Q["query / context"] --> RP["R_primary"]
+    RP --> AP["A_primary"]
+
+    AP --> PP["provisional_primary"]
+    PP --> RR["candidate builder + A_related speculative prefetch"]
+
+    AP --> BP{"B_primary triggered?"}
+    BP -->|no| FP1["final_primary = provisional"]
+    BP -->|yes| BPX["B_primary review"]
+    BPX --> FP2["final_primary after review"]
+
+    FP1 --> M1{"primary changed?"}
+    FP2 --> M2{"primary changed?"}
+
+    RR --> M1
+    RR --> M2
+
+    M1 -->|no| REUSE["reuse prefetched related"]
+    M2 -->|no| REUSE
+    M1 -->|yes| RERUN["rerun related_v2 on final primary"]
+    M2 -->|yes| RERUN
+
+    REUSE --> BR{"B_related review?"}
+    RERUN --> BR
+    BR --> OUT["final related set"]
+```
+
 ### 3.3 关键变化
 - `related` 不再从 `primary` 的同一包 candidate 中“顺手挑”
-- 而是围绕:
-  - `finalized_primary`
-  - `secondary intents`
-  - `cross-domain related policy`
-  重新构造一个更贴 `related` 任务的候选池
+- `related` 的一阶语义锚点是:
+  - 原 query
+  - secondary intents
+  - scene/context
+- `primary` 在 `related` 子线中的作用变成:
+  - challenger rejection
+  - duplicate suppression
+  - hierarchy cleanup
+  - high-risk / cross-domain guardrails
 
 ## 4. 模块定义
 
@@ -159,44 +208,49 @@ flowchart LR
 
 ### 作用
 - 把“用户还顺手想做什么”显式化
-- 让后续 `R_related` 不再只是复用 `R_primary` 的 top-k 候选
+- 让后续 candidate builder 和 `A_related` 都围绕 query 多意图工作
 
-## 4.2 `R_related(primary-conditioned)`
+## 4.2 `related candidate builder`
 
 ### 输入
-- `finalized_primary_fqdn`
 - `secondary_intents`
 - 原始 `query/context`
+- `finalized_primary_fqdn`
 
 ### 输出
 - `related_candidates`
 - `related_candidate_trace`
 
 ### 设计原则
-- 召回来源应与 `R_primary` 区分:
-  - `primary` 邻域候选
-  - sibling / complement candidates
-  - policy-allowed cross-domain complements
-  - descriptor / alias 命中到的非 primary 邻接功能
+- 它不是一个新的独立 `R` 阶段，而是一个轻量的候选组织器
+- 候选来源以受控 union 为主:
+  - `Stage R` top-k
+  - primary neighborhood
+  - `stage_a / stage_b` related priors
+  - query-theme seeds
+- `secondary_intents` 用来补充候选组织和排序，不再作为唯一召回入口
 
 ### 与当前 `Stage R` 的区别
 - 当前 `Stage R` 主要为 primary 建候选，并顺带带出部分 relevant nodes
-- `R_related` 则是:
-  - **围绕已知 primary 的条件检索**
-  - 不是泛 namespace 的第二次主检索
+- `related candidate builder` 则是:
+  - **在 `Stage R` 基础上为 related 任务重组候选池**
+  - query 是语义锚点，primary 是约束，而不是再独立跑一次重检索
 
-## 4.3 `A_related`
+## 4.3 `A_related(LLM adjudication)`
 
 ### 输入
+- 原始 `query/context`
 - `finalized_primary_fqdn`
 - `secondary_intents`
 - `related_candidates`
+- `A_primary` / `B_primary` handoff
 
 ### 输出
 - `selected_related_fqdns`
 - `related_rationales`
 - `related_confidence`
 - `related_confusion_points`
+- `why_related_not_primary`
 
 ### 核心任务
 - 判断某候选是否:
@@ -206,7 +260,12 @@ flowchart LR
 
 ### 与 `A_primary` 的本质区别
 - `A_primary` 是单标签主决策
-- `A_related` 是条件多标签判定
+- `A_related` 是**多标签语义判定**
+- `A_related` 应由 LLM 做最终 semantic decision
+- deterministic 仅提供:
+  - 候选组织
+  - dedupe / hierarchy guard
+  - high-risk hard constraints
 
 ## 4.4 `B_related`
 
@@ -229,7 +288,11 @@ flowchart LR
 
 ## 5. packet 与证据设计
 
-## 5.1 `R_related` 候选卡应新增
+## 5.1 `related candidate builder` 候选卡应新增
+- `query_theme_match`
+- `secondary_anchor_match`
+- `candidate_builder_sources`
+- `stage_r_present / stage_r_rank`
 - `complement_to_primary`
 - `same_session_secondary_fit`
 - `cross_domain_secondary_ok`
@@ -266,35 +329,42 @@ flowchart LR
 - primary 的 override gate
 - `Stage B primary` 的角色职责直接平移到 `related`
 
-## 7. 最小实现方案
+## 7. 实现落点
 
-### Phase 1: `related` 从 primary packet 中拆包
-- 保留现有 `R_primary / A_primary / B_primary`
-- 新增:
-  - `secondary_intent_extraction`
-  - `related_decision_packet`
+### 7.1 当前实现状态
+- `primary` 主线保持原实现:
+  - `R_primary / A_primary / B_primary`
+- `related_v2` 已独立为单独模块:
+  - `src/agentdns_routing/related_v2.py`
+- 当前实现同时支持两种 related 决策源:
+  - `related_v2_det`
+    - candidate builder + deterministic guardrails + selection
+  - `related_v2_llm`
+    - candidate builder + LLM adjudication + deterministic guardrails
 
-### Phase 2: 实现 `R_related(primary-conditioned)`
-- 用 primary-conditioned 检索构造 related candidate pool
-- 目标先看:
-  - `RelatedCoverage@k`
-  - `RelatedRecall@Covered`
+### 7.2 在线调度
+- 逻辑上:
+  - `primary` 先决
+  - `related` 后决
+- 运行时:
+  - `A_primary` 给出 provisional primary 后即可 speculative prefetch `related`
+  - 若 `B_primary` 不改 primary，则复用预取结果
+  - 若 `B_primary` 改 primary，则仅重算 `related_v2`
 
-### Phase 3: 实现 `A_related`
-- 将 `related` 从“顺手挂”改成“显式判定”
-- 观察:
-  - `decision_related_miss`
-  - `decision_related_overpredict`
-
-### Phase 4: 低频加入 `B_related`
-- 只复核最难的 secondary 样本
-- 不再要求 `B_related` 像 `B_primary` 一样高覆盖
+### 7.3 推荐最终形态
+- clean path:
+  - `related_v2_det` 作为快速默认路径
+- llm path:
+  - `related_v2_llm` 作为更合理的 semantic related adjudication 形态
+- 多智能体:
+  - 不要求 `B_related` 全量触发
+  - 仅对 low-confidence / high-risk / cross-domain related 样本复核
 
 ## 8. 评测建议
 
 ### 8.1 不再只看全局 `RelatedRecall / Precision`
 应新增分层指标:
-- `R_related Coverage@k`
+- `candidate_builder Coverage@k`
 - `A_related Recall@Covered`
 - `B_related correction gain`
 
@@ -313,13 +383,13 @@ flowchart LR
 
 这套设计最重要的价值，不是立刻替换当前已冻结主线，而是:
 - 解释为什么 `related` 现阶段效果差
-- 给出一个与现有实验结论一致的后续架构方向
+- 给出一个与现有实验结论一致、且能和冻结主线并存的后续架构方向
 
 对外建议表述为:
 
 > 当前系统已在 `primary` 可信认知标识上完成主线收口；
-> 对于 `related`，实验表明其主要瓶颈不在多智能体运行时参数，而在 secondary-aware retrieval 与多标签 adjudication 机制尚未独立建模。
-> 因此后续将把 `related` 从对称主链中拆出，建设主标签条件下的专门 related 子系统。
+> 对于 `related`，实验表明其主要瓶颈不在多智能体运行时参数，而在 query-level multi-intent decomposition、candidate building 与多标签 adjudication 机制尚未独立建模。
+> 因此后续将把 `related` 从对称主链中拆出，建设 query-anchored、primary-aware、LLM-centered 的专门 related 子系统。
 
 ## 10. 最终判断
 
@@ -327,4 +397,4 @@ flowchart LR
 - `related` 也不适合改成裸 `A -> B`
 - 正确方向是:
   - `primary` 主线保持
-  - `related` 改成 `primary-conditioned retrieval + multi-label adjudication + optional review`
+  - `related` 改成 `candidate builder + LLM multi-label adjudication + optional review`

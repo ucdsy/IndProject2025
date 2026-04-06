@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from functools import lru_cache
 from pathlib import Path
@@ -11,6 +12,13 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from .namespace import NamespaceResolver
+from .related_v2 import (
+    RelatedV2Config,
+    RelatedV2LLMClient,
+    analyze_related_v2,
+    attach_related_v2_final_fields,
+    make_related_llm_client,
+)
 from .stage_a_clean import StageACleanConfig, build_routing_run_trace as build_stage_a_clean_trace
 from .stage_a_llm import StageALLMConfig, build_routing_run_trace as build_stage_a_llm_trace, make_llm_client
 from .stage_b_consensus import StageBConfig, build_stage_b_trace, make_stage_b_llm_client
@@ -85,6 +93,11 @@ def _stage_c_config() -> StageCConfig:
     return StageCConfig(stage_c_version=os.getenv("INDPROJ_STAGE_C_VERSION", StageCConfig().stage_c_version))
 
 
+@lru_cache(maxsize=1)
+def _related_v2_config() -> RelatedV2Config:
+    return RelatedV2Config(related_version=os.getenv("INDPROJ_RELATED_V2_VERSION", RelatedV2Config().related_version))
+
+
 @app.get("/health")
 def health() -> dict[str, Any]:
     return {"status": "ok", "service": "indproj04-routing-service"}
@@ -123,10 +136,13 @@ def resolve_routing(payload: RoutingResolveRequest) -> dict[str, Any]:
             "final_primary_fqdn": trace.get("final_primary_fqdn"),
             "final_related_fqdns": trace.get("final_related_fqdns", []),
             "final_decision_source": trace.get("final_decision_source"),
+            "final_related_source": trace.get("final_related_source"),
             "entered_stage_b": bool(trace.get("entered_stage_b", False)),
             "stage_r_version": trace.get("stage_r_version"),
             "stage_a_version": trace.get("stage_a_version"),
             "stage_b_version": trace.get("stage_b_version"),
+            "related_v2_version": trace.get("related_v2_version"),
+            "related_candidate_options": _related_candidate_options(trace=trace, resolver=resolver),
         },
         "routing_trace": _routing_trace_lines(trace),
         "trace": trace,
@@ -157,6 +173,8 @@ def _build_routing_trace(
 ) -> dict[str, Any]:
     stage_a_mode = _stage_a_mode(payload)
     stage_b_mode = _stage_b_mode(payload)
+    related_config = _related_v2_config()
+    related_client = _related_client(payload, stage_a_mode=stage_a_mode, stage_b_mode=stage_b_mode)
 
     if stage_a_mode == "llm":
         client = make_llm_client(provider=payload.stage_a_provider or os.getenv("INDPROJ_STAGE_A_PROVIDER", "deepseek"), model=payload.stage_a_model)
@@ -166,6 +184,9 @@ def _build_routing_trace(
             resolver=resolver,
             client=client,
             config=_stage_a_llm_config(),
+            related_config=related_config,
+            related_client=related_client,
+            with_related_v2=False,
         )
     else:
         trace = build_stage_a_clean_trace(
@@ -173,24 +194,81 @@ def _build_routing_trace(
             snapshot=snapshot,
             resolver=resolver,
             config=_stage_a_clean_config(),
+            related_config=related_config,
+            related_client=related_client,
+            with_related_v2=False,
         )
 
-    if stage_b_mode == "skip":
-        return trace
-
-    stage_b_client = None
-    if stage_b_mode == "llm":
-        stage_b_client = make_stage_b_llm_client(
-            provider=payload.stage_b_provider or os.getenv("INDPROJ_STAGE_B_PROVIDER", "deepseek"),
-            model=payload.stage_b_model,
+    provisional_primary = trace.get("final_primary_fqdn") or trace["stage_a"].get("selected_primary_fqdn")
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        # Related retrieval can speculatively start once Stage A has a provisional
+        # primary; if Stage B keeps the same primary we reuse this work, otherwise
+        # attach_related_v2_final_fields will rerun against the final primary.
+        related_future = executor.submit(
+            analyze_related_v2,
+            sample=sample,
+            trace=trace,
+            resolver=resolver,
+            primary_fqdn=provisional_primary,
+            config=related_config,
+            client=related_client,
         )
-    return build_stage_b_trace(
+
+        if stage_b_mode == "skip":
+            finalized_trace = trace
+        else:
+            stage_b_client = None
+            if stage_b_mode == "llm":
+                stage_b_client = make_stage_b_llm_client(
+                    provider=payload.stage_b_provider or os.getenv("INDPROJ_STAGE_B_PROVIDER", "deepseek"),
+                    model=payload.stage_b_model,
+                )
+            finalized_trace = build_stage_b_trace(
+                sample=sample,
+                trace=trace,
+                resolver=resolver,
+                config=_stage_b_config(),
+                client=stage_b_client,
+                related_config=related_config,
+                related_client=related_client,
+                with_related_v2=False,
+            )
+
+        prefetched_related = related_future.result()
+
+    final_primary = finalized_trace.get("final_primary_fqdn") or provisional_primary
+    if prefetched_related.get("primary_fqdn") == final_primary:
+        return attach_related_v2_final_fields(
+            sample=sample,
+            trace=finalized_trace,
+            resolver=resolver,
+            config=related_config,
+            precomputed=prefetched_related,
+            client=related_client,
+        )
+    return attach_related_v2_final_fields(
         sample=sample,
-        trace=trace,
+        trace=finalized_trace,
         resolver=resolver,
-        config=_stage_b_config(),
-        client=stage_b_client,
+        config=related_config,
+        precomputed=prefetched_related,
+        client=related_client,
     )
+
+
+def _related_client(
+    payload: RoutingResolveRequest,
+    *,
+    stage_a_mode: str,
+    stage_b_mode: str,
+) -> RelatedV2LLMClient | None:
+    if stage_a_mode == "llm":
+        provider = payload.stage_a_provider or os.getenv("INDPROJ_STAGE_A_PROVIDER", "deepseek")
+        return make_related_llm_client(provider=provider, model=payload.stage_a_model)
+    if stage_b_mode == "llm":
+        provider = payload.stage_b_provider or os.getenv("INDPROJ_STAGE_B_PROVIDER", "deepseek")
+        return make_related_llm_client(provider=provider, model=payload.stage_b_model)
+    return None
 
 
 def _stage_a_mode(payload: RoutingResolveRequest) -> str:
@@ -247,6 +325,56 @@ def _planner_projection(routes: list[str], resolver: NamespaceResolver, extracte
     }
 
 
+def _related_candidate_options(trace: dict[str, Any], resolver: NamespaceResolver) -> list[dict[str, Any]]:
+    related_v2 = trace.get("related_v2") or {}
+    candidate_rows = list(related_v2.get("related_candidates", []))
+    llm_decision = ((related_v2.get("llm_trace") or {}).get("decision") or {})
+    llm_selected = set(llm_decision.get("selected_related_fqdns", []))
+    final_selected = set(trace.get("final_related_fqdns", []))
+    candidate_notes = {
+        row.get("fqdn"): row.get("reason") or row.get("note", "")
+        for row in llm_decision.get("candidate_decisions", llm_decision.get("candidate_notes", []))
+        if isinstance(row, dict) and row.get("fqdn")
+    }
+    blocked = {
+        note.split(":")[1]
+        for note in related_v2.get("review", {}).get("review_notes", [])
+        if isinstance(note, str) and note.startswith("guard_drop:")
+    }
+
+    options: list[dict[str, Any]] = []
+    for row in candidate_rows:
+        fqdn = row.get("fqdn")
+        if not fqdn:
+            continue
+        node = resolver.get_node(fqdn)
+        status = "candidate"
+        if fqdn in final_selected:
+            status = "selected"
+        elif fqdn in llm_selected and fqdn in blocked:
+            status = "suggested_but_blocked"
+        elif fqdn in llm_selected:
+            status = "suggested"
+        options.append(
+            {
+                "fqdn": fqdn,
+                "status": status,
+                "desc": node.desc if node else "",
+                "l1": row.get("l1"),
+                "l2": row.get("l2"),
+                "segment": row.get("segment"),
+                "score_related_v2": row.get("score_related_v2"),
+                "builder_sources": list(row.get("builder_sources", [])),
+                "stage_r_rank": row.get("stage_r_rank"),
+                "cross_l1": bool(row.get("cross_l1", False)),
+                "is_high_risk": bool(row.get("is_high_risk", False)),
+                "cross_domain_secondary_ok": bool(row.get("cross_domain_secondary_ok", False)),
+                "note": candidate_notes.get(fqdn, ""),
+            }
+        )
+    return options
+
+
 def _routing_trace_lines(trace: dict[str, Any]) -> list[str]:
     stage_r_candidates = [row["fqdn"] for row in trace.get("stage_r", {}).get("fqdn_candidates", [])[:5]]
     stage_a = trace.get("stage_a", {})
@@ -270,6 +398,6 @@ def _routing_trace_lines(trace: dict[str, Any]) -> list[str]:
     lines.append(
         "Final routing: "
         f"primary={trace.get('final_primary_fqdn')} | related={','.join(trace.get('final_related_fqdns', [])) or '-'} | "
-        f"source={trace.get('final_decision_source')}"
+        f"source={trace.get('final_decision_source')} | related_source={trace.get('final_related_source') or '-'}"
     )
     return lines

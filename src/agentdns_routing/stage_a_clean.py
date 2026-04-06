@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
+from .related_v2 import RelatedV2Config, RelatedV2LLMClient, attach_related_v2_final_fields
 from .routing_chain import attach_stage_a_final_fields
 
 PUNCT_RE = re.compile(r"[，。！？；：、“”‘’（）()【】《》,.!?:;\"'`\-\[\]{}_/\\\s]+")
@@ -637,6 +638,9 @@ def build_routing_run_trace(
     snapshot: dict[str, Any],
     resolver: NamespaceResolver,
     config: StageACleanConfig | None = None,
+    related_config: RelatedV2Config | None = None,
+    related_client: RelatedV2LLMClient | None = None,
+    with_related_v2: bool = True,
 ) -> dict[str, Any]:
     config = config or StageACleanConfig()
     stage_a = analyze_stage_a(sample=sample, snapshot=snapshot, resolver=resolver, config=config)
@@ -649,4 +653,13 @@ def build_routing_run_trace(
         "stage_r": snapshot,
         "stage_a": stage_a,
     }
-    return attach_stage_a_final_fields(trace, source="stage_a_clean")
+    trace = attach_stage_a_final_fields(trace, source="stage_a_clean")
+    if not with_related_v2:
+        return trace
+    return attach_related_v2_final_fields(
+        sample=sample,
+        trace=trace,
+        resolver=resolver,
+        config=related_config,
+        client=related_client,
+    )

@@ -33,8 +33,8 @@ def evaluate_traces(samples: list[dict[str, Any]], traces: list[dict[str, Any]])
 
     for sample, trace in labeled_pairs:
         stage_a = trace["stage_a"]
-        selected_primary = stage_a["selected_primary_fqdn"]
-        selected_related = set(stage_a["selected_related_fqdns"])
+        selected_primary = trace.get("final_primary_fqdn", stage_a["selected_primary_fqdn"])
+        selected_related = set(trace.get("final_related_fqdns", stage_a["selected_related_fqdns"]))
         candidates = [row["fqdn"] for row in trace["stage_r"].get("fqdn_candidates", [])]
         candidate_set = set(candidates)
         gt = sample["ground_truth_fqdn"]
@@ -91,6 +91,8 @@ def evaluate_traces(samples: list[dict[str, Any]], traces: list[dict[str, Any]])
                 "margin": stage_a["margin"],
                 "escalate_to_stage_b": stage_a["escalate_to_stage_b"],
                 "escalation_reasons": stage_a["escalation_reasons"],
+                "final_decision_source": trace.get("final_decision_source"),
+                "final_related_source": trace.get("final_related_source"),
                 "error_bucket": bucket,
             }
         )

@@ -11,6 +11,7 @@ from typing import Any, Protocol
 from openai import OpenAI
 
 from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
+from .related_v2 import RelatedV2Config, RelatedV2LLMClient, attach_related_v2_final_fields
 from .routing_chain import attach_stage_a_final_fields
 from .stage_a_clean import (
     StageACleanConfig,
@@ -992,6 +993,9 @@ def build_routing_run_trace(
     resolver: NamespaceResolver,
     client: StageALLMClient,
     config: StageALLMConfig | None = None,
+    related_config: RelatedV2Config | None = None,
+    related_client: RelatedV2LLMClient | None = None,
+    with_related_v2: bool = True,
 ) -> dict[str, Any]:
     config = config or StageALLMConfig()
     stage_a = analyze_stage_a_llm(sample=sample, snapshot=snapshot, resolver=resolver, client=client, config=config)
@@ -1004,4 +1008,13 @@ def build_routing_run_trace(
         "stage_r": snapshot,
         "stage_a": stage_a,
     }
-    return attach_stage_a_final_fields(trace, source="stage_a_llm")
+    trace = attach_stage_a_final_fields(trace, source="stage_a_llm")
+    if not with_related_v2:
+        return trace
+    return attach_related_v2_final_fields(
+        sample=sample,
+        trace=trace,
+        resolver=resolver,
+        config=related_config,
+        client=related_client,
+    )

@@ -1,0 +1,9 @@
+{
+  "input": "data/agentdns_routing/test.jsonl",
+  "samples": 8,
+  "top_k": 10,
+  "stage": "stage_r_clean",
+  "labels_available": true,
+  "PrimaryRecall@K": 1.0,
+  "RelatedCoverage@K": 0.8571
+}
