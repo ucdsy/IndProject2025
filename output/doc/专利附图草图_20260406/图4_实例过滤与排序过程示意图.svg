@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1050" viewBox="0 0 1700 1050">
+  <defs>
+    <style>
+      .title { font: 700 34px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .label { font: 600 22px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .text { font: 20px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .small { font: 18px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .box { fill: #fff; stroke: #000; stroke-width: 2.5; rx: 18; ry: 18; }
+      .frame { fill: #fff; stroke: #000; stroke-width: 2.2; stroke-dasharray: 12 8; rx: 22; ry: 22; }
+      .line { stroke: #000; stroke-width: 2.5; fill: none; }
+    </style>
+    <marker id="arrow4" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#000"/>
+    </marker>
+  </defs>
+
+  <text x="850" y="60" text-anchor="middle" class="title">图4 智能体实例地址候选集合过滤与排序过程示意图</text>
+
+  <rect x="70" y="120" width="1560" height="860" class="frame"/>
+  <text x="850" y="158" text-anchor="middle" class="label">先执行硬过滤，再执行评分排序</text>
+
+  <rect x="120" y="260" width="250" height="130" class="box"/>
+  <text x="245" y="305" text-anchor="middle" class="label">智能体注册快照输入</text>
+  <text x="245" y="340" text-anchor="middle" class="small">实例地址 / 端点 / 状态</text>
+
+  <rect x="440" y="260" width="230" height="130" class="box"/>
+  <text x="555" y="305" text-anchor="middle" class="label">精确地址匹配过滤</text>
+  <text x="555" y="340" text-anchor="middle" class="small">仅保留与最终主能力地址</text>
+  <text x="555" y="370" text-anchor="middle" class="small">完全匹配的实例</text>
+
+  <rect x="740" y="260" width="230" height="130" class="box"/>
+  <text x="855" y="305" text-anchor="middle" class="label">实例在线状态过滤</text>
+  <text x="855" y="340" text-anchor="middle" class="small">剔除离线或非在线状态</text>
+
+  <rect x="1040" y="260" width="230" height="130" class="box"/>
+  <text x="1155" y="305" text-anchor="middle" class="label">调用端点有效性过滤</text>
+  <text x="1155" y="340" text-anchor="middle" class="small">剔除缺失或不可用端点</text>
+
+  <rect x="1340" y="260" width="230" height="130" class="box"/>
+  <text x="1455" y="305" text-anchor="middle" class="label">输入输出模式过滤</text>
+  <text x="1455" y="340" text-anchor="middle" class="small">剔除模式不兼容实例</text>
+
+  <line x1="370" y1="325" x2="440" y2="325" class="line" marker-end="url(#arrow4)"/>
+  <line x1="670" y1="325" x2="740" y2="325" class="line" marker-end="url(#arrow4)"/>
+  <line x1="970" y1="325" x2="1040" y2="325" class="line" marker-end="url(#arrow4)"/>
+  <line x1="1270" y1="325" x2="1340" y2="325" class="line" marker-end="url(#arrow4)"/>
+
+  <line x1="1455" y1="390" x2="1455" y2="500" class="line"/>
+  <line x1="1455" y1="500" x2="850" y2="500" class="line" marker-end="url(#arrow4)"/>
+
+  <rect x="280" y="560" width="250" height="140" class="box"/>
+  <text x="405" y="608" text-anchor="middle" class="label">实例匹配度计算</text>
+  <text x="405" y="642" text-anchor="middle" class="small">能力匹配</text>
+  <text x="405" y="672" text-anchor="middle" class="small">模式匹配 / 标签匹配</text>
+
+  <rect x="590" y="560" width="250" height="140" class="box"/>
+  <text x="715" y="608" text-anchor="middle" class="label">健康度计算</text>
+  <text x="715" y="642" text-anchor="middle" class="small">在线状态</text>
+  <text x="715" y="672" text-anchor="middle" class="small">最近心跳时间</text>
+
+  <rect x="900" y="560" width="250" height="140" class="box"/>
+  <text x="1025" y="608" text-anchor="middle" class="label">实例曝光公平度计算</text>
+  <text x="1025" y="642" text-anchor="middle" class="small">基于实例曝光计数</text>
+
+  <rect x="1210" y="560" width="250" height="140" class="box"/>
+  <text x="1335" y="608" text-anchor="middle" class="label">提供方曝光公平度计算</text>
+  <text x="1335" y="642" text-anchor="middle" class="small">基于提供方曝光计数</text>
+
+  <line x1="850" y1="500" x2="405" y2="560" class="line" marker-end="url(#arrow4)"/>
+  <line x1="850" y1="500" x2="715" y2="560" class="line" marker-end="url(#arrow4)"/>
+  <line x1="850" y1="500" x2="1025" y2="560" class="line" marker-end="url(#arrow4)"/>
+  <line x1="850" y1="500" x2="1335" y2="560" class="line" marker-end="url(#arrow4)"/>
+
+  <rect x="570" y="790" width="560" height="110" class="box"/>
+  <text x="850" y="832" text-anchor="middle" class="label">排序得分生成</text>
+  <text x="850" y="865" text-anchor="middle" class="small">基础得分 + 健康得分 + 实例曝光公平因子 + 提供方曝光公平因子</text>
+
+  <line x1="405" y1="700" x2="680" y2="790" class="line" marker-end="url(#arrow4)"/>
+  <line x1="715" y1="700" x2="785" y2="790" class="line" marker-end="url(#arrow4)"/>
+  <line x1="1025" y1="700" x2="915" y2="790" class="line" marker-end="url(#arrow4)"/>
+  <line x1="1335" y1="700" x2="1020" y2="790" class="line" marker-end="url(#arrow4)"/>
+
+  <rect x="1200" y="790" width="260" height="110" class="box"/>
+  <text x="1330" y="832" text-anchor="middle" class="label">目标智能体实例地址</text>
+  <text x="1330" y="865" text-anchor="middle" class="small">及对应调用端点</text>
+
+  <line x1="1130" y1="845" x2="1200" y2="845" class="line" marker-end="url(#arrow4)"/>
+</svg>

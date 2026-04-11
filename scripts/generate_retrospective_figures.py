@@ -5,10 +5,54 @@ import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "output" / "figures" / "retrospective_train_test_20260331"
+DOC_DIR = ROOT / "output" / "doc" / "overleaf_tech_report_20260406" / "figures"
+
+PALETTE = {
+    "ink": "#222222",
+    "muted": "#6B7280",
+    "grid": "#D9DDE3",
+    "train": "#A8B4C8",
+    "test": "#D96C4F",
+    "rule": "#A8B4C8",
+    "review": "#6C8EAD",
+    "semantic": "#D6A46A",
+    "semantic_review": "#B85C38",
+    "highlight": "#8A1C1C",
+    "positive": "#4B8466",
+    "negative": "#B4413C",
+}
+
+plt.rcParams.update(
+    {
+        "font.family": "serif",
+        "font.size": 10.5,
+        "axes.labelsize": 11.5,
+        "axes.titlesize": 12.5,
+        "xtick.labelsize": 10.5,
+        "ytick.labelsize": 10.5,
+        "legend.fontsize": 10,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+        "axes.linewidth": 0.8,
+        "axes.edgecolor": PALETTE["ink"],
+        "xtick.color": PALETTE["ink"],
+        "ytick.color": PALETTE["ink"],
+        "axes.labelcolor": PALETTE["ink"],
+        "text.color": PALETTE["ink"],
+        "grid.color": PALETTE["grid"],
+        "grid.linestyle": "--",
+        "grid.linewidth": 0.65,
+        "legend.frameon": False,
+        "pdf.fonttype": 42,
+        "ps.fonttype": 42,
+        "figure.dpi": 180,
+    }
+)
 
 
 def _load_json(path: Path):
@@ -393,12 +437,6 @@ def _figure_data() -> dict:
             "stage_a_primary": sample["stage_a"]["selected_primary_fqdn"],
         }
 
-    # Reconstruct aggressive replay winners from the fixed retrospective correctness file via known test score.
-    aggressive_test_ids = {
-        sample_id
-        for sample_id in holdout3_test
-        if sample_id in holdout3_hetero_v3_rows
-    }
     holdout3_bucket = {
         "A_llm_v2 fastpath": bucket_scores(holdout3_fast_rows, holdout3_test),
         "single_v2": bucket_scores(holdout3_single_rows, holdout3_test),
@@ -480,14 +518,44 @@ def _save_json(data: dict):
     (OUT_DIR / "figure_data.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def _save_figure(fig, stem: str):
+    for directory in (OUT_DIR, DOC_DIR):
+        directory.mkdir(parents=True, exist_ok=True)
+        fig.savefig(directory / f"{stem}.pdf", bbox_inches="tight")
+        fig.savefig(directory / f"{stem}.png", dpi=220, bbox_inches="tight")
+
+
 def _annotate_bars(ax, bars, fmt="{:.4f}", dy=0.006):
     for bar in bars:
         height = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width() / 2, height + dy, fmt.format(height), ha="center", va="bottom", fontsize=9)
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            height + dy,
+            fmt.format(height),
+            ha="center",
+            va="bottom",
+            fontsize=9,
+            fontweight="semibold",
+        )
+
+
+def _style_axis(ax, ylabel: str, ymin: float, ymax: float, ystep: float | None = None):
+    ax.set_ylabel(ylabel)
+    ax.set_ylim(ymin, ymax)
+    if ystep is not None:
+        ax.yaxis.set_major_locator(mticker.MultipleLocator(ystep))
+    ax.grid(axis="y")
+    ax.set_axisbelow(True)
 
 
 def _plot_waterfall(data: dict):
-    labels = ["A_clean", "A_clean→B", "A_llm_v2", "A_llm_v2→B", "hetero-v3+aggr"]
+    labels = [
+        "Rule",
+        "Rule +\nReview",
+        "Semantic",
+        "Semantic +\nReview",
+        "Expanded\nconfig",
+    ]
     values = [
         data["pooled_main"]["A_clean"]["test"]["PrimaryAcc@1"],
         data["pooled_main"]["A_clean->B"]["test"]["PrimaryAcc@1"],
@@ -497,138 +565,160 @@ def _plot_waterfall(data: dict):
     ]
     starts = [0, values[0], values[1], values[2], values[3]]
     heights = [values[0], values[1] - values[0], values[2] - values[1], values[3] - values[2], values[4] - values[3]]
-    colors = ["#2F5D8A", "#4C8D6D", "#B86B3F", "#7A5EA6", "#C23B5A"]
+    colors = [
+        PALETTE["rule"],
+        PALETTE["review"],
+        PALETTE["semantic"],
+        PALETTE["semantic_review"],
+        PALETTE["highlight"],
+    ]
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(8.8, 4.8))
     for idx, (label, start, height, color, value) in enumerate(zip(labels, starts, heights, colors, values)):
-        ax.bar(idx, height, bottom=start, color=color, width=0.65)
+        ax.bar(idx, height, bottom=start, color=color, width=0.62)
         ax.text(idx, value + 0.006, f"{value:.4f}", ha="center", va="bottom", fontsize=10, fontweight="bold")
         if idx > 0:
-            ax.text(idx, start + height / 2, f"{height:+.4f}", ha="center", va="center", color="white", fontsize=9, fontweight="bold")
-    ax.set_ylim(0.75, 0.95)
-    ax.set_ylabel("PrimaryAcc@1")
-    ax.set_title("Pooled Retrospective Test Waterfall", fontsize=14, fontweight="bold")
+            ax.text(
+                idx,
+                start + height / 2,
+                f"{height:+.4f}",
+                ha="center",
+                va="center",
+                color="white",
+                fontsize=8.8,
+                fontweight="bold",
+            )
+    _style_axis(ax, "Held-out accuracy", 0.75, 0.945, 0.025)
     ax.set_xticks(range(len(labels)), labels)
-    ax.grid(axis="y", linestyle="--", alpha=0.3)
     fig.tight_layout()
-    fig.savefig(OUT_DIR / "01_pooled_test_waterfall.png", dpi=180)
+    _save_figure(fig, "01_pooled_test_waterfall")
     plt.close(fig)
 
 
 def _plot_pooled_gate(data: dict):
     modes = ["base", "conservative", "aggressive"]
+    display = ["default", "selective", "expanded"]
     train = [data["pooled_gate"][mode]["train"] for mode in modes]
     test = [data["pooled_gate"][mode]["test"] for mode in modes]
     x = range(len(modes))
     width = 0.34
 
-    fig, ax = plt.subplots(figsize=(9, 6))
-    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color="#7A8DA6", label="Train")
-    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color="#C23B5A", label="Test")
+    fig, ax = plt.subplots(figsize=(7.6, 4.6))
+    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color=PALETTE["train"], label="Train")
+    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color=PALETTE["test"], label="Held-out test")
     _annotate_bars(ax, bars1)
     _annotate_bars(ax, bars2)
-    ax.set_ylim(0.86, 0.94)
-    ax.set_ylabel("PrimaryAcc@1")
-    ax.set_title("Pooled Gate Selection", fontsize=14, fontweight="bold")
-    ax.set_xticks(list(x), modes)
-    ax.legend(frameon=False)
-    ax.grid(axis="y", linestyle="--", alpha=0.3)
+    _style_axis(ax, "Accuracy", 0.86, 0.94, 0.02)
+    ax.set_xticks(list(x), display)
+    ax.legend(loc="upper left")
     fig.tight_layout()
-    fig.savefig(OUT_DIR / "02_pooled_gate_selection.png", dpi=180)
+    _save_figure(fig, "02_pooled_gate_selection")
     plt.close(fig)
 
 
 def _plot_holdout3_ablation(data: dict):
-    labels = list(data["holdout3_ablation"].keys())
-    train = [data["holdout3_ablation"][label]["train"]["PrimaryAcc@1"] for label in labels]
-    test = [data["holdout3_ablation"][label]["test"]["PrimaryAcc@1"] for label in labels]
-    x = range(len(labels))
+    ordered = [
+        ("Semantic", "A_llm_v2 fastpath"),
+        ("Single-role\nreview", "single_v2"),
+        ("Homogeneous\nreview", "homogeneous_v2"),
+        ("Role-specialized\n(expanded)", "heterogeneous_v3 + aggressive"),
+    ]
+    train = [data["holdout3_ablation"][key]["train"]["PrimaryAcc@1"] for _, key in ordered]
+    test = [data["holdout3_ablation"][key]["test"]["PrimaryAcc@1"] for _, key in ordered]
+    x = range(len(ordered))
     width = 0.34
 
-    fig, ax = plt.subplots(figsize=(12, 6.5))
-    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color="#4C8D6D", label="Train (n=320)")
-    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color="#2F5D8A", label="Test (n=80)")
+    fig, ax = plt.subplots(figsize=(8.8, 4.8))
+    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color=PALETTE["train"], label="Train")
+    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color=PALETTE["test"], label="Held-out test")
     _annotate_bars(ax, bars1)
     _annotate_bars(ax, bars2)
-    ax.set_ylim(0.84, 0.94)
-    ax.set_ylabel("PrimaryAcc@1")
-    ax.set_title("Holdout3 Collaboration Ablation", fontsize=14, fontweight="bold")
-    ax.set_xticks(list(x), labels, rotation=15, ha="right")
-    ax.legend(frameon=False)
-    ax.grid(axis="y", linestyle="--", alpha=0.3)
+    _style_axis(ax, "Accuracy", 0.84, 0.94, 0.02)
+    ax.set_xticks(list(x), [label for label, _ in ordered])
+    ax.legend(loc="upper left")
     fig.tight_layout()
-    fig.savefig(OUT_DIR / "03_holdout3_collaboration_ablation.png", dpi=180)
+    _save_figure(fig, "03_holdout3_collaboration_ablation")
     plt.close(fig)
 
 
 def _plot_holdout3_gate(data: dict):
-    labels = list(data["holdout3_gate"].keys())
-    train = [data["holdout3_gate"][label]["train"] for label in labels]
-    test = [data["holdout3_gate"][label]["test"] for label in labels]
-    x = range(len(labels))
+    modes = ["base", "conservative", "aggressive"]
+    display = ["default", "selective", "expanded"]
+    train = [data["holdout3_gate"][mode]["train"] for mode in modes]
+    test = [data["holdout3_gate"][mode]["test"] for mode in modes]
+    x = range(len(modes))
     width = 0.34
 
-    fig, ax = plt.subplots(figsize=(9, 6))
-    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color="#B86B3F", label="Train (n=320)")
-    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color="#C23B5A", label="Test (n=80)")
+    fig, ax = plt.subplots(figsize=(7.6, 4.6))
+    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color=PALETTE["train"], label="Train")
+    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color=PALETTE["test"], label="Held-out test")
     _annotate_bars(ax, bars1)
     _annotate_bars(ax, bars2)
-    ax.set_ylim(0.84, 0.94)
-    ax.set_ylabel("PrimaryAcc@1")
-    ax.set_title("Holdout3 hetero-v3 Gate Sensitivity", fontsize=14, fontweight="bold")
-    ax.set_xticks(list(x), labels)
-    ax.legend(frameon=False)
-    ax.grid(axis="y", linestyle="--", alpha=0.3)
+    _style_axis(ax, "Accuracy", 0.84, 0.94, 0.02)
+    ax.set_xticks(list(x), display)
+    ax.legend(loc="upper left")
     fig.tight_layout()
-    fig.savefig(OUT_DIR / "04_holdout3_gate_sensitivity.png", dpi=180)
+    _save_figure(fig, "04_holdout3_gate_sensitivity")
     plt.close(fig)
 
 
 def _plot_holdout3_bucket(data: dict):
     buckets = list(next(iter(data["holdout3_bucket_test"].values())).keys())
-    series = list(data["holdout3_bucket_test"].keys())
-    colors = ["#7A8DA6", "#4C8D6D", "#B86B3F", "#2F5D8A", "#C23B5A"]
+    ordered = [
+        ("Semantic", "A_llm_v2 fastpath"),
+        ("Single-role", "single_v2"),
+        ("Homogeneous", "homogeneous_v2"),
+        ("Role-specialized", "heterogeneous_v3"),
+        ("Role-specialized (expanded)", "heterogeneous_v3 + aggressive"),
+    ]
+    colors = [
+        PALETTE["rule"],
+        PALETTE["review"],
+        PALETTE["semantic"],
+        PALETTE["semantic_review"],
+        PALETTE["highlight"],
+    ]
     x = range(len(buckets))
     width = 0.15
 
-    fig, ax = plt.subplots(figsize=(13, 6.5))
-    for idx, (name, color) in enumerate(zip(series, colors)):
-        vals = [data["holdout3_bucket_test"][name][bucket] for bucket in buckets]
-        bars = ax.bar([i + (idx - 2) * width for i in x], vals, width=width, color=color, label=name)
+    fig, ax = plt.subplots(figsize=(9.2, 4.8))
+    for idx, ((display, key), color) in enumerate(zip(ordered, colors)):
+        vals = [data["holdout3_bucket_test"][key][bucket] for bucket in buckets]
+        bars = ax.bar([i + (idx - 2) * width for i in x], vals, width=width, color=color, label=display)
         _annotate_bars(ax, bars, dy=0.004)
-    ax.set_ylim(0.55, 1.0)
-    ax.set_ylabel("PrimaryAcc@1")
-    ax.set_title("Holdout3 Test by Evaluation Bucket", fontsize=14, fontweight="bold")
+    _style_axis(ax, "Held-out accuracy", 0.55, 1.0, 0.1)
     ax.set_xticks(list(x), buckets, rotation=15, ha="right")
-    ax.legend(frameon=False, ncols=2)
-    ax.grid(axis="y", linestyle="--", alpha=0.3)
+    ax.legend(loc="upper left", ncols=2)
     fig.tight_layout()
-    fig.savefig(OUT_DIR / "05_holdout3_bucket_breakdown.png", dpi=180)
+    _save_figure(fig, "05_holdout3_bucket_breakdown")
     plt.close(fig)
 
 
 def _plot_execution_proxy(data: dict):
-    labels = list(data["execution_proxy"].keys())
-    changed = [data["execution_proxy"][label]["changed"] for label in labels]
-    fixed = [data["execution_proxy"][label]["fixed"] for label in labels]
-    regressed = [data["execution_proxy"][label]["regressed"] for label in labels]
-    x = range(len(labels))
+    ordered = [
+        ("Single-role", "single_v2"),
+        ("Homogeneous", "homogeneous_v2"),
+        ("Role-specialized", "heterogeneous_v3"),
+        ("Role-specialized\n(expanded)", "heterogeneous_v3 + aggressive"),
+    ]
+    changed = [data["execution_proxy"][key]["changed"] for _, key in ordered]
+    fixed = [data["execution_proxy"][key]["fixed"] for _, key in ordered]
+    regressed = [data["execution_proxy"][key]["regressed"] for _, key in ordered]
+    x = range(len(ordered))
     width = 0.24
 
-    fig, ax = plt.subplots(figsize=(12, 6.5))
-    b1 = ax.bar([i - width for i in x], changed, width=width, color="#7A8DA6", label="Changed")
-    b2 = ax.bar(x, fixed, width=width, color="#4C8D6D", label="Fixed")
-    b3 = ax.bar([i + width for i in x], regressed, width=width, color="#C23B5A", label="Regressed")
+    fig, ax = plt.subplots(figsize=(8.6, 4.8))
+    b1 = ax.bar([i - width for i in x], changed, width=width, color=PALETTE["train"], label="Changed")
+    b2 = ax.bar(x, fixed, width=width, color=PALETTE["positive"], label="Fixed")
+    b3 = ax.bar([i + width for i in x], regressed, width=width, color=PALETTE["negative"], label="Regressed")
     _annotate_bars(ax, b1, fmt="{:.0f}", dy=0.4)
     _annotate_bars(ax, b2, fmt="{:.0f}", dy=0.4)
     _annotate_bars(ax, b3, fmt="{:.0f}", dy=0.4)
-    ax.set_ylabel("Samples")
-    ax.set_title("Holdout3 Execution Burden Proxy", fontsize=14, fontweight="bold")
-    ax.set_xticks(list(x), labels, rotation=15, ha="right")
-    ax.legend(frameon=False)
-    ax.grid(axis="y", linestyle="--", alpha=0.3)
+    _style_axis(ax, "Samples", 0.0, 20.5, 5.0)
+    ax.set_xticks(list(x), [label for label, _ in ordered])
+    ax.legend(loc="upper left", ncols=3)
     fig.tight_layout()
-    fig.savefig(OUT_DIR / "06_execution_proxy.png", dpi=180)
+    _save_figure(fig, "06_execution_proxy")
     plt.close(fig)
 
 

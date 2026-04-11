@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2100" height="1500" viewBox="0 0 2100 1500">
+  <rect x="0" y="0" width="2100" height="1500" fill="#ffffff"/>
+  <text x="1050.0" y="58.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#000000">图4</text>
+  <rect x="100" y="160" width="290" height="110" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="245.0" y="219.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">智能体注册快照</text>
+  <rect x="470" y="160" width="310" height="110" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="625.0" y="219.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">精确地址匹配过滤</text>
+  <rect x="860" y="160" width="290" height="110" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="1005.0" y="219.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">实例状态过滤</text>
+  <rect x="1230" y="160" width="290" height="110" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="1375.0" y="219.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">调用端点过滤</text>
+  <rect x="1600" y="160" width="220" height="110" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="1710.0" y="219.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">模式过滤</text>
+  <line x1="390" y1="215" x2="446.0" y2="215.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="470,215 446.0,231.0 446.0,199.0" fill="#000000"/>
+  <line x1="780" y1="215" x2="836.0" y2="215.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="860,215 836.0,231.0 836.0,199.0" fill="#000000"/>
+  <line x1="1150" y1="215" x2="1206.0" y2="215.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="1230,215 1206.0,231.0 1206.0,199.0" fill="#000000"/>
+  <line x1="1520" y1="215" x2="1576.0" y2="215.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="1600,215 1576.0,231.0 1576.0,199.0" fill="#000000"/>
+  <line x1="1710" y1="270" x2="1710" y2="470" stroke="#000000" stroke-width="4" fill="none"/>
+  <line x1="1710" y1="470" x2="1030" y2="470" stroke="#000000" stroke-width="4" fill="none"/>
+  <rect x="220" y="620" width="330" height="110" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="385.0" y="679.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">实例匹配度计算</text>
+  <rect x="660" y="620" width="280" height="110" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="800.0" y="679.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">健康度计算</text>
+  <rect x="1050" y="620" width="360" height="110" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="1230.0" y="679.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="400" fill="#000000">实例曝光公平度计算</text>
+  <rect x="1520" y="620" width="380" height="110" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="1710.0" y="679.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="400" fill="#000000">提供方曝光公平度计算</text>
+  <line x1="1030" y1="470" x2="408.37619264894073" y2="614.5636761281534" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="385,620 404.7519767343763,598.9795476955262 412.0004085635052,630.1478045607805" fill="#000000"/>
+  <line x1="1030" y1="470" x2="820.1026543241268" y2="606.8895732668739" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="800,620 811.3623698353761,593.487803717456 828.8429388128775,620.2913428162917" fill="#000000"/>
+  <line x1="1030" y1="470" x2="1210.8" y2="605.6" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="1230,620 1201.2,618.4 1220.3999999999999,592.8000000000001" fill="#000000"/>
+  <line x1="1030" y1="470" x2="1686.5634294368656" y2="614.8301682581322" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="1710,620 1683.116874942287,630.4545486335551 1690.0099839314441,599.2057878827093" fill="#000000"/>
+  <rect x="650" y="1010" width="800" height="130" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="1050.0" y="1079.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="34" font-weight="400" fill="#000000">排序得分生成</text>
+  <line x1="385" y1="730" x2="809.6866012592646" y2="997.2185356238069" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="830,1010 801.1656250084693,1010.7608014509639 818.20757751006,983.67626979665" fill="#000000"/>
+  <line x1="800" y1="730" x2="919.8933286450889" y2="988.2317847740377" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="930,1010 905.381185161114,994.9695656773117 934.4054721290638,981.4940038707637" fill="#000000"/>
+  <line x1="1230" y1="730" x2="1175.028698129541" y2="986.5327420621421" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="1170,1010 1159.3838595043023,983.1802766424481 1190.6735367547797,989.8852074818361" fill="#000000"/>
+  <line x1="1710" y1="730" x2="1290.2478757055706" y2="997.1149881873641" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="1270,1010 1281.65786783048,983.6164043836504 1298.8378835806611,1010.6135719910778" fill="#000000"/>
+  <rect x="760" y="1280" width="580" height="130" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="1050.0" y="1349.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">目标智能体实例地址及调用端点</text>
+  <line x1="1050" y1="1140" x2="1050.0" y2="1256.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="1050,1280 1034.0,1256.0 1066.0,1256.0" fill="#000000"/>
+</svg>

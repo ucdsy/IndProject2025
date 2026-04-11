@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1200" viewBox="0 0 1700 1200">
+  <defs>
+    <style>
+      .title { font: 700 34px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .label { font: 600 22px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .text { font: 20px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .small { font: 18px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .box { fill: #fff; stroke: #000; stroke-width: 2.5; rx: 18; ry: 18; }
+      .role { fill: #fff; stroke: #000; stroke-width: 2.5; rx: 16; ry: 16; }
+      .frame { fill: #fff; stroke: #000; stroke-width: 2.2; stroke-dasharray: 12 8; rx: 22; ry: 22; }
+      .line { stroke: #000; stroke-width: 2.5; fill: none; }
+      .dash { stroke: #000; stroke-width: 2.2; stroke-dasharray: 10 8; fill: none; }
+    </style>
+    <marker id="arrow3" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#000"/>
+    </marker>
+  </defs>
+
+  <text x="850" y="60" text-anchor="middle" class="title">图3 异质共识处理与覆盖控制结构示意图</text>
+
+  <rect x="80" y="110" width="1540" height="1010" class="frame"/>
+  <text x="850" y="150" text-anchor="middle" class="label">慢路径共识链路在语义能力地址候选集合内部运行</text>
+
+  <rect x="120" y="240" width="270" height="150" class="box"/>
+  <text x="255" y="285" text-anchor="middle" class="label">快路径裁决结果</text>
+  <text x="255" y="322" text-anchor="middle" class="small">初始主能力地址</text>
+  <text x="255" y="352" text-anchor="middle" class="small">初始相关能力地址</text>
+
+  <rect x="470" y="220" width="300" height="190" class="box"/>
+  <text x="620" y="260" text-anchor="middle" class="label">语义交接信息构造单元</text>
+  <text x="620" y="300" text-anchor="middle" class="small">主意图</text>
+  <text x="620" y="330" text-anchor="middle" class="small">次意图</text>
+  <text x="620" y="360" text-anchor="middle" class="small">不确定性摘要</text>
+  <text x="620" y="390" text-anchor="middle" class="small">竞争候选注释</text>
+
+  <rect x="860" y="240" width="300" height="150" class="box"/>
+  <text x="1010" y="285" text-anchor="middle" class="label">候选视图构造单元</text>
+  <text x="1010" y="322" text-anchor="middle" class="small">按职责裁剪候选视图</text>
+
+  <line x1="390" y1="315" x2="470" y2="315" class="line" marker-end="url(#arrow3)"/>
+  <line x1="770" y1="315" x2="860" y2="315" class="line" marker-end="url(#arrow3)"/>
+
+  <rect x="180" y="500" width="250" height="130" class="role"/>
+  <text x="305" y="552" text-anchor="middle" class="label">领域专家角色</text>
+  <text x="305" y="588" text-anchor="middle" class="small">判断语义匹配程度</text>
+
+  <rect x="500" y="500" width="250" height="130" class="role"/>
+  <text x="625" y="552" text-anchor="middle" class="label">治理风险角色</text>
+  <text x="625" y="588" text-anchor="middle" class="small">判断高风险与边界约束</text>
+
+  <rect x="820" y="500" width="250" height="130" class="role"/>
+  <text x="945" y="552" text-anchor="middle" class="label">层级解析角色</text>
+  <text x="945" y="588" text-anchor="middle" class="small">判断父子与同层竞争关系</text>
+
+  <rect x="1140" y="500" width="250" height="130" class="role"/>
+  <text x="1265" y="552" text-anchor="middle" class="label">用户偏好角色</text>
+  <text x="1265" y="588" text-anchor="middle" class="small">判断主次意图与辅助诉求</text>
+
+  <line x1="1010" y1="390" x2="305" y2="500" class="dash" marker-end="url(#arrow3)"/>
+  <line x1="1010" y1="390" x2="625" y2="500" class="dash" marker-end="url(#arrow3)"/>
+  <line x1="1010" y1="390" x2="945" y2="500" class="dash" marker-end="url(#arrow3)"/>
+  <line x1="1010" y1="390" x2="1265" y2="500" class="dash" marker-end="url(#arrow3)"/>
+
+  <rect x="360" y="720" width="680" height="160" class="box"/>
+  <text x="700" y="765" text-anchor="middle" class="label">角色提案与角色信号聚合单元</text>
+  <text x="700" y="805" text-anchor="middle" class="small">接收各角色的主能力地址提案、相关能力地址提案、支持/阻断/中立信号及信号强度</text>
+  <text x="700" y="835" text-anchor="middle" class="small">输出聚合候选结果</text>
+
+  <line x1="305" y1="630" x2="520" y2="720" class="line" marker-end="url(#arrow3)"/>
+  <line x1="625" y1="630" x2="625" y2="720" class="line" marker-end="url(#arrow3)"/>
+  <line x1="945" y1="630" x2="775" y2="720" class="line" marker-end="url(#arrow3)"/>
+  <line x1="1265" y1="630" x2="880" y2="720" class="line" marker-end="url(#arrow3)"/>
+
+  <rect x="1140" y="710" width="330" height="180" class="box"/>
+  <text x="1305" y="752" text-anchor="middle" class="label">覆盖控制单元</text>
+  <text x="1305" y="792" text-anchor="middle" class="small">票数门限</text>
+  <text x="1305" y="822" text-anchor="middle" class="small">得分增益门限</text>
+  <text x="1305" y="852" text-anchor="middle" class="small">显式证据门限</text>
+  <text x="1305" y="882" text-anchor="middle" class="small">责任角色确认 / 二轮复核</text>
+
+  <line x1="1040" y1="800" x2="1140" y2="800" class="line" marker-end="url(#arrow3)"/>
+
+  <rect x="280" y="960" width="340" height="110" class="box"/>
+  <text x="450" y="1002" text-anchor="middle" class="label">最终主能力地址输出</text>
+  <text x="450" y="1036" text-anchor="middle" class="small">允许覆盖时可改判</text>
+
+  <rect x="700" y="960" width="340" height="110" class="box"/>
+  <text x="870" y="1002" text-anchor="middle" class="label">最终相关能力地址输出</text>
+  <text x="870" y="1036" text-anchor="middle" class="small">恢复或保留相关能力</text>
+
+  <rect x="1120" y="960" width="350" height="110" class="box"/>
+  <text x="1295" y="1002" text-anchor="middle" class="label">维持初始主能力地址</text>
+  <text x="1295" y="1036" text-anchor="middle" class="small">当覆盖不被允许时回落</text>
+
+  <line x1="1305" y1="890" x2="450" y2="960" class="line" marker-end="url(#arrow3)"/>
+  <line x1="1305" y1="890" x2="870" y2="960" class="line" marker-end="url(#arrow3)"/>
+  <line x1="1305" y1="890" x2="1295" y2="960" class="line" marker-end="url(#arrow3)"/>
+
+  <text x="1450" y="300" text-anchor="middle" class="small">说明：</text>
+  <text x="1450" y="335" text-anchor="middle" class="small">多个职责角色并非看到完全相同的信息副本，</text>
+  <text x="1450" y="365" text-anchor="middle" class="small">而是基于职责接收差异化候选视图。</text>
+</svg>

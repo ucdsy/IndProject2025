@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="2200" viewBox="0 0 1700 2200">
+  <rect x="0" y="0" width="1700" height="2200" fill="#ffffff"/>
+  <text x="850.0" y="58.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#000000">图1</text>
+  <rect x="440" y="120" width="820" height="120" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="850.0" y="184.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="400" fill="#000000">S101 接收用户请求</text>
+  <line x1="850" y1="240" x2="850.0" y2="316.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="850,340 834.0,316.0 866.0,316.0" fill="#000000"/>
+  <rect x="360" y="340" width="980" height="130" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="850.0" y="409.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">S102 召回处理，获得语义能力地址候选集合</text>
+  <line x1="850" y1="470" x2="850.0" y2="566.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="850,590 834.0,566.0 866.0,566.0" fill="#000000"/>
+  <rect x="360" y="590" width="980" height="130" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="850.0" y="659.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="400" fill="#000000">S103 快路径裁决</text>
+  <line x1="850" y1="720" x2="850.0" y2="796.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="850,820 834.0,796.0 866.0,796.0" fill="#000000"/>
+  <polygon points="850,860 1110,1010 850,1160 590,1010" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="850" y="996.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">S104 是否满足</text>
+  <text x="850" y="1036.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">慢路径触发条件</text>
+  <text x="500" y="968.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#000000">是</text>
+  <line x1="710" y1="1125" x2="710.0" y2="1236.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="710,1260 694.0,1236.0 726.0,1236.0" fill="#000000"/>
+  <rect x="400" y="1260" width="620" height="120" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="710.0" y="1324.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="400" fill="#000000">S105 异质共识处理</text>
+  <line x1="710" y1="1380" x2="710.0" y2="1476.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="710,1500 694.0,1476.0 726.0,1476.0" fill="#000000"/>
+  <rect x="470" y="1500" width="760" height="120" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="850.0" y="1564.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="400" fill="#000000">S106 覆盖控制步骤</text>
+  <text x="1190" y="968.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#000000">否</text>
+  <line x1="1110" y1="1010" x2="1436.0" y2="1010.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="1460,1010 1436.0,1026.0 1436.0,994.0" fill="#000000"/>
+  <line x1="1460" y1="1010" x2="1460" y2="1560" stroke="#000000" stroke-width="4" fill="none"/>
+  <line x1="1460" y1="1560" x2="1254.0" y2="1560.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="1230,1560 1254.0,1544.0 1254.0,1576.0" fill="#000000"/>
+  <line x1="850" y1="1620" x2="850.0" y2="1716.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="850,1740 834.0,1716.0 866.0,1716.0" fill="#000000"/>
+  <rect x="300" y="1740" width="1100" height="120" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="850.0" y="1804.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="400" fill="#000000">S107 筛选智能体实例地址候选集合</text>
+  <line x1="850" y1="1860" x2="850.0" y2="1956.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="850,1980 834.0,1956.0 866.0,1956.0" fill="#000000"/>
+  <rect x="300" y="1980" width="1100" height="120" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="850.0" y="2044.0" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="400" fill="#000000">S108 过滤和排序</text>
+  <line x1="850" y1="2100" x2="850.0" y2="2156.0" stroke="#000000" stroke-width="4" fill="none"/>
+  <polygon points="850,2180 834.0,2156.0 866.0,2156.0" fill="#000000"/>
+  <rect x="170" y="2140" width="1360" height="140" fill="#ffffff" stroke="#000000" stroke-width="4"/>
+  <text x="850.0" y="2195.5" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="400" fill="#000000">S109 输出最终主能力地址、最终相关能力地址、</text>
+  <text x="850.0" y="2232.5" text-anchor="middle" font-family="PingFang SC, Heiti SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="400" fill="#000000">目标智能体实例地址、调用端点及结构化决策轨迹</text>
+</svg>

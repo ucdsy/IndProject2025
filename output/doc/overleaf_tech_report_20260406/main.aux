@@ -1,0 +1,92 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand*\HyPL@Entry[1]{}
+\HyPL@Entry{0<</S/D>>}
+\@writefile{toc}{\contentsline {section}{\numberline {1}引言}{1}{section.1}\protected@file@percent }
+\citation{routellm}
+\citation{mixllm}
+\citation{cot}
+\citation{selfconsistency}
+\citation{tot}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces 系统总体架构。候选召回首先定义 candidate-internal 搜索边界；直接路由路径在该边界内产生候选级结构化判断；协作复核只在升级条件满足时触发，并通过显式授权控制 override 是否生效。}}{2}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:architecture}{{1}{2}{系统总体架构。候选召回首先定义 candidate-internal 搜索边界；直接路由路径在该边界内产生候选级结构化判断；协作复核只在升级条件满足时触发，并通过显式授权控制 override 是否生效。}{figure.caption.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}相关工作与问题定位}{2}{section.2}\protected@file@percent }
+\citation{debate}
+\citation{bounds}
+\citation{cai}
+\@writefile{toc}{\contentsline {section}{\numberline {3}方法}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}问题表述与方法概览}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}候选召回}{4}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}规则路由}{4}{subsection.3.3}\protected@file@percent }
+\newlabel{eq:clean-primary}{{6}{4}{规则路由}{equation.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}结构化语义判别}{5}{subsection.3.4}\protected@file@percent }
+\newlabel{eq:semantic-primary}{{9}{5}{结构化语义判别}{equation.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}职责化协作复核}{5}{subsection.3.5}\protected@file@percent }
+\newlabel{eq:round1-consensus}{{12}{6}{职责化协作复核}{equation.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}协作触发与改判授权}{6}{subsection.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}过程记录与可审计性}{6}{subsection.3.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces 职责化协作复核流程。角色看到的是职责投影后的证据视图。控制器先聚合 round-1 提案，再按需要触发 winner 与 incumbent/challenger 的 round-2 复核，并在最终 override 前执行授权检查。}}{7}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:flow}{{2}{7}{职责化协作复核流程。角色看到的是职责投影后的证据视图。控制器先聚合 round-1 提案，再按需要触发 winner 与 incumbent/challenger 的 round-2 复核，并在最终 override 前执行授权检查。}{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8}执行落点解析}{7}{subsection.3.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}实验}{7}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}数据资产}{7}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces 数据与评测协议。本文首先在 \texttt  {563} 条样本上冻结统一 \texttt  {train/test} 主协议；所有主表结论基于同一 held-out benchmark，后验诊断和协作消融则用于解释修正来源和边界样本收益。}}{8}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:protocol}{{3}{8}{数据与评测协议。本文首先在 \texttt {563} 条样本上冻结统一 \texttt {train/test} 主协议；所有主表结论基于同一 held-out benchmark，后验诊断和协作消融则用于解释修正来源和边界样本收益。}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}评测协议与指标}{8}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}实验结果}{8}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}统一 train/test 主结果}{8}{subsection.5.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces 统一 \texttt  {train/test} 主协议下的系统增益瀑布图。主要性能跨越来自规则路由到结构化语义判别的跃迁，而角色协作复核主要承担后段修正。}}{9}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:waterfall}{{4}{9}{统一 \texttt {train/test} 主协议下的系统增益瀑布图。主要性能跨越来自规则路由到结构化语义判别的跃迁，而角色协作复核主要承担后段修正。}{figure.caption.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces 统一 \texttt  {train/test} 主协议下的系统结果。\texttt  {C/F/R} 分别表示 Changed、Fixed、Regressed。}}{9}{table.caption.4}\protected@file@percent }
+\newlabel{tab:pooled-main}{{1}{9}{统一 \texttt {train/test} 主协议下的系统结果。\texttt {C/F/R} 分别表示 Changed、Fixed、Regressed。}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}何时协作复核有效：决策配置对比}{9}{subsection.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces 统一 \texttt  {train/test} 主协议下的协作决策配置结果。}}{9}{table.caption.6}\protected@file@percent }
+\newlabel{tab:gate}{{2}{9}{统一 \texttt {train/test} 主协议下的协作决策配置结果。}{table.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces 统一 \texttt  {train/test} 主协议上的协作决策配置结果。\texttt  {expanded} 在训练划分和测试划分中均表现最优。}}{10}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:gate-selection}{{5}{10}{统一 \texttt {train/test} 主协议上的协作决策配置结果。\texttt {expanded} 在训练划分和测试划分中均表现最优。}{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}何种协作形式有效：协作复核消融}{10}{subsection.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces 扩展分布对齐子集上的协作复核协议比较。表中 \texttt  {C/F/R} 分别表示 Changed、Fixed、Regressed；$\Delta $ Test 表示相对同一子集上结构化语义判别基线（0.8625）的提升。}}{10}{table.caption.8}\protected@file@percent }
+\newlabel{tab:ablation}{{3}{10}{扩展分布对齐子集上的协作复核协议比较。表中 \texttt {C/F/R} 分别表示 Changed、Fixed、Regressed；$\Delta $ Test 表示相对同一子集上结构化语义判别基线（0.8625）的提升。}{table.caption.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}收益出现在哪里：后验诊断分析}{10}{subsection.5.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces 后验诊断分析结果。各行对应冻结 benchmark 上的不同诊断视角，而非独立 benchmark。}}{10}{table.caption.10}\protected@file@percent }
+\newlabel{tab:main}{{4}{10}{后验诊断分析结果。各行对应冻结 benchmark 上的不同诊断视角，而非独立 benchmark。}{table.caption.10}{}}
+\citation{bounds}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces 扩展分布对齐子集上的协作复核协议比较。单角色复核与同质复核没有带来额外的 held-out \texttt  {test} 收益，而职责化协作复核在 \texttt  {expanded} 配置下显著提升了最终准确率。}}{11}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:ablation}{{6}{11}{扩展分布对齐子集上的协作复核协议比较。单角色复核与同质复核没有带来额外的 held-out \texttt {test} 收益，而职责化协作复核在 \texttt {expanded} 配置下显著提升了最终准确率。}{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}执行负载代理}{11}{subsection.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}讨论}{11}{section.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces 执行负载代理图。当前差异不在协作复核覆盖率，而在于相同覆盖率下的实际修正收益。}}{12}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:proxy}{{7}{12}{执行负载代理图。当前差异不在协作复核覆盖率，而在于相同覆盖率下的实际修正收益。}{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}局限性}{12}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}结论}{12}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}附录：实现细节与 Prompt Contract}{13}{appendix.A}\protected@file@percent }
+\newlabel{appendix:prompt-contracts}{{A}{13}{附录：实现细节与 Prompt Contract}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}评分细节与阈值模板}{13}{subsection.A.1}\protected@file@percent }
+\newlabel{eq:appendix-clean-related}{{18}{13}{评分细节与阈值模板}{equation.18}{}}
+\newlabel{eq:appendix-semantic-related}{{19}{13}{评分细节与阈值模板}{equation.19}{}}
+\newlabel{eq:appendix-semantic-confidence}{{20}{13}{评分细节与阈值模板}{equation.20}{}}
+\newlabel{eq:appendix-final-consensus}{{21}{13}{评分细节与阈值模板}{equation.21}{}}
+\newlabel{eq:appendix-final-decision}{{22}{13}{评分细节与阈值模板}{equation.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}诊断分析视角}{13}{subsection.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}直接路由的 Decision Packet}{14}{subsection.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage A system prompt}{14}{paragraph*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage A user rules}{14}{paragraph*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage A decision packet 字段}{15}{paragraph*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage A 输出字段}{15}{paragraph*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}角色化复核 Packet}{15}{subsection.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage B role system prompt 模板}{15}{paragraph*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage B 角色专属 focus/rules}{16}{paragraph*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage B user rules}{16}{paragraph*.18}\protected@file@percent }
+\bibcite{cot}{1}
+\@writefile{toc}{\contentsline {paragraph}{角色可见视图}{17}{paragraph*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stage B 输出字段}{17}{paragraph*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}为何将 Prompt 放入附录}{17}{subsection.A.5}\protected@file@percent }
+\bibcite{selfconsistency}{2}
+\bibcite{tot}{3}
+\bibcite{debate}{4}
+\bibcite{bounds}{5}
+\bibcite{routellm}{6}
+\bibcite{mixllm}{7}
+\bibcite{cai}{8}
+\gdef \@abspage@last{18}

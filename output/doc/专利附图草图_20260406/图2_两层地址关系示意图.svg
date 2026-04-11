@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+  <defs>
+    <style>
+      .title { font: 700 34px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .label { font: 600 22px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .text { font: 20px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .small { font: 18px 'Noto Sans SC', 'Microsoft YaHei', sans-serif; fill: #000; }
+      .box { fill: #fff; stroke: #000; stroke-width: 2.5; rx: 18; ry: 18; }
+      .frame { fill: #fff; stroke: #000; stroke-width: 2.2; stroke-dasharray: 12 8; rx: 22; ry: 22; }
+      .line { stroke: #000; stroke-width: 2.5; fill: none; }
+    </style>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#000"/>
+    </marker>
+  </defs>
+
+  <text x="800" y="60" text-anchor="middle" class="title">图2 两层地址关系示意图</text>
+
+  <rect x="90" y="110" width="1420" height="430" class="frame"/>
+  <text x="800" y="150" text-anchor="middle" class="label">第一层：语义能力地址层</text>
+
+  <rect x="130" y="220" width="220" height="100" class="box"/>
+  <text x="240" y="260" text-anchor="middle" class="label">用户请求</text>
+  <text x="240" y="292" text-anchor="middle" class="small">自然语言表达任务与约束</text>
+
+  <rect x="410" y="220" width="240" height="100" class="box"/>
+  <text x="530" y="260" text-anchor="middle" class="label">预设命名空间</text>
+  <text x="530" y="292" text-anchor="middle" class="small">节点描述 / 标签 / 层级关系</text>
+
+  <rect x="720" y="200" width="320" height="140" class="box"/>
+  <text x="880" y="240" text-anchor="middle" class="label">语义能力地址候选集合</text>
+  <text x="880" y="275" text-anchor="middle" class="small">候选1 候选2 候选3 ...</text>
+  <text x="880" y="305" text-anchor="middle" class="small">均来源于召回阶段的命名空间节点</text>
+
+  <rect x="1110" y="185" width="300" height="80" class="box"/>
+  <text x="1260" y="225" text-anchor="middle" class="label">最终主能力地址</text>
+
+  <rect x="1110" y="285" width="300" height="80" class="box"/>
+  <text x="1260" y="325" text-anchor="middle" class="label">最终相关能力地址</text>
+
+  <line x1="350" y1="270" x2="410" y2="270" class="line" marker-end="url(#arrow2)"/>
+  <line x1="650" y1="270" x2="720" y2="270" class="line" marker-end="url(#arrow2)"/>
+  <line x1="1040" y1="240" x2="1110" y2="225" class="line" marker-end="url(#arrow2)"/>
+  <line x1="1040" y1="300" x2="1110" y2="325" class="line" marker-end="url(#arrow2)"/>
+
+  <rect x="220" y="380" width="1160" height="110" class="box"/>
+  <text x="800" y="420" text-anchor="middle" class="label">语义能力地址层回答的问题</text>
+  <text x="800" y="455" text-anchor="middle" class="small">“当前请求最应交给哪一类能力处理，以及是否存在需要保留的相关能力地址”</text>
+
+  <rect x="90" y="610" width="1420" height="460" class="frame"/>
+  <text x="800" y="650" text-anchor="middle" class="label">第二层：智能体实例地址层</text>
+
+  <rect x="170" y="735" width="300" height="140" class="box"/>
+  <text x="320" y="775" text-anchor="middle" class="label">智能体注册快照</text>
+  <text x="320" y="810" text-anchor="middle" class="small">实例地址 / 对应能力地址 / 端点</text>
+  <text x="320" y="840" text-anchor="middle" class="small">状态 / 心跳 / 提供方 / 曝光计数</text>
+
+  <rect x="550" y="710" width="300" height="190" class="box"/>
+  <text x="700" y="750" text-anchor="middle" class="label">与最终主能力地址精确对应的</text>
+  <text x="700" y="785" text-anchor="middle" class="label">智能体实例地址候选集合</text>
+  <text x="700" y="825" text-anchor="middle" class="small">实例A</text>
+  <text x="700" y="855" text-anchor="middle" class="small">实例B</text>
+  <text x="700" y="885" text-anchor="middle" class="small">实例C</text>
+
+  <rect x="930" y="735" width="220" height="140" class="box"/>
+  <text x="1040" y="775" text-anchor="middle" class="label">目标智能体</text>
+  <text x="1040" y="810" text-anchor="middle" class="label">实例地址</text>
+  <text x="1040" y="842" text-anchor="middle" class="small">排序第一的实例</text>
+
+  <rect x="1230" y="735" width="200" height="140" class="box"/>
+  <text x="1330" y="780" text-anchor="middle" class="label">调用端点</text>
+  <text x="1330" y="815" text-anchor="middle" class="small">供执行调用</text>
+
+  <line x1="320" y1="540" x2="320" y2="735" class="line" marker-end="url(#arrow2)"/>
+  <line x1="1260" y1="365" x2="1260" y2="470" class="line"/>
+  <line x1="1260" y1="470" x2="700" y2="470" class="line"/>
+  <line x1="700" y1="470" x2="700" y2="710" class="line" marker-end="url(#arrow2)"/>
+  <line x1="470" y1="805" x2="550" y2="805" class="line" marker-end="url(#arrow2)"/>
+  <line x1="850" y1="805" x2="930" y2="805" class="line" marker-end="url(#arrow2)"/>
+  <line x1="1150" y1="805" x2="1230" y2="805" class="line" marker-end="url(#arrow2)"/>
+
+  <rect x="250" y="940" width="1100" height="90" class="box"/>
+  <text x="800" y="978" text-anchor="middle" class="label">智能体实例地址层回答的问题</text>
+  <text x="800" y="1008" text-anchor="middle" class="small">“在已经确定的能力类别下，由哪个具体实例执行最合适”</text>
+
+  <text x="1040" y="1060" text-anchor="middle" class="small">一个语义能力地址可对应多个实例地址，但实例筛选以前提是精确能力匹配</text>
+</svg>
