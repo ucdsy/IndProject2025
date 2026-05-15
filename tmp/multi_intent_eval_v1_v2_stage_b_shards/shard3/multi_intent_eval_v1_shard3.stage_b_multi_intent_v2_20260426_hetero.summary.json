@@ -1,0 +1,20 @@
+{
+  "method": "stage_b_multi_intent",
+  "samples": 30,
+  "traces": 30,
+  "stage_b_version": "stage_b_multi_intent_v2_20260426_hetero",
+  "prompt_version": "stage_b_multi_intent_prompt_v2_20260426",
+  "stage_a_version": "stage_a_multi_intent_v2_20260426",
+  "stage_r_version": "sr_clean_v0_20260306",
+  "input_path": "tmp/multi_intent_eval_v1_multi_set_shards_20260426/multi_intent_eval_v1_shard3.jsonl",
+  "trace_input_path": "artifacts/routing_ab/multi_intent_eval_v1_multi_set_v2_deepseek_chat_20260426/multi_intent_eval_v1.stage_a_multi_intent_v2_20260426.jsonl",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "collaboration_mode": "heterogeneous",
+  "gate_mode": "expanded",
+  "max_rounds": 2,
+  "max_parallel_roles": 2,
+  "force_stage_b": false,
+  "entered_stage_b_count": 25,
+  "avg_selected_size": 2.1333
+}

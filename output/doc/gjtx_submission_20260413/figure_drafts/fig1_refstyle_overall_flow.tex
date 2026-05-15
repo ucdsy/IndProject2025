@@ -1,0 +1,87 @@
+\documentclass[border=7pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usetikzlibrary{arrows.meta,calc,fit,positioning,shapes.geometric}
+
+\definecolor{navy}{HTML}{08357A}
+\definecolor{lineblue}{HTML}{0B3D8D}
+\definecolor{softblue}{HTML}{EAF2FF}
+\definecolor{chipblue}{HTML}{F3F7FF}
+\definecolor{teal}{HTML}{007C92}
+\definecolor{softteal}{HTML}{EAFBFC}
+\definecolor{ink}{HTML}{111827}
+\definecolor{muted}{HTML}{4B5563}
+
+\tikzset{
+  canvas/.style={x=1cm,y=1cm,font=\sffamily\small,line cap=round,line join=round},
+  arrow/.style={-{Latex[length=3.0mm,width=2.0mm]},line width=0.95pt,draw=ink},
+  softarrow/.style={-{Latex[length=2.7mm,width=1.8mm]},line width=0.85pt,draw=navy},
+  mainbox/.style={rounded corners=7pt,draw=lineblue,line width=1.0pt,fill=white,align=center,text=ink,inner sep=5pt,minimum width=2.80cm,minimum height=2.08cm,text width=2.48cm},
+  resultbox/.style={rounded corners=7pt,draw=teal,line width=1.0pt,fill=white,align=center,text=ink,inner sep=5pt,minimum width=3.05cm,minimum height=2.08cm,text width=2.68cm},
+  panel/.style={rounded corners=10pt,draw=navy,line width=1.1pt,fill=white},
+  authbox/.style={rounded corners=7pt,draw=navy,line width=1.0pt,fill=white,align=center,text=ink,inner sep=7pt,minimum width=3.45cm,minimum height=2.28cm,text width=3.05cm},
+  gate/.style={diamond,aspect=1.25,draw=teal,line width=1.0pt,fill=softteal,align=center,text=ink,inner sep=2pt,minimum width=2.30cm,minimum height=2.05cm,text width=1.65cm},
+  roleicon/.style={circle,draw=lineblue,line width=0.75pt,fill=softblue,minimum size=1.22cm,inner sep=0pt,text=lineblue,font=\Large},
+  rolelabel/.style={align=center,text=ink,font=\small},
+  chip/.style={rounded corners=5pt,draw=lineblue,line width=0.7pt,fill=chipblue,align=center,text=navy,minimum width=2.18cm,minimum height=0.75cm,font=\small},
+  tinylabel/.style={font=\scriptsize,text=navy,align=center}
+}
+
+\begin{document}
+\begin{tikzpicture}[canvas]
+  % Main flow
+  \node[mainbox] (input) at (1.40,4.35) {{\bfseries 请求输入}\\[4pt]自然语言请求\\上下文信息\\[4pt]{$q,m$}};
+  \node[mainbox] (candidate) at (4.75,4.35) {{\bfseries 候选集合构造}\\[4pt]别名/层级/描述\\元数据约束\\[4pt]{$E(x),C(x)$}};
+  \node[mainbox] (router) at (8.10,4.35) {{\bfseries 单智能体}\\{\bfseries 结构化语义路由}\\[4pt]主能力选择\\相关能力恢复\\[4pt]{$\hat y_{\rm sem},\hat R_{\rm sem}$}};
+  \node[gate] (trigger) at (11.45,4.35) {{\bfseries 复核}\\{\bfseries 触发}\\[3pt]低置信\\高风险\\多意图};
+  \node[resultbox] (final) at (16.55,4.35) {{\bfseries 最终语义路由结果}\\[4pt]输出主能力\\和相关能力\\[4pt]{$(\hat y,\hat R)$}};
+  \node[mainbox] (endpoint) at (20.25,4.35) {{\bfseries 执行落点解析}\\[4pt]主能力映射到\\可执行实例\\[4pt]{$\hat a(\hat y)$}};
+
+  \draw[arrow] (input.east) -- (candidate.west);
+  \draw[arrow] (candidate.east) -- (router.west);
+  \draw[arrow] (router.east) -- (trigger.west);
+  \draw[arrow] (trigger.east) -- node[below=4pt,tinylabel,text=ink] {未触发或未授权，保留直接结果} (final.west);
+  \draw[arrow] (final.east) -- (endpoint.west);
+
+  % Review panel
+  \node[panel,minimum width=8.25cm,minimum height=3.00cm] (reviewpanel) at (11.35,8.52) {};
+  \node[font=\bfseries\large,text=navy] at (11.35,9.72) {多智能体职责化复核};
+  \draw[lineblue!55,densely dashed,line width=0.65pt] (7.55,7.60) -- (15.15,7.60);
+  \foreach \x in {9.25,11.35,13.45} {
+    \draw[lineblue!45,densely dashed,line width=0.55pt] (\x,7.94) -- (\x,9.30);
+  }
+  \node[roleicon] at (8.25,8.72) {\faIcon{puzzle-piece}};
+  \node[roleicon] at (10.32,8.72) {\faIcon{shield-alt}};
+  \node[roleicon] at (12.38,8.72) {\faIcon{sitemap}};
+  \node[roleicon] at (14.45,8.72) {\faIcon{users}};
+  \node[rolelabel] at (8.25,7.92) {a. 任务匹配};
+  \node[rolelabel] at (10.32,7.92) {b. 风险治理};
+  \node[rolelabel] at (12.38,7.92) {c. 层级解析};
+  \node[rolelabel] at (14.45,7.92) {d. 偏好拆分};
+
+  \node[authbox] (auth) at (18.90,8.62) {{\bfseries 共识与授权控制}\\[4pt]聚合角色提案，检查\\票数、分数增益和角色责任\\[4pt]{$s_{\rm rev}(c)$}};
+
+  \draw[softarrow] (trigger.north) -- ++(0,1.02) -| (reviewpanel.south);
+  \draw[softarrow] (reviewpanel.east) -- (auth.west);
+  \draw[softarrow] (auth.south) -- ++(0,-0.90) -| node[pos=0.22,right=2pt,tinylabel] {授权改判后更新输出} (final.north);
+
+  % Audit rail
+  \draw[rounded corners=13pt,draw=navy,densely dashed,line width=0.95pt] (0.75,0.70) rectangle (21.65,2.10);
+  \node[text=navy,font=\Large] at (1.42,1.50) {\faIcon{clipboard-list}};
+  \node[font=\bfseries\large,text=ink,anchor=west] at (1.90,1.50) {过程记录轨迹};
+  \node[chip] at (5.70,1.50) {\faIcon{database}\quad 候选快照};
+  \node[chip] at (8.85,1.50) {\faIcon{file-alt}\quad 语义摘要};
+  \node[chip] at (12.00,1.50) {\faIcon{users}\quad 复核提案};
+  \node[chip] at (15.15,1.50) {\faIcon{shield-alt}\quad 授权依据};
+  \node[chip] at (18.30,1.50) {\faIcon{bullseye}\quad 执行落点};
+  \foreach \x in {7.28,10.42,13.58,16.72} {
+    \node[circle,fill=navy,inner sep=1.2pt] at (\x,1.50) {};
+  }
+
+  \draw[draw=navy,densely dashed,line width=0.75pt]
+    (input.south) -- ++(0,-0.46) -- (11.45,2.42) -- (20.25,2.42) -- (endpoint.south);
+  \draw[draw=navy,densely dashed,line width=0.75pt]
+    (11.45,2.42) -- (11.45,2.10);
+\end{tikzpicture}
+\end{document}

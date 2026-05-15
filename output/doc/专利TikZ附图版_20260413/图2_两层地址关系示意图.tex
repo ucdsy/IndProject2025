@@ -1,0 +1,28 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{tikz_patent_styles.tex}
+\begin{document}
+\begin{tikzpicture}[patent diagram, node distance=11mm and 12mm]
+  \node[patent mid] (req) {用户请求};
+  \node[patent wide, right=14mm of req] (cand) {语义能力地址候选集合};
+  \node[patent mid, right=14mm of cand] (main) {最终主能力地址};
+  \node[patent mid, right=14mm of main] (rel) {最终相关能力地址};
+
+  \node[patent small, below=26mm of req] (snap) {注册快照};
+  \node[patent wide, right=14mm of snap] (inst) {精确对应的实例候选集合};
+  \node[patent mid, right=14mm of inst] (target) {目标实例地址};
+  \node[patent small, right=14mm of target] (endpoint) {调用端点};
+
+  \node[patent frame, fit=(req)(cand)(main)(rel), label={[anchor=west]north west:语义能力地址层}] (frameL1) {};
+  \node[patent frame, fit=(snap)(inst)(target)(endpoint), label={[anchor=west]north west:智能体实例地址层}] (frameL2) {};
+
+  \draw[patent arrow] (req) -- (cand);
+  \draw[patent arrow] (cand) -- (main);
+  \draw[patent arrow] (main) -- (rel);
+
+  \draw[patent arrow] (snap) -- (inst);
+  \draw[patent arrow] (inst) -- (target);
+  \draw[patent arrow] (target) -- (endpoint);
+
+  \draw[patent dashed] (main.south) -- ++(0,-6mm) -| node[pos=0.32, above, font=\footnotesize]{作为实例筛选前提} (inst.north);
+\end{tikzpicture}
+\end{document}

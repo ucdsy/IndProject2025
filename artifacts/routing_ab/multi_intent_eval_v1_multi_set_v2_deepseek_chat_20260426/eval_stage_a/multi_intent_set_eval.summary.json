@@ -1,0 +1,291 @@
+{
+  "artifacts": {
+    "a_multi_v2_per_sample": "artifacts/routing_ab/multi_intent_eval_v1_multi_set_v2_deepseek_chat_20260426/eval_stage_a/a_multi_v2.per_sample.jsonl",
+    "stage_r_snapshot_per_sample": "artifacts/routing_ab/multi_intent_eval_v1_multi_set_v2_deepseek_chat_20260426/eval_stage_a/stage_r_snapshot.per_sample.jsonl",
+    "summary": "artifacts/routing_ab/multi_intent_eval_v1_multi_set_v2_deepseek_chat_20260426/eval_stage_a/multi_intent_set_eval.summary.json"
+  },
+  "gold_total_mentions": 268,
+  "input_path": "data/agentdns_routing/formal/multi_intent_eval_v1.jsonl",
+  "samples": 120,
+  "stage_r_snapshot": {
+    "AllGoldCoveredRate": 0.95,
+    "AnyHitRate": 1.0,
+    "AvgCandidateSetSize": 10.0,
+    "AvgGoldSetSize": 2.2333,
+    "GoldCoverageRecall": 0.9776,
+    "candidate_top_k": null,
+    "domain_mix_buckets": {
+      "enterprise_ops": {
+        "AllGoldCoveredRate": 1.0,
+        "AnyHitRate": 1.0,
+        "AvgCandidateSetSize": 10.0,
+        "AvgGoldSetSize": 2.4,
+        "GoldCoverageRecall": 1.0,
+        "samples": 20
+      },
+      "finance_commerce": {
+        "AllGoldCoveredRate": 0.9091,
+        "AnyHitRate": 1.0,
+        "AvgCandidateSetSize": 10.0,
+        "AvgGoldSetSize": 2.1364,
+        "GoldCoverageRecall": 0.9574,
+        "samples": 22
+      },
+      "governance": {
+        "AllGoldCoveredRate": 0.9167,
+        "AnyHitRate": 1.0,
+        "AvgCandidateSetSize": 10.0,
+        "AvgGoldSetSize": 2.3333,
+        "GoldCoverageRecall": 0.9643,
+        "samples": 24
+      },
+      "health_education": {
+        "AllGoldCoveredRate": 0.95,
+        "AnyHitRate": 1.0,
+        "AvgCandidateSetSize": 10.0,
+        "AvgGoldSetSize": 2.05,
+        "GoldCoverageRecall": 0.9756,
+        "samples": 20
+      },
+      "travel_life": {
+        "AllGoldCoveredRate": 0.9706,
+        "AnyHitRate": 1.0,
+        "AvgCandidateSetSize": 10.0,
+        "AvgGoldSetSize": 2.2353,
+        "GoldCoverageRecall": 0.9868,
+        "samples": 34
+      }
+    },
+    "intent_count_buckets": {
+      "double": {
+        "AllGoldCoveredRate": 0.9167,
+        "AnyHitRate": 1.0,
+        "AvgCandidateSetSize": 10.0,
+        "AvgGoldSetSize": 2.0,
+        "GoldCoverageRecall": 0.9583,
+        "samples": 60
+      },
+      "four_plus": {
+        "AllGoldCoveredRate": 1.0,
+        "AnyHitRate": 1.0,
+        "AvgCandidateSetSize": 10.0,
+        "AvgGoldSetSize": 4.0,
+        "GoldCoverageRecall": 1.0,
+        "samples": 8
+      },
+      "single": {
+        "AllGoldCoveredRate": 1.0,
+        "AnyHitRate": 1.0,
+        "AvgCandidateSetSize": 10.0,
+        "AvgGoldSetSize": 1.0,
+        "GoldCoverageRecall": 1.0,
+        "samples": 20
+      },
+      "triple": {
+        "AllGoldCoveredRate": 0.9688,
+        "AnyHitRate": 1.0,
+        "AvgCandidateSetSize": 10.0,
+        "AvgGoldSetSize": 3.0,
+        "GoldCoverageRecall": 0.9896,
+        "samples": 32
+      }
+    },
+    "samples": 120
+  },
+  "traces": {
+    "a_multi_v2": {
+      "AllGoldCoveredRate": 0.6083,
+      "AnyHitRate": 0.9333,
+      "AvgGoldSetSize": 2.2333,
+      "AvgPredSetSize": 2.0917,
+      "EmptyPredictionRate": 0.0,
+      "ExactSetAcc": 0.5833,
+      "Jaccard_macro": 0.7426,
+      "OverPredictionRate": 0.275,
+      "SetF1_macro": 0.7968,
+      "SetF1_micro": 0.8092,
+      "SetPrecision_macro": 0.834,
+      "SetPrecision_micro": 0.8367,
+      "SetRecall_macro": 0.7813,
+      "SetRecall_micro": 0.7836,
+      "UnderPredictionRate": 0.3917,
+      "domain_mix_buckets": {
+        "enterprise_ops": {
+          "AllGoldCoveredRate": 0.25,
+          "AnyHitRate": 0.8,
+          "AvgGoldSetSize": 2.4,
+          "AvgPredSetSize": 1.9,
+          "EmptyPredictionRate": 0.0,
+          "ExactSetAcc": 0.25,
+          "Jaccard_macro": 0.5183,
+          "OverPredictionRate": 0.5,
+          "SetF1_macro": 0.605,
+          "SetF1_micro": 0.6512,
+          "SetPrecision_macro": 0.6917,
+          "SetPrecision_micro": 0.7368,
+          "SetRecall_macro": 0.5583,
+          "SetRecall_micro": 0.5833,
+          "UnderPredictionRate": 0.75,
+          "samples": 20
+        },
+        "finance_commerce": {
+          "AllGoldCoveredRate": 0.8182,
+          "AnyHitRate": 0.9545,
+          "AvgGoldSetSize": 2.1364,
+          "AvgPredSetSize": 2.1818,
+          "EmptyPredictionRate": 0.0,
+          "ExactSetAcc": 0.6818,
+          "Jaccard_macro": 0.8258,
+          "OverPredictionRate": 0.2273,
+          "SetF1_macro": 0.8682,
+          "SetF1_micro": 0.9053,
+          "SetPrecision_macro": 0.8788,
+          "SetPrecision_micro": 0.8958,
+          "SetRecall_macro": 0.8864,
+          "SetRecall_micro": 0.9149,
+          "UnderPredictionRate": 0.1818,
+          "samples": 22
+        },
+        "governance": {
+          "AllGoldCoveredRate": 0.7917,
+          "AnyHitRate": 1.0,
+          "AvgGoldSetSize": 2.3333,
+          "AvgPredSetSize": 2.2083,
+          "EmptyPredictionRate": 0.0,
+          "ExactSetAcc": 0.7917,
+          "Jaccard_macro": 0.8958,
+          "OverPredictionRate": 0.0833,
+          "SetF1_macro": 0.9278,
+          "SetF1_micro": 0.9358,
+          "SetPrecision_macro": 0.9583,
+          "SetPrecision_micro": 0.9623,
+          "SetRecall_macro": 0.9097,
+          "SetRecall_micro": 0.9107,
+          "UnderPredictionRate": 0.2083,
+          "samples": 24
+        },
+        "health_education": {
+          "AllGoldCoveredRate": 0.65,
+          "AnyHitRate": 1.0,
+          "AvgGoldSetSize": 2.05,
+          "AvgPredSetSize": 1.75,
+          "EmptyPredictionRate": 0.0,
+          "ExactSetAcc": 0.65,
+          "Jaccard_macro": 0.8333,
+          "OverPredictionRate": 0.05,
+          "SetF1_macro": 0.8883,
+          "SetF1_micro": 0.8947,
+          "SetPrecision_macro": 0.975,
+          "SetPrecision_micro": 0.9714,
+          "SetRecall_macro": 0.8417,
+          "SetRecall_micro": 0.8293,
+          "UnderPredictionRate": 0.35,
+          "samples": 20
+        },
+        "travel_life": {
+          "AllGoldCoveredRate": 0.5294,
+          "AnyHitRate": 0.9118,
+          "AvgGoldSetSize": 2.2353,
+          "AvgPredSetSize": 2.2647,
+          "EmptyPredictionRate": 0.0,
+          "ExactSetAcc": 0.5294,
+          "Jaccard_macro": 0.6593,
+          "OverPredictionRate": 0.4412,
+          "SetF1_macro": 0.7171,
+          "SetF1_micro": 0.7059,
+          "SetPrecision_macro": 0.7181,
+          "SetPrecision_micro": 0.7013,
+          "SetRecall_macro": 0.7181,
+          "SetRecall_micro": 0.7105,
+          "UnderPredictionRate": 0.4706,
+          "samples": 34
+        }
+      },
+      "entered_stage_b_rate": 0.0,
+      "final_decision_source_counts": {
+        "stage_a_multi_intent": 120
+      },
+      "final_related_source_counts": {
+        "None": 120
+      },
+      "intent_count_buckets": {
+        "double": {
+          "AllGoldCoveredRate": 0.6,
+          "AnyHitRate": 0.9333,
+          "AvgGoldSetSize": 2.0,
+          "AvgPredSetSize": 1.7833,
+          "EmptyPredictionRate": 0.0,
+          "ExactSetAcc": 0.5667,
+          "Jaccard_macro": 0.7306,
+          "OverPredictionRate": 0.25,
+          "SetF1_macro": 0.7906,
+          "SetF1_micro": 0.8106,
+          "SetPrecision_macro": 0.8472,
+          "SetPrecision_micro": 0.8598,
+          "SetRecall_macro": 0.7667,
+          "SetRecall_micro": 0.7667,
+          "UnderPredictionRate": 0.4,
+          "samples": 60
+        },
+        "four_plus": {
+          "AllGoldCoveredRate": 0.5,
+          "AnyHitRate": 1.0,
+          "AvgGoldSetSize": 4.0,
+          "AvgPredSetSize": 3.875,
+          "EmptyPredictionRate": 0.0,
+          "ExactSetAcc": 0.5,
+          "Jaccard_macro": 0.7854,
+          "OverPredictionRate": 0.375,
+          "SetF1_macro": 0.8571,
+          "SetF1_micro": 0.8571,
+          "SetPrecision_macro": 0.875,
+          "SetPrecision_micro": 0.871,
+          "SetRecall_macro": 0.8438,
+          "SetRecall_micro": 0.8438,
+          "UnderPredictionRate": 0.5,
+          "samples": 8
+        },
+        "single": {
+          "AllGoldCoveredRate": 0.8,
+          "AnyHitRate": 0.8,
+          "AvgGoldSetSize": 1.0,
+          "AvgPredSetSize": 1.1,
+          "EmptyPredictionRate": 0.0,
+          "ExactSetAcc": 0.75,
+          "Jaccard_macro": 0.775,
+          "OverPredictionRate": 0.25,
+          "SetF1_macro": 0.7833,
+          "SetF1_micro": 0.7619,
+          "SetPrecision_macro": 0.775,
+          "SetPrecision_micro": 0.7273,
+          "SetRecall_macro": 0.8,
+          "SetRecall_micro": 0.8,
+          "UnderPredictionRate": 0.2,
+          "samples": 20
+        },
+        "triple": {
+          "AllGoldCoveredRate": 0.5312,
+          "AnyHitRate": 1.0,
+          "AvgGoldSetSize": 3.0,
+          "AvgPredSetSize": 2.8438,
+          "EmptyPredictionRate": 0.0,
+          "ExactSetAcc": 0.5312,
+          "Jaccard_macro": 0.7344,
+          "OverPredictionRate": 0.3125,
+          "SetF1_macro": 0.8018,
+          "SetF1_micro": 0.8021,
+          "SetPrecision_macro": 0.8359,
+          "SetPrecision_micro": 0.8242,
+          "SetRecall_macro": 0.7813,
+          "SetRecall_micro": 0.7812,
+          "UnderPredictionRate": 0.4688,
+          "samples": 32
+        }
+      },
+      "prediction_mode": "final",
+      "samples": 120,
+      "samples_evaluated": 120,
+      "samples_total": 120
+    }
+  }
+}

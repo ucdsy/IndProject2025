@@ -11,6 +11,7 @@ import matplotlib.ticker as mticker
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "output" / "figures" / "retrospective_train_test_20260331"
 DOC_DIR = ROOT / "output" / "doc" / "overleaf_tech_report_20260406" / "figures"
+GJTX_DOC_DIR = ROOT / "output" / "doc" / "gjtx_submission_20260413" / "figures"
 
 PALETTE = {
     "ink": "#222222",
@@ -29,7 +30,15 @@ PALETTE = {
 
 plt.rcParams.update(
     {
-        "font.family": "serif",
+        "font.family": "sans-serif",
+        "font.sans-serif": [
+            "PingFang SC",
+            "Songti SC",
+            "Heiti SC",
+            "STHeiti",
+            "Arial Unicode MS",
+            "DejaVu Sans",
+        ],
         "font.size": 10.5,
         "axes.labelsize": 11.5,
         "axes.titlesize": 12.5,
@@ -51,6 +60,7 @@ plt.rcParams.update(
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
         "figure.dpi": 180,
+        "axes.unicode_minus": False,
     }
 )
 
@@ -212,15 +222,15 @@ def _figure_data() -> dict:
 
     manifest = _load_json(ROOT / "artifacts" / "dataset" / "retrospective_stage_b_train_test_20260331" / "manifest.json")
     pooled_gate = {
-        "base": {
+        "default": {
             "train": manifest["train_summary"]["base"]["PrimaryAcc@1"],
             "test": manifest["test_summary"]["base"]["PrimaryAcc@1"],
         },
-        "conservative": {
+        "selective": {
             "train": manifest["train_summary"]["conservative"]["PrimaryAcc@1"],
             "test": manifest["test_summary"]["conservative"]["PrimaryAcc@1"],
         },
-        "aggressive": {
+        "expanded": {
             "train": manifest["train_summary"]["aggressive"]["PrimaryAcc@1"],
             "test": manifest["test_summary"]["aggressive"]["PrimaryAcc@1"],
         },
@@ -332,7 +342,7 @@ def _figure_data() -> dict:
                 labels,
             ),
         },
-        "heterogeneous_v3 + aggressive": {
+        "heterogeneous_v3 + expanded": {
             "train": {
                 "PrimaryAcc@1": 0.9187,
                 "AcceptablePrimary@1": 0.9313,
@@ -351,9 +361,9 @@ def _figure_data() -> dict:
     }
 
     holdout3_gate = {
-        "base": {"train": 0.8844, "test": 0.8625},
-        "conservative": {"train": 0.9094, "test": 0.8750},
-        "aggressive": {"train": 0.9187, "test": 0.9250},
+        "default": {"train": 0.8844, "test": 0.8625},
+        "selective": {"train": 0.9094, "test": 0.8750},
+        "expanded": {"train": 0.9187, "test": 0.9250},
     }
 
     holdout3_labels = {
@@ -442,7 +452,7 @@ def _figure_data() -> dict:
         "single_v2": bucket_scores(holdout3_single_rows, holdout3_test),
         "homogeneous_v2": bucket_scores(holdout3_homo_rows, holdout3_test),
         "heterogeneous_v3": bucket_scores(holdout3_hetero_v3_rows, holdout3_test),
-        "heterogeneous_v3 + aggressive": bucket_scores(holdout3_hetero_v3_aggressive_rows, holdout3_test),
+        "heterogeneous_v3 + expanded": bucket_scores(holdout3_hetero_v3_aggressive_rows, holdout3_test),
     }
 
     execution_proxy = {
@@ -474,7 +484,7 @@ def _figure_data() -> dict:
             "fixed": 2,
             "regressed": 0,
         },
-        "heterogeneous_v3 + aggressive": {
+        "heterogeneous_v3 + expanded": {
             "slow_path_rate": 0.4525,
             "stage_b_applied": 181,
             "changed": 18,
@@ -497,7 +507,7 @@ def _figure_data() -> dict:
                 "single_v2": holdout3_single_rows[sample_id]["pred_primary"],
                 "homogeneous_v2": holdout3_homo_rows[sample_id]["pred_primary"],
                 "heterogeneous_v3": holdout3_hetero_v3_rows[sample_id]["pred_primary"],
-                "heterogeneous_v3_aggressive": holdout3_hetero_v3_aggressive_rows[sample_id]["pred_primary"],
+                "heterogeneous_v3_expanded": holdout3_hetero_v3_aggressive_rows[sample_id]["pred_primary"],
                 "note": label.get("notes_for_audit") or "",
             }
         )
@@ -519,7 +529,7 @@ def _save_json(data: dict):
 
 
 def _save_figure(fig, stem: str):
-    for directory in (OUT_DIR, DOC_DIR):
+    for directory in (OUT_DIR, DOC_DIR, GJTX_DOC_DIR):
         directory.mkdir(parents=True, exist_ok=True)
         fig.savefig(directory / f"{stem}.pdf", bbox_inches="tight")
         fig.savefig(directory / f"{stem}.png", dpi=220, bbox_inches="tight")
@@ -550,18 +560,18 @@ def _style_axis(ax, ylabel: str, ymin: float, ymax: float, ystep: float | None =
 
 def _plot_waterfall(data: dict):
     labels = [
-        "Rule",
-        "Rule +\nReview",
-        "Semantic",
-        "Semantic +\nReview",
-        "Expanded\nconfig",
+        "规则路由",
+        "规则路由+\n协作复核",
+        "结构化\n语义判别",
+        "结构化判别+\n协作复核",
+        "扩展决策\n配置",
     ]
     values = [
         data["pooled_main"]["A_clean"]["test"]["PrimaryAcc@1"],
         data["pooled_main"]["A_clean->B"]["test"]["PrimaryAcc@1"],
         data["pooled_main"]["A_llm_v2"]["test"]["PrimaryAcc@1"],
         data["pooled_main"]["A_llm_v2->B"]["test"]["PrimaryAcc@1"],
-        data["pooled_gate"]["aggressive"]["test"],
+        data["pooled_gate"]["expanded"]["test"],
     ]
     starts = [0, values[0], values[1], values[2], values[3]]
     heights = [values[0], values[1] - values[0], values[2] - values[1], values[3] - values[2], values[4] - values[3]]
@@ -588,7 +598,7 @@ def _plot_waterfall(data: dict):
                 fontsize=8.8,
                 fontweight="bold",
             )
-    _style_axis(ax, "Held-out accuracy", 0.75, 0.945, 0.025)
+    _style_axis(ax, "测试集准确率", 0.75, 0.945, 0.025)
     ax.set_xticks(range(len(labels)), labels)
     fig.tight_layout()
     _save_figure(fig, "01_pooled_test_waterfall")
@@ -596,19 +606,19 @@ def _plot_waterfall(data: dict):
 
 
 def _plot_pooled_gate(data: dict):
-    modes = ["base", "conservative", "aggressive"]
-    display = ["default", "selective", "expanded"]
+    modes = ["default", "selective", "expanded"]
+    display = ["默认配置", "选择性配置", "扩展配置"]
     train = [data["pooled_gate"][mode]["train"] for mode in modes]
     test = [data["pooled_gate"][mode]["test"] for mode in modes]
     x = range(len(modes))
     width = 0.34
 
     fig, ax = plt.subplots(figsize=(7.6, 4.6))
-    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color=PALETTE["train"], label="Train")
-    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color=PALETTE["test"], label="Held-out test")
+    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color=PALETTE["train"], label="训练集")
+    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color=PALETTE["test"], label="测试集")
     _annotate_bars(ax, bars1)
     _annotate_bars(ax, bars2)
-    _style_axis(ax, "Accuracy", 0.86, 0.94, 0.02)
+    _style_axis(ax, "准确率", 0.86, 0.94, 0.02)
     ax.set_xticks(list(x), display)
     ax.legend(loc="upper left")
     fig.tight_layout()
@@ -618,10 +628,10 @@ def _plot_pooled_gate(data: dict):
 
 def _plot_holdout3_ablation(data: dict):
     ordered = [
-        ("Semantic", "A_llm_v2 fastpath"),
-        ("Single-role\nreview", "single_v2"),
-        ("Homogeneous\nreview", "homogeneous_v2"),
-        ("Role-specialized\n(expanded)", "heterogeneous_v3 + aggressive"),
+        ("结构化语义判别", "A_llm_v2 fastpath"),
+        ("单角色\n复核", "single_v2"),
+        ("同质复核", "homogeneous_v2"),
+        ("职责化协作\n复核（扩展）", "heterogeneous_v3 + expanded"),
     ]
     train = [data["holdout3_ablation"][key]["train"]["PrimaryAcc@1"] for _, key in ordered]
     test = [data["holdout3_ablation"][key]["test"]["PrimaryAcc@1"] for _, key in ordered]
@@ -629,11 +639,11 @@ def _plot_holdout3_ablation(data: dict):
     width = 0.34
 
     fig, ax = plt.subplots(figsize=(8.8, 4.8))
-    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color=PALETTE["train"], label="Train")
-    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color=PALETTE["test"], label="Held-out test")
+    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color=PALETTE["train"], label="训练集")
+    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color=PALETTE["test"], label="测试集")
     _annotate_bars(ax, bars1)
     _annotate_bars(ax, bars2)
-    _style_axis(ax, "Accuracy", 0.84, 0.94, 0.02)
+    _style_axis(ax, "准确率", 0.84, 0.94, 0.02)
     ax.set_xticks(list(x), [label for label, _ in ordered])
     ax.legend(loc="upper left")
     fig.tight_layout()
@@ -642,19 +652,19 @@ def _plot_holdout3_ablation(data: dict):
 
 
 def _plot_holdout3_gate(data: dict):
-    modes = ["base", "conservative", "aggressive"]
-    display = ["default", "selective", "expanded"]
+    modes = ["default", "selective", "expanded"]
+    display = ["默认配置", "选择性配置", "扩展配置"]
     train = [data["holdout3_gate"][mode]["train"] for mode in modes]
     test = [data["holdout3_gate"][mode]["test"] for mode in modes]
     x = range(len(modes))
     width = 0.34
 
     fig, ax = plt.subplots(figsize=(7.6, 4.6))
-    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color=PALETTE["train"], label="Train")
-    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color=PALETTE["test"], label="Held-out test")
+    bars1 = ax.bar([i - width / 2 for i in x], train, width=width, color=PALETTE["train"], label="训练集")
+    bars2 = ax.bar([i + width / 2 for i in x], test, width=width, color=PALETTE["test"], label="测试集")
     _annotate_bars(ax, bars1)
     _annotate_bars(ax, bars2)
-    _style_axis(ax, "Accuracy", 0.84, 0.94, 0.02)
+    _style_axis(ax, "准确率", 0.84, 0.94, 0.02)
     ax.set_xticks(list(x), display)
     ax.legend(loc="upper left")
     fig.tight_layout()
@@ -665,11 +675,11 @@ def _plot_holdout3_gate(data: dict):
 def _plot_holdout3_bucket(data: dict):
     buckets = list(next(iter(data["holdout3_bucket_test"].values())).keys())
     ordered = [
-        ("Semantic", "A_llm_v2 fastpath"),
-        ("Single-role", "single_v2"),
-        ("Homogeneous", "homogeneous_v2"),
-        ("Role-specialized", "heterogeneous_v3"),
-        ("Role-specialized (expanded)", "heterogeneous_v3 + aggressive"),
+        ("结构化语义判别", "A_llm_v2 fastpath"),
+        ("单角色复核", "single_v2"),
+        ("同质复核", "homogeneous_v2"),
+        ("职责化复核", "heterogeneous_v3"),
+        ("职责化复核（扩展）", "heterogeneous_v3 + expanded"),
     ]
     colors = [
         PALETTE["rule"],
@@ -686,8 +696,14 @@ def _plot_holdout3_bucket(data: dict):
         vals = [data["holdout3_bucket_test"][key][bucket] for bucket in buckets]
         bars = ax.bar([i + (idx - 2) * width for i in x], vals, width=width, color=color, label=display)
         _annotate_bars(ax, bars, dy=0.004)
-    _style_axis(ax, "Held-out accuracy", 0.55, 1.0, 0.1)
-    ax.set_xticks(list(x), buckets, rotation=15, ha="right")
+    _style_axis(ax, "测试集准确率", 0.55, 1.0, 0.1)
+    bucket_labels = {
+        "easy": "简单",
+        "ambiguous": "歧义",
+        "hard": "困难",
+        "fresh": "新增",
+    }
+    ax.set_xticks(list(x), [bucket_labels.get(bucket, bucket) for bucket in buckets], rotation=15, ha="right")
     ax.legend(loc="upper left", ncols=2)
     fig.tight_layout()
     _save_figure(fig, "05_holdout3_bucket_breakdown")
@@ -696,10 +712,10 @@ def _plot_holdout3_bucket(data: dict):
 
 def _plot_execution_proxy(data: dict):
     ordered = [
-        ("Single-role", "single_v2"),
-        ("Homogeneous", "homogeneous_v2"),
-        ("Role-specialized", "heterogeneous_v3"),
-        ("Role-specialized\n(expanded)", "heterogeneous_v3 + aggressive"),
+        ("单角色复核", "single_v2"),
+        ("同质复核", "homogeneous_v2"),
+        ("职责化复核", "heterogeneous_v3"),
+        ("职责化复核\n（扩展）", "heterogeneous_v3 + expanded"),
     ]
     changed = [data["execution_proxy"][key]["changed"] for _, key in ordered]
     fixed = [data["execution_proxy"][key]["fixed"] for _, key in ordered]
@@ -708,13 +724,13 @@ def _plot_execution_proxy(data: dict):
     width = 0.24
 
     fig, ax = plt.subplots(figsize=(8.6, 4.8))
-    b1 = ax.bar([i - width for i in x], changed, width=width, color=PALETTE["train"], label="Changed")
-    b2 = ax.bar(x, fixed, width=width, color=PALETTE["positive"], label="Fixed")
-    b3 = ax.bar([i + width for i in x], regressed, width=width, color=PALETTE["negative"], label="Regressed")
+    b1 = ax.bar([i - width for i in x], changed, width=width, color=PALETTE["train"], label="改写")
+    b2 = ax.bar(x, fixed, width=width, color=PALETTE["positive"], label="修正")
+    b3 = ax.bar([i + width for i in x], regressed, width=width, color=PALETTE["negative"], label="回归")
     _annotate_bars(ax, b1, fmt="{:.0f}", dy=0.4)
     _annotate_bars(ax, b2, fmt="{:.0f}", dy=0.4)
     _annotate_bars(ax, b3, fmt="{:.0f}", dy=0.4)
-    _style_axis(ax, "Samples", 0.0, 20.5, 5.0)
+    _style_axis(ax, "样本数", 0.0, 20.5, 5.0)
     ax.set_xticks(list(x), [label for label, _ in ordered])
     ax.legend(loc="upper left", ncols=3)
     fig.tight_layout()

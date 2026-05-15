@@ -1,0 +1,20 @@
+{
+  "method": "stage_a_multi_intent",
+  "samples": 120,
+  "traces": 120,
+  "stage_a_version": "stage_a_multi_intent_v1_20260426",
+  "prompt_version": "stage_a_multi_intent_prompt_v1_20260426",
+  "stage_r_version": "sr_clean_v0_20260306",
+  "input_path": "data/agentdns_routing/formal/multi_intent_eval_v1.jsonl",
+  "snapshot_path": "artifacts/stage_r_clean/multi_intent_eval_v1_deepseek_chat_v3_20260426/multi_intent_eval_v1.sr_clean_v0_20260306.jsonl",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "escalation_count": 3,
+  "avg_selected_size": 2.2333,
+  "shard_trace_paths": [
+    "artifacts/routing_ab/multi_intent_eval_v1_multi_set_deepseek_chat_v3_20260426/shards/a_shard0/multi_intent_eval_v1_shard0.stage_a_multi_intent_v1_20260426.jsonl",
+    "artifacts/routing_ab/multi_intent_eval_v1_multi_set_deepseek_chat_v3_20260426/shards/a_shard1/multi_intent_eval_v1_shard1.stage_a_multi_intent_v1_20260426.jsonl",
+    "artifacts/routing_ab/multi_intent_eval_v1_multi_set_deepseek_chat_v3_20260426/shards/a_shard2/multi_intent_eval_v1_shard2.stage_a_multi_intent_v1_20260426.jsonl",
+    "artifacts/routing_ab/multi_intent_eval_v1_multi_set_deepseek_chat_v3_20260426/shards/a_shard3/multi_intent_eval_v1_shard3.stage_a_multi_intent_v1_20260426.jsonl"
+  ]
+}

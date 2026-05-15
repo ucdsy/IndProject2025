@@ -1,0 +1,21 @@
+{
+  "labeled": false,
+  "method": "stage_a_llm",
+  "stage_a_version": "sa_llm_v2_20260323_uncertainty",
+  "prompt_version": "stage_a_prompt_v2_20260323",
+  "base_stage_a_version": "sa_clean_v2_20260314",
+  "stage_r_version": "sr_clean_v0_20260306",
+  "input_path": "tmp/multi_intent_eval_v1_shards_20260426/multi_intent_eval_v1_shard2.jsonl",
+  "snapshot_path": "artifacts/stage_r_clean/multi_intent_eval_v1_deepseek_chat_v3_20260426/multi_intent_eval_v1.sr_clean_v0_20260306.jsonl",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "related_provider": "deepseek",
+  "related_model": "deepseek-chat",
+  "blind_mode": false,
+  "exploratory": false,
+  "no_resume": false,
+  "trace_validation": {
+    "valid": true,
+    "errors": []
+  }
+}

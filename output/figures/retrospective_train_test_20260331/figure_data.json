@@ -78,15 +78,15 @@
     }
   },
   "pooled_gate": {
-    "base": {
+    "default": {
       "train": 0.88,
       "test": 0.885
     },
-    "conservative": {
+    "selective": {
       "train": 0.8911,
       "test": 0.8938
     },
-    "aggressive": {
+    "expanded": {
       "train": 0.8978,
       "test": 0.9292
     }
@@ -196,7 +196,7 @@
         "regressed": 0
       }
     },
-    "heterogeneous_v3 + aggressive": {
+    "heterogeneous_v3 + expanded": {
       "train": {
         "PrimaryAcc@1": 0.9187,
         "AcceptablePrimary@1": 0.9313,
@@ -214,15 +214,15 @@
     }
   },
   "holdout3_gate": {
-    "base": {
+    "default": {
       "train": 0.8844,
       "test": 0.8625
     },
-    "conservative": {
+    "selective": {
       "train": 0.9094,
       "test": 0.875
     },
-    "aggressive": {
+    "expanded": {
       "train": 0.9187,
       "test": 0.925
     }
@@ -256,7 +256,7 @@
       "primary_secondary_disentanglement": 0.8125,
       "sibling_hierarchy": 0.8
     },
-    "heterogeneous_v3 + aggressive": {
+    "heterogeneous_v3 + expanded": {
       "cross_domain_overlap": 1.0,
       "high_risk_governance": 0.875,
       "ordinary_fast_path": 0.9474,
@@ -293,7 +293,7 @@
       "fixed": 2,
       "regressed": 0
     },
-    "heterogeneous_v3 + aggressive": {
+    "heterogeneous_v3 + expanded": {
       "slow_path_rate": 0.4525,
       "stage_b_applied": 181,
       "changed": 18,
@@ -311,7 +311,7 @@
       "single_v2": "transport.travel.cn",
       "homogeneous_v2": "flight.travel.cn",
       "heterogeneous_v3": "flight.travel.cn",
-      "heterogeneous_v3_aggressive": "transport.travel.cn",
+      "heterogeneous_v3_expanded": "transport.travel.cn",
       "note": "主次分离难例：weather.cn 是相关但非主标签，主标签仍为 transport.travel.cn。"
     },
     {
@@ -323,7 +323,7 @@
       "single_v2": "coupon.commerce.cn",
       "homogeneous_v2": "coupon.commerce.cn",
       "heterogeneous_v3": "coupon.commerce.cn",
-      "heterogeneous_v3_aggressive": "coupon.commerce.cn",
+      "heterogeneous_v3_expanded": "coupon.commerce.cn",
       "note": "主次分离难例：budget.finance.cn 是相关但非主标签，主标签仍为 coupon.commerce.cn。"
     },
     {
@@ -335,7 +335,7 @@
       "single_v2": "activity.travel.cn",
       "homogeneous_v2": "activity.travel.cn",
       "heterogeneous_v3": "activity.travel.cn",
-      "heterogeneous_v3_aggressive": "activity.travel.cn",
+      "heterogeneous_v3_expanded": "activity.travel.cn",
       "note": "跨域重叠难例：transport.travel.cn 与主任务共现，但主标签仍为 activity.travel.cn。"
     }
   ]

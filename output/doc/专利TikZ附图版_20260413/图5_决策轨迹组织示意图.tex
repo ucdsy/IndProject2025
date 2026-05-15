@@ -1,0 +1,25 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{tikz_patent_styles.tex}
+\begin{document}
+\begin{tikzpicture}[patent diagram, node distance=8mm and 12mm]
+  \node[patent wide, text width=82mm] (g1) {召回字段组：候选集合、候选相关度、混淆源标记};
+  \node[patent wide, text width=82mm, below=9mm of g1] (g2) {快路径字段组：初始主能力地址、相关能力地址、触发原因};
+  \node[patent wide, text width=82mm, below=9mm of g2] (g3) {协同决策字段组：语义交接信息、角色提案、覆盖结果};
+  \node[patent wide, text width=82mm, below=9mm of g3] (g4) {实例选择字段组：过滤原因、综合评分、排序结果};
+  \node[patent wide, text width=82mm, below=9mm of g4] (g5) {输出字段组：最终主能力地址、相关能力地址、目标实例地址};
+
+  \node[patent small, right=26mm of g2] (u1) {支持回放};
+  \node[patent small, below=8mm of u1] (u2) {支持归因};
+  \node[patent small, below=8mm of u2] (u3) {支持审计};
+  \node[patent small, below=8mm of u3] (u4) {支持错误定位};
+
+  \node[patent frame, fit=(g1)(g2)(g3)(g4)(g5), label={[anchor=west]north west:结构化决策轨迹对象}] (frameT) {};
+  \node[patent frame, fit=(u1)(u2)(u3)(u4), label={[anchor=west]north west:轨迹用途}] (frameU) {};
+
+  \draw[patent arrow] (g1) -- (g2);
+  \draw[patent arrow] (g2) -- (g3);
+  \draw[patent arrow] (g3) -- (g4);
+  \draw[patent arrow] (g4) -- (g5);
+  \draw[patent arrow] (g3.east) -- (u2.west);
+\end{tikzpicture}
+\end{document}

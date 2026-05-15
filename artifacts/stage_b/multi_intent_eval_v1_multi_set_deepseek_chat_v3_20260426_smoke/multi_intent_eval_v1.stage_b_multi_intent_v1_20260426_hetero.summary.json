@@ -1,0 +1,17 @@
+{
+  "method": "stage_b_multi_intent",
+  "samples": 3,
+  "traces": 3,
+  "stage_b_version": "stage_b_multi_intent_v1_20260426_hetero",
+  "prompt_version": "stage_b_multi_intent_prompt_v1_20260426",
+  "stage_a_version": "stage_a_multi_intent_v1_20260426",
+  "stage_r_version": "sr_clean_v0_20260306",
+  "input_path": "data/agentdns_routing/formal/multi_intent_eval_v1.jsonl",
+  "trace_input_path": "artifacts/routing_ab/multi_intent_eval_v1_multi_set_deepseek_chat_v3_20260426/multi_intent_eval_v1.stage_a_multi_intent_v1_20260426.jsonl",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "collaboration_mode": "heterogeneous",
+  "force_stage_b": true,
+  "entered_stage_b_count": 3,
+  "avg_selected_size": 1.3333
+}

@@ -1,0 +1,9 @@
+{
+  "input": "artifacts/dataset/retrospective_stage_b_train_test_20260331/test_joined.jsonl",
+  "samples": 113,
+  "top_k": 10,
+  "stage": "stage_r_clean",
+  "labels_available": true,
+  "PrimaryRecall@K": 0.9735,
+  "RelatedCoverage@K": 0.6316
+}

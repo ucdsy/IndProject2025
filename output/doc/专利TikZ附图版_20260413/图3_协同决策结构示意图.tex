@@ -1,0 +1,29 @@
+\documentclass[tikz,border=14pt]{standalone}
+\input{tikz_patent_styles.tex}
+\begin{document}
+\begin{tikzpicture}[patent diagram, node distance=12mm and 18mm]
+  \node[patent box, text width=46mm] (cand) {共享候选视图\\阶段A结果\\候选地址集合\\语义交接信息};
+  \node[anchor=south, font=\bfseries] at ($(cand.north)+(0,3mm)$) {候选输入};
+
+  \node[patent small, right=26mm of cand, yshift=12mm] (de) {领域专家\\核心任务匹配};
+  \node[patent small, right=10mm of de] (gr) {治理风控\\风险与边界};
+  \node[patent small, below=10mm of de] (hr) {层级解析\\粒度一致性};
+  \node[patent small, right=10mm of hr] (up) {用户偏好\\主次意图};
+  \node[patent frame, fit=(de)(gr)(hr)(up), inner sep=9pt] (rolebox) {};
+  \node[anchor=south, font=\bfseries] at ($(rolebox.north)+(0,3mm)$) {异质角色协同};
+
+  \node[patent box, text width=42mm, right=28mm of rolebox] (agg) {提案聚合\\角色信号融合、置信归一\\候选比较};
+  \node[anchor=south, font=\bfseries] at ($(agg.north)+(0,3mm)$) {融合入口};
+
+  \node[patent box, text width=42mm, below=12mm of agg] (auth) {覆盖授权判断\\主次冲突、越级改判\\风险约束};
+  \node[patent box, text width=42mm, below=12mm of auth] (out) {协同输出\\最终主能力地址\\最终相关能力地址};
+  \node[patent box, text width=42mm, below=12mm of out] (trace) {结构化轨迹\\角色提案、授权依据\\轮次记录};
+  \node[anchor=north, font=\bfseries] at ($(trace.south)+(0,-3mm)$) {审计输出};
+
+  \draw[patent arrow] (cand.east) -- (rolebox.west);
+  \draw[patent arrow] (rolebox.east) -- (agg.west);
+  \draw[patent arrow] (agg.south) -- (auth.north);
+  \draw[patent arrow] (auth.south) -- (out.north);
+  \draw[patent arrow] (out.south) -- (trace.north);
+\end{tikzpicture}
+\end{document}

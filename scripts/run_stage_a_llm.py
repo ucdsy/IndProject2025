@@ -13,6 +13,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from agentdns_routing.namespace import NamespaceResolver
+from agentdns_routing.related_v2 import make_related_llm_client
 from agentdns_routing.stage_a_eval import evaluate_traces, validate_traces
 from agentdns_routing.stage_a_llm import StageALLMConfig, build_routing_run_trace, make_llm_client
 from agentdns_routing.stage_r_clean import dump_jsonl, load_jsonl
@@ -30,6 +31,13 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--provider", choices=["deepseek", "openai"], default="deepseek")
     parser.add_argument("--model", default=None, help="LLM model name.")
+    parser.add_argument(
+        "--related-provider",
+        choices=["none", "deepseek", "openai"],
+        default="none",
+        help="Optional related_v2 LLM provider. Default preserves deterministic related_v2 review.",
+    )
+    parser.add_argument("--related-model", default=None, help="Optional related_v2 LLM model name.")
     parser.add_argument("--stage-a-version", default=StageALLMConfig().stage_a_version)
     parser.add_argument("--prompt-version", default=StageALLMConfig().prompt_version)
     parser.add_argument("--base-stage-a-version", default=StageALLMConfig().base_stage_a_version)
@@ -66,6 +74,9 @@ def main() -> None:
         base_stage_a_version=args.base_stage_a_version,
     )
     client = make_llm_client(provider=args.provider, model=args.model)
+    related_client = None
+    if args.related_provider != "none":
+        related_client = make_related_llm_client(provider=args.related_provider, model=args.related_model)
 
     split_name = Path(args.input).stem
     output_dir = Path(args.output_dir)
@@ -85,7 +96,14 @@ def main() -> None:
         snapshot = snapshots.get(sample_id)
         if not snapshot:
             raise KeyError(f"Missing Stage R snapshot for sample_id={sample_id}")
-        trace = build_routing_run_trace(sample=sample, snapshot=snapshot, resolver=resolver, client=client, config=config)
+        trace = build_routing_run_trace(
+            sample=sample,
+            snapshot=snapshot,
+            resolver=resolver,
+            client=client,
+            config=config,
+            related_client=related_client,
+        )
         existing_trace_map[sample_id] = trace
         ordered_partial = [existing_trace_map[s["id"]] for s in samples if s["id"] in existing_trace_map]
         dump_jsonl(trace_path, ordered_partial)
@@ -101,6 +119,8 @@ def main() -> None:
     summary["snapshot_path"] = args.snapshot
     summary["provider"] = client.provider
     summary["model"] = client.model
+    summary["related_provider"] = related_client.provider if related_client else "deterministic"
+    summary["related_model"] = related_client.model if related_client else "related_v2_deterministic"
     summary["blind_mode"] = bool(args.blind_mode)
     summary["exploratory"] = bool(args.exploratory)
     summary["no_resume"] = bool(no_resume)

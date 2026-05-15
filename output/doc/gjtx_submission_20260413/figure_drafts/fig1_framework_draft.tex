@@ -1,0 +1,80 @@
+\documentclass[border=8pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shapes.geometric}
+
+\definecolor{paperbg}{HTML}{F8F6F1}
+\definecolor{ink}{HTML}{20242A}
+\definecolor{bluegray}{HTML}{A8B4C8}
+\definecolor{steel}{HTML}{6C8EAD}
+\definecolor{sand}{HTML}{D6A46A}
+\definecolor{clay}{HTML}{D96C4F}
+\definecolor{mist}{HTML}{EEF1F5}
+\definecolor{greenish}{HTML}{8FAF9B}
+
+\tikzset{
+  base/.style={font=\small, line cap=round, line join=round, >={Latex[length=2.8mm,width=1.8mm]}},
+  card/.style={draw=ink!80, rounded corners=7pt, line width=0.8pt, fill=paperbg, align=center, inner sep=6pt, minimum height=1.05cm},
+  maincard/.style={card, text width=2.25cm},
+  smallcard/.style={card, text width=1.92cm, minimum height=0.84cm, font=\footnotesize},
+  rolecircle/.style={circle, draw=ink!72, line width=0.85pt, align=center, font=\footnotesize, text width=1.08cm, minimum size=1.26cm, inner sep=1pt},
+  panel/.style={draw=ink!10, rounded corners=12pt, line width=0.55pt, fill=mist!56},
+  label/.style={font=\bfseries\footnotesize, text=ink!70},
+  mainarrow/.style={-{Latex[length=3.0mm,width=2.0mm]}, draw=ink!85, line width=1.05pt},
+  softarrow/.style={-{Latex[length=2.4mm,width=1.55mm]}, draw=ink!55, line width=0.75pt},
+  audit/.style={draw=ink!42, dashed, line width=0.7pt},
+  dot/.style={circle, draw=ink!50, fill=paperbg, minimum size=2.6mm, inner sep=0pt},
+  icon/.style={circle, draw=white, line width=0.8pt, fill=ink!78, text=white, font=\scriptsize\bfseries, minimum size=5.6mm, inner sep=0pt}
+}
+
+\begin{document}
+\begin{tikzpicture}[base, x=1cm, y=1cm]
+\begin{scope}[on background layer]
+  \draw[panel, fill=bluegray!10] (-0.65,-0.72) rectangle (5.40,1.10);
+  \draw[panel, fill=sand!12] (5.72,-0.72) rectangle (11.45,1.10);
+  \draw[panel, fill=steel!10] (11.85,-0.72) rectangle (18.55,1.10);
+  \draw[panel, fill=clay!7] (7.60,1.58) rectangle (16.65,4.12);
+  \draw[panel, fill=mist!62] (1.20,-2.15) rectangle (17.40,-1.18);
+\end{scope}
+
+\node[label, anchor=west] at (-0.35,0.86) {候选边界};
+\node[label, anchor=west] at (6.05,0.86) {单智能体主路径};
+\node[label, anchor=west] at (12.15,0.86) {输出与落点};
+\node[label, anchor=west] at (7.85,3.88) {职责化协作复核慢路径};
+\node[label, anchor=west] at (1.45,-1.34) {过程记录轨迹};
+
+\node[maincard, fill=bluegray!22] (input) at (0.80,0) {请求输入\\$q,m$};
+\node[maincard, fill=bluegray!22] (candidate) at (3.90,0) {候选构造\\$E(x), C(x)$};
+\node[maincard, fill=sand!24] (semantic) at (7.10,0) {结构化语义路由\\主能力与相关能力};
+\node[diamond, draw=ink!80, fill=paperbg, line width=0.85pt, aspect=2.0, align=center, inner sep=1.7pt] (gate) at (10.05,0) {是否\\复核};
+\node[maincard, fill=steel!18] (route) at (14.00,0) {最终路由\\$(\hat y,\hat R)$};
+\node[maincard, fill=bluegray!18] (endpoint) at (17.15,0) {执行落点\\$\hat a(\hat y)$};
+
+\foreach \n/\c/\t in {input/bluegray!70/问,candidate/bluegray!70/候,semantic/sand!75/语,route/steel!72/路,endpoint/bluegray!70/执} {
+  \node[icon, fill=\c] at ($(\n.north west)+(0.34,-0.30)$) {\t};
+}
+
+\node[rolecircle, fill=bluegray!22] (role1) at (8.75,3.08) {任务\\匹配};
+\node[rolecircle, fill=clay!17] (role2) at (10.40,3.08) {风险\\治理};
+\node[rolecircle, fill=sand!24] (role3) at (12.05,3.08) {层级\\解析};
+\node[rolecircle, fill=steel!18] (role4) at (13.70,3.08) {偏好\\拆分};
+\node[smallcard, fill=clay!13, text width=2.18cm] (merge) at (10.65,2.02) {角色提案聚合};
+\node[smallcard, fill=clay!18, text width=2.18cm] (auth) at (13.60,2.02) {改判授权控制};
+
+\draw[mainarrow] (input) -- (candidate);
+\draw[mainarrow] (candidate) -- (semantic);
+\draw[mainarrow] (semantic) -- (gate);
+\draw[mainarrow] (gate) -- node[above, font=\footnotesize]{保留直接结果} (route);
+\draw[mainarrow] (route) -- (endpoint);
+
+\draw[softarrow] (gate.north) -- ++(0,1.08) -| (merge.west);
+\draw[softarrow] (merge.east) -- (auth.west);
+\draw[softarrow] (auth.south) -- ++(0,-0.95) -| (route.north);
+
+\draw[audit] (1.85,-1.62) -- (16.85,-1.62);
+\foreach \x in {1.85,4.55,7.30,10.05,14.00,17.15} {
+  \node[dot] at (\x,-1.62) {};
+}
+\node[font=\footnotesize, text=ink!82] at (9.25,-1.92) {候选快照 \quad 语义摘要 \quad 复核提案 \quad 授权依据 \quad 执行落点};
+\end{tikzpicture}
+\end{document}

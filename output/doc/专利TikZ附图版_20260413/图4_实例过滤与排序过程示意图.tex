@@ -1,0 +1,19 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{tikz_patent_styles.tex}
+\begin{document}
+\begin{tikzpicture}[patent diagram, node distance=12mm and 12mm]
+  \node[patent small] (snap) {注册快照};
+  \node[patent wide, right=14mm of snap] (filter) {实例候选过滤\\按主能力地址、状态、端点和兼容性};
+  \node[patent wide, right=14mm of filter] (score) {实例综合评分\\匹配度、健康度和公平度};
+  \node[patent small, right=14mm of score] (sort) {实例排序};
+  \node[patent wide, right=14mm of sort] (target) {目标实例地址\\与调用端点};
+
+  \node[patent frame, fit=(snap)(filter), label={[anchor=west]north west:过滤阶段}] (frameF) {};
+  \node[patent frame, fit=(score)(sort), label={[anchor=west]north west:评分与排序阶段}] (frameS) {};
+
+  \draw[patent arrow] (snap) -- (filter);
+  \draw[patent arrow] (filter) -- (score);
+  \draw[patent arrow] (score) -- (sort);
+  \draw[patent arrow] (sort) -- (target);
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,32 @@
+\documentclass[tikz,border=14pt]{standalone}
+\input{tikz_patent_styles.tex}
+\begin{document}
+\begin{tikzpicture}[patent diagram, node distance=12mm and 18mm]
+  \node[patent mid] (user) {用户请求};
+  \node[anchor=south, font=\bfseries] at ($(user.north)+(0,3mm)$) {输入};
+
+  \node[patent small, right=24mm of user] (ns) {预设命名空间};
+  \node[patent small, right=10mm of ns] (recall) {候选召回};
+  \node[patent mid, right=10mm of recall] (judge) {路由裁决};
+  \node[patent small, right=10mm of judge] (override) {覆盖控制};
+  \node[patent frame, fit=(ns)(recall)(judge)(override), inner sep=10pt] (routebox) {};
+  \node[anchor=south, font=\bfseries] at ($(routebox.north)+(0,3mm)$) {语义能力路由层};
+
+  \node[patent box, text width=40mm, right=26mm of routebox] (semantic) {最终主能力地址\\最终相关能力地址};
+  \node[anchor=south, font=\bfseries] at ($(semantic.north)+(0,3mm)$) {语义地址输出};
+
+  \node[patent box, text width=40mm, below=12mm of semantic] (exec) {注册快照、候选过滤\\综合评分与排序};
+  \node[anchor=south, font=\bfseries] at ($(exec.north)+(0,3mm)$) {实例执行};
+
+  \node[patent box, text width=40mm, below=12mm of exec] (trace) {结构化决策轨迹};
+  \node[anchor=south, font=\bfseries] at ($(trace.north)+(0,3mm)$) {结构化轨迹};
+
+  \draw[patent arrow] (user) -- (ns);
+  \draw[patent arrow] (ns) -- (recall);
+  \draw[patent arrow] (recall) -- (judge);
+  \draw[patent arrow] (judge) -- (override);
+  \draw[patent arrow] (routebox.east) -- (semantic.west);
+  \draw[patent arrow] (semantic.south) -- (exec.north);
+  \draw[patent arrow] (exec.south) -- (trace.north);
+\end{tikzpicture}
+\end{document}

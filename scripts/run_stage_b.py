@@ -13,6 +13,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from agentdns_routing.namespace import NamespaceResolver
+from agentdns_routing.related_v2 import make_related_llm_client
 from agentdns_routing.stage_a_eval import validate_traces
 from agentdns_routing.stage_b_consensus import (
     StageBConfig,
@@ -37,6 +38,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--prompt-version", default=StageBConfig().prompt_version)
     parser.add_argument("--provider", choices=["deterministic", "deepseek", "openai"], default="deepseek")
     parser.add_argument("--model", default=None, help="Stage B LLM model name.")
+    parser.add_argument(
+        "--related-provider",
+        choices=["none", "deepseek", "openai"],
+        default="none",
+        help="Optional related_v2 LLM provider. Default preserves deterministic related_v2 review.",
+    )
+    parser.add_argument("--related-model", default=None, help="Optional related_v2 LLM model name.")
     parser.add_argument(
         "--collaboration-mode",
         choices=["single", "homogeneous", "heterogeneous"],
@@ -68,6 +76,9 @@ def main() -> None:
         include_semantic_handoff=not args.no_semantic_handoff,
     )
     client = None if args.provider == "deterministic" else make_stage_b_llm_client(args.provider, args.model)
+    related_client = None
+    if args.related_provider != "none":
+        related_client = make_related_llm_client(args.related_provider, args.related_model)
 
     traces: list[dict] = []
     split_name = Path(args.input).stem
@@ -78,7 +89,16 @@ def main() -> None:
         trace = trace_by_sample_id.get(sample["id"])
         if not trace:
             raise KeyError(f"Missing Stage A trace for sample_id={sample['id']}")
-        traces.append(build_stage_b_trace(sample=sample, trace=trace, resolver=resolver, config=config, client=client))
+        traces.append(
+            build_stage_b_trace(
+                sample=sample,
+                trace=trace,
+                resolver=resolver,
+                config=config,
+                client=client,
+                related_client=related_client,
+            )
+        )
         if args.progress_every > 0 and idx % args.progress_every == 0:
             print(
                 json.dumps(
@@ -110,6 +130,8 @@ def main() -> None:
     summary["trace_input_path"] = args.traces
     summary["provider"] = client.provider if client else "deterministic"
     summary["model"] = client.model if client else config.deterministic_decision_mode
+    summary["related_provider"] = related_client.provider if related_client else "deterministic"
+    summary["related_model"] = related_client.model if related_client else "related_v2_deterministic"
     summary["collaboration_mode"] = config.collaboration_mode
     summary["semantic_handoff_enabled"] = bool(config.include_semantic_handoff)
     if config.collaboration_mode in {"single", "homogeneous"}:

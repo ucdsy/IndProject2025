@@ -1,0 +1,50 @@
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,matrix}
+
+\tikzset{
+  patent diagram/.style={
+    font=\small,
+    >={Latex[length=2.1mm]},
+    line cap=round,
+    line join=round
+  },
+  patent box/.style={
+    draw=black,
+    rectangle,
+    line width=0.9pt,
+    align=center,
+    inner sep=6pt,
+    minimum height=10mm,
+    text width=34mm
+  },
+  patent wide/.style={
+    patent box,
+    minimum width=34mm
+  },
+  patent mid/.style={
+    patent box,
+    minimum width=27mm,
+    text width=28mm
+  },
+  patent small/.style={
+    patent box,
+    minimum width=22mm,
+    text width=24mm
+  },
+  patent frame/.style={
+    draw=black,
+    rectangle,
+    line width=0.9pt,
+    inner sep=8pt
+  },
+  patent arrow/.style={
+    ->,
+    draw=black,
+    line width=0.85pt
+  },
+  patent dashed/.style={
+    patent arrow,
+    dashed
+  }
+}

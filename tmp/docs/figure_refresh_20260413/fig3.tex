@@ -1,0 +1,44 @@
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{ctex}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\tikzset{
+box/.style={draw, rectangle, minimum height=12mm, align=center, inner xsep=6mm, inner ysep=3mm, line width=1pt, font=\bfseries\Large},
+smallbox/.style={draw, rectangle, minimum height=11mm, align=center, inner xsep=5mm, inner ysep=2.5mm, line width=1pt, font=\bfseries\large},
+container/.style={draw, rectangle, inner sep=7mm, line width=1pt},
+flow/.style={-Latex, line width=1pt},
+plain/.style={line width=1pt}
+}
+\begin{document}
+\begin{tikzpicture}[node distance=10mm and 10mm]
+\node[font=\bfseries\fontsize{22}{24}\selectfont] (title) at (0,0) {图3};
+\node[box, below=9mm of title, minimum width=50mm] (fast) {快路径裁决结果};
+\node[box, right=16mm of fast, minimum width=50mm] (handoff) {语义交接信息};
+\node[box, right=16mm of handoff, minimum width=56mm] (view) {候选视图构造};
+\draw[flow] (fast) -- (handoff);
+\draw[flow] (handoff) -- (view);
+
+\node[smallbox, below=26mm of view, xshift=-42mm, minimum width=38mm] (expert) {领域专家角色};
+\node[smallbox, right=10mm of expert, minimum width=38mm] (risk) {治理风险角色};
+\node[smallbox, below=10mm of expert, minimum width=38mm] (hier) {层级解析角色};
+\node[smallbox, right=10mm of hier, minimum width=38mm] (pref) {用户偏好角色};
+\node[container, fit=(expert)(risk)(hier)(pref), label={[font=\bfseries\large]above:角色分析单元}] (rolegrp) {};
+\coordinate (rfeed) at ($(rolegrp.north)+(0,9mm)$);
+\draw[plain] (view.south) -- ++(0,-8mm) -| (rfeed);
+\draw[flow] (rfeed) -- (rolegrp.north);
+
+\node[box, below=18mm of rolegrp, minimum width=110mm] (agg) {角色提案和角色信号聚合};
+\draw[flow] (rolegrp.south) -- (agg.north);
+
+\node[box, below=16mm of agg, minimum width=54mm] (cover) {覆盖控制单元};
+\draw[flow] (agg) -- (cover);
+
+\coordinate (split) at ($(cover.south)+(0,-10mm)$);
+\node[box, below left=18mm and 24mm of cover, minimum width=54mm] (main) {最终主能力地址};
+\node[box, below right=18mm and 24mm of cover, minimum width=54mm] (rel) {最终相关能力地址};
+\draw[plain] (cover.south) -- (split);
+\draw[plain] (split) -| ($(main.north)+(0,7mm)$);
+\draw[plain] (split) -| ($(rel.north)+(0,7mm)$);
+\draw[flow] ($(main.north)+(0,7mm)$) -- (main.north);
+\draw[flow] ($(rel.north)+(0,7mm)$) -- (rel.north);
+\end{tikzpicture}
+\end{document}

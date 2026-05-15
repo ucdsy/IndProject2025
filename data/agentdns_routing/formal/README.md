@@ -29,6 +29,10 @@
 - `holdout3_labels.jsonl`
   - 对应 holdout3 的标签文件
   - 算法版本冻结前禁读，只允许单次 join
+- `multi_intent_eval_v1.jsonl`
+  - 独立的多意图集合路由评测集
+  - 使用 `gold_intent_fqdns` 表示 query 中所有应触发的能力集合
+  - 不参与当前冻结主实验 train/test 或 formal primary-routing split
 
 ## 2. 治理文件
 - `manifest.json`
@@ -37,6 +41,8 @@
   - `holdout2` 的版本、目标配额、当前统计与揭盲协议
 - `holdout3_manifest.json`
   - `holdout3` 的版本、三层分布目标、当前统计与揭盲协议
+- `multi_intent_eval_v1_manifest.json`
+  - 多意图集合评测集的版本、集合指标、标注原则与当前统计
 - `family_ledger.csv`
   - family 台账
   - 用于 split 泄漏检查、场景桶统计、family 粒度治理
@@ -49,6 +55,8 @@
   - `holdout3` 的 base coverage 与三层分布覆盖状态
 - `holdout3_skeleton_audit.csv`
   - `holdout3` 的 skeleton 审核结果与近邻旧 family 审计记录
+- `multi_intent_eval_v1_coverage.csv`
+  - 多意图集合评测集的 gold FQDN 覆盖与意图数量桶覆盖状态
 
 ## 3. 校验方式
 运行：
@@ -56,6 +64,7 @@
 python3 scripts/validate_formal_dataset.py
 python3 scripts/validate_holdout2_dataset.py
 python3 scripts/validate_holdout3_dataset.py
+python3 scripts/validate_multi_intent_eval_v1.py
 ```
 
 输出：
@@ -63,12 +72,14 @@ python3 scripts/validate_holdout3_dataset.py
 - `artifacts/dataset/formal_coverage_status.csv`
 - `artifacts/dataset/holdout2_validation_report.json`
 - `artifacts/dataset/holdout3_validation_report.json`
+- `artifacts/dataset/multi_intent_eval_v1_validation_report.json`
 
 ## 4. 当前纪律
 - 不能把 `bootstrap_seed` 混进正式主表
 - 不能读取 `blind_labels.jsonl` / `challenge_labels.jsonl` 后再回改算法并继续宣称“正式结果”
 - 不能读取 `holdout2_labels.jsonl` 后继续调参还宣称“正式 holdout 结论”
 - 不能读取 `holdout3_labels.jsonl` 后继续调参还宣称“正式 fresh validation 结论”
+- 不能把 `multi_intent_eval_v1.jsonl` 的集合标签混回当前单一 `ground_truth_fqdn` 主实验集合
 - 如揭盲后继续调参，必须升版本
 
 ## 5. 当前状态（2026-03-06）
@@ -117,3 +128,22 @@ python3 scripts/validate_holdout3_dataset.py
   - `validator = ok=true, warnings=[]`
 - 最新校验结果见：
   - `artifacts/dataset/holdout3_validation_report.json`
+
+## 8. `multi_intent_eval_v1` 状态（2026-04-26）
+- `multi_intent_eval_v1_20260426` 已完成构建：
+  - `total=120`
+  - `single/double/triple/four_plus = 20/60/32/8`
+  - `multi_intent_samples=100`
+  - `distinct_gold_fqdn=25/25`
+  - `total_gold_mentions=268`
+- 当前用途：
+  - 独立评估 query 中多个真实任务意图的集合识别能力
+  - gold 字段为 `gold_intent_fqdns`
+  - 不强制区分 primary / related
+  - 推荐指标为 `Exact Set Accuracy`、`Set Precision`、`Set Recall`、`Set F1`
+- 当前约束：
+  - 与现有主实验/holdout 集合 query 文本无完全重复
+  - 与现有 formal/holdout family 无重叠
+  - `validator = ok=true, warnings=[]`
+- 最新校验结果见：
+  - `artifacts/dataset/multi_intent_eval_v1_validation_report.json`

@@ -1,0 +1,25 @@
+{
+  "labeled": false,
+  "stage_b_version": "stage_b_v3_20260331_hetero",
+  "prompt_version": "stage_b_prompt_v5_20260331",
+  "stage_a_version": "sa_llm_v2_20260323_uncertainty",
+  "stage_r_version": "sr_clean_v0_20260306",
+  "input_path": "tmp/multi_intent_eval_v1_b_shards_20260426/multi_intent_eval_v1_b_shard1_resume.jsonl",
+  "trace_input_path": "artifacts/routing_ab/multi_intent_eval_v1_deepseek_chat_v3_20260426/multi_intent_eval_v1.sa_llm_v2_20260323_uncertainty.jsonl",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "related_provider": "deepseek",
+  "related_model": "deepseek-chat",
+  "collaboration_mode": "heterogeneous",
+  "semantic_handoff_enabled": true,
+  "role_temperatures": {
+    "DomainExpert": 0.5,
+    "GovernanceRisk": 0.2,
+    "HierarchyResolver": 0.35,
+    "UserPreference": 0.7
+  },
+  "trace_validation": {
+    "valid": true,
+    "errors": []
+  }
+}

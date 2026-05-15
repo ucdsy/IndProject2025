@@ -1,0 +1,73 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "dataset_version": "multi_intent_eval_v1_20260426",
+  "namespace_version": "ns_v1_20260311",
+  "stats": {
+    "total_samples": 120,
+    "single_intent_samples": 20,
+    "multi_intent_samples": 100,
+    "intent_count_counts": {
+      "single": 20,
+      "double": 60,
+      "triple": 32,
+      "four_plus": 8
+    },
+    "domain_mix_counts": {
+      "travel_life": 34,
+      "enterprise_ops": 20,
+      "finance_commerce": 22,
+      "health_education": 20,
+      "governance": 24
+    },
+    "total_gold_mentions": 268,
+    "distinct_gold_fqdn": 25,
+    "max_gold_intents_per_sample": 4,
+    "gold_fqdn_counts": {
+      "activity.travel.cn": 7,
+      "budget.finance.cn": 10,
+      "clinic.health.cn": 8,
+      "compliance.security.cn": 17,
+      "coupon.commerce.cn": 8,
+      "course.education.cn": 9,
+      "docs.productivity.cn": 19,
+      "fitness.health.cn": 8,
+      "flight.travel.cn": 10,
+      "fraud.security.cn": 6,
+      "hotel.travel.cn": 12,
+      "invest.finance.cn": 4,
+      "invoice.finance.cn": 13,
+      "itinerary.travel.cn": 9,
+      "meeting.productivity.cn": 15,
+      "nutrition.health.cn": 8,
+      "permit.gov.cn": 7,
+      "policy.gov.cn": 15,
+      "price.commerce.cn": 10,
+      "restaurant.travel.cn": 10,
+      "risk.security.cn": 15,
+      "tax.finance.cn": 12,
+      "transport.travel.cn": 14,
+      "tutoring.education.cn": 8,
+      "weather.cn": 14
+    },
+    "gold_l1_counts": {
+      "commerce": 18,
+      "education": 17,
+      "finance": 39,
+      "gov": 22,
+      "health": 24,
+      "productivity": 34,
+      "security": 38,
+      "travel": 62,
+      "weather": 14
+    }
+  },
+  "checks": {
+    "schema_valid": true,
+    "query_text_disjoint": true,
+    "family_disjoint": true,
+    "coverage_csv_matches": true,
+    "manifest_stats_match": true
+  }
+}

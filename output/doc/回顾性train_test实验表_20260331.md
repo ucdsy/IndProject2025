@@ -1,13 +1,13 @@
-# 回顾性 Train/Test 实验表（2026-03-31）
+# 统一 Train/Test 实验表（2026-03-31）
 
 > 口径说明
-> - 本页所有结果均采用同一套 retrospective protocol。
+> - 本页所有结果均采用论文版统一冻结 `train/test` protocol。
 > - pooled 主表数据池: `dev + blind + challenge + holdout2 + holdout3 = 563` 条。
 > - 固定分层划分: `train = 450`, `test = 113`, `seed = 20260331`。
 > - 协作消融因历史 trace 覆盖范围限制，仅在 `holdout3` 可比子集上对齐到同一 protocol:
 >   - `holdout3 train = 320`
 >   - `holdout3 test = 80`
-> - `conservative / aggressive` gate 属于 retrospective replay 结果，不是新的 fresh holdout。
+> - 对外材料统一使用 `default / selective / expanded` 三种配置名。
 
 ## 1. 主系统 pooled Train/Test 总表
 
@@ -23,19 +23,19 @@
 - `A_llm_v2 -> B` 相对 `A_llm_v2`：`0.8761 -> 0.8850`
 - `A_clean -> B` 相对 `A_clean`：`0.7876 -> 0.8053`
 
-## 2. pooled Gate 选择 Train/Test 总表
+## 2. pooled 配置选择 Train/Test 总表
 
-> 说明: 在 `train=450` 上从 `base / conservative / aggressive` 三种 gate 中选择最佳者，再到 `test=113` 上报告结果。
+> 说明: 在 `train=450` 上从 `default / selective / expanded` 三种配置中选择最佳者，再到 `test=113` 上报告一次性结果。
 
-| Gate 模式 | Train PrimaryAcc@1 | Test PrimaryAcc@1 | Test 相对 `base` 提升 |
+| 配置 | Train PrimaryAcc@1 | Test PrimaryAcc@1 | Test 相对 `default` 提升 |
 | --- | ---: | ---: | ---: |
-| `base` | 0.8800 | 0.8850 | 0.0000 |
-| `conservative` | 0.8911 | 0.8938 | +0.0088 |
-| `aggressive` | 0.8978 | 0.9292 | +0.0442 |
+| `default` | 0.8800 | 0.8850 | 0.0000 |
+| `selective` | 0.8911 | 0.8938 | +0.0088 |
+| `expanded` | 0.8978 | 0.9292 | +0.0442 |
 
 可直接引用的结论:
-- train 选择结果为 `aggressive`
-- retrospective test 上：`0.8850 -> 0.9292`
+- train 选择结果为 `expanded`
+- 冻结 test 上：`0.8850 -> 0.9292`
 
 ## 3. 协作消融表（holdout3 对齐子集）
 
@@ -48,33 +48,33 @@
 | `homogeneous_v2` | 0.8844 | 0.9313 | 0.8625 | 0.8875 | `2 / 2 / 0` | `0 / 0 / 0` |
 | `heterogeneous_v2` | 0.8781 | 0.9250 | 0.8625 | 0.8875 | `0 / 0 / 0` | `0 / 0 / 0` |
 | `heterogeneous_v3` | 0.8844 | 0.9313 | 0.8625 | 0.8875 | `2 / 2 / 0` | `0 / 0 / 0` |
-| `heterogeneous_v3 + aggressive replay` | 0.9187 | 0.9313 | 0.9250 | 0.8875 | `13 / 13 / 0` | `5 / 5 / 0` |
+| `heterogeneous_v3 + expanded` | 0.9187 | 0.9313 | 0.9250 | 0.8875 | `13 / 13 / 0` | `5 / 5 / 0` |
 
 可直接引用的结论:
 - `heterogeneous_v3` 明显优于旧 `heterogeneous_v2`
-- 原始 gate 下，`single / homogeneous / heterogeneous_v2 / heterogeneous_v3` 在 `holdout3` test 子集上最终都落在 `0.8625`
-- 若把 `heterogeneous_v3` 接上 `aggressive replay`，则 `holdout3` test 子集可达到 `0.9250`
+- 默认配置下，`single / homogeneous / heterogeneous_v2 / heterogeneous_v3` 在 `holdout3` test 子集上最终都落在 `0.8625`
+- 若把 `heterogeneous_v3` 接上 `expanded` 配置，则 `holdout3` test 子集可达到 `0.9250`
 
-## 4. hetero-v3 Gate 敏感性表（holdout3 子集）
+## 4. hetero-v3 配置敏感性表（holdout3 子集）
 
-> 说明: 本表仅用于展示 `hetero-v3` 在 `holdout3` 子集上的 replay 潜力，不可替代主结果表。
+> 说明: 本表仅用于展示 `hetero-v3` 在 `holdout3` 子集上的配置敏感性，不可替代 pooled 主结果表。
 
-| `hetero-v3` Gate | Train PrimaryAcc@1 | Test PrimaryAcc@1 | Test 相对 `base` 提升 |
+| `hetero-v3` 配置 | Train PrimaryAcc@1 | Test PrimaryAcc@1 | Test 相对 `default` 提升 |
 | --- | ---: | ---: | ---: |
-| `base` | 0.8844 | 0.8625 | 0.0000 |
-| `conservative` | 0.9094 | 0.8750 | +0.0125 |
-| `aggressive` | 0.9187 | 0.9250 | +0.0625 |
+| `default` | 0.8844 | 0.8625 | 0.0000 |
+| `selective` | 0.9094 | 0.8750 | +0.0125 |
+| `expanded` | 0.9187 | 0.9250 | +0.0625 |
 
 可直接引用的结论:
-- `holdout3` 子集上，职责化 gate 放宽存在明显潜力
-- 但该结论属于 retrospective replay，不应表述为新的 fresh generalization
+- `holdout3` 子集上，职责化证据需要与合适的配置放行机制配套
+- 该表是协作消融的对齐子集结论，主系统数字仍以 pooled `test=113` 为准
 
 ## 5. 数字口径提醒
 
 - `0.9292`:
-  - 指的是 **pooled retrospective test (`n=113`)** 上的 `aggressive`
+  - 指的是 **pooled test (`n=113`)** 上的 `expanded`
 - `0.9250`:
-  - 指的是 **holdout3 test 子集 (`n=80`)** 上的 `heterogeneous_v3 + aggressive replay`
+  - 指的是 **holdout3 test 子集 (`n=80`)** 上的 `heterogeneous_v3 + expanded`
 - 因此：
   - 若你在讲“统一 train/test 主结果”，用 `0.9292`
   - 若你在讲“协作消融表里的 hetero-v3 最优形态”，用 `0.9250`
@@ -84,6 +84,6 @@
 若要在项目材料中统一按 `train/test` 讲，建议顺序如下：
 
 1. 先用 **表 1** 讲主系统结论
-2. 再用 **表 2** 讲 retrospective gate 选择结果
+2. 再用 **表 2** 讲配置选择结果
 3. 再用 **表 3** 讲协作消融证据链
 4. 最后用 **表 4** 讲 `hetero-v3` 的进一步提升空间

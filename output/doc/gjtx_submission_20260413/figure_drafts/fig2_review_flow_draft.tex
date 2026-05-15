@@ -1,0 +1,64 @@
+\documentclass[border=8pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shapes.geometric}
+
+\definecolor{paperbg}{HTML}{F8F6F1}
+\definecolor{ink}{HTML}{20242A}
+\definecolor{bluegray}{HTML}{A8B4C8}
+\definecolor{steel}{HTML}{6C8EAD}
+\definecolor{sand}{HTML}{D6A46A}
+\definecolor{clay}{HTML}{D96C4F}
+\definecolor{mist}{HTML}{EEF1F5}
+
+\tikzset{
+  base/.style={font=\small, line cap=round, line join=round, >={Latex[length=2.8mm,width=1.8mm]}},
+  card/.style={draw=ink!80, rounded corners=7pt, line width=0.8pt, fill=paperbg, align=center, inner sep=6pt, minimum height=1.02cm},
+  widecard/.style={card, text width=3.05cm},
+  role/.style={circle, draw=ink!72, line width=0.8pt, align=center, font=\footnotesize, text width=1.08cm, minimum size=1.28cm, inner sep=1pt},
+  panel/.style={draw=ink!10, rounded corners=12pt, line width=0.55pt, fill=mist!56},
+  label/.style={font=\bfseries\footnotesize, text=ink!70},
+  mainarrow/.style={-{Latex[length=3.0mm,width=2.0mm]}, draw=ink!85, line width=1.05pt},
+  brancharrow/.style={-{Latex[length=2.5mm,width=1.55mm]}, draw=ink!60, line width=0.8pt},
+  bypass/.style={-{Latex[length=2.4mm,width=1.45mm]}, draw=ink!48, line width=0.72pt, dashed}
+}
+
+\begin{document}
+\begin{tikzpicture}[base, x=1cm, y=1cm]
+\begin{scope}[on background layer]
+  \draw[panel, fill=bluegray!8] (-0.75,-1.14) rectangle (3.75,1.14);
+  \draw[panel, fill=clay!7] (4.50,-1.72) rectangle (9.05,1.72);
+  \draw[panel, fill=sand!9] (9.80,-1.18) rectangle (14.55,1.18);
+  \draw[panel, fill=steel!8] (15.20,-1.58) rectangle (22.60,1.58);
+\end{scope}
+
+\node[label, anchor=west] at (-0.45,0.86) {统一证据视图};
+\node[label, anchor=west] at (4.82,1.42) {职责化并行复核};
+\node[label, anchor=west] at (10.12,0.92) {聚合判断};
+\node[label, anchor=west] at (15.52,1.25) {定向复核与授权};
+
+\node[widecard, fill=mist] (evidence) at (1.50,0) {共享证据包\\$E(x),\,z_{\mathrm{sem}}(x),\,H(x)$};
+
+\node[role, fill=bluegray!23] (task) at (5.80,0.74) {任务\\匹配};
+\node[role, fill=clay!17] (risk) at (7.65,0.74) {风险\\治理};
+\node[role, fill=sand!25] (hier) at (5.80,-0.74) {层级\\解析};
+\node[role, fill=steel!18] (pref) at (7.65,-0.74) {偏好\\拆分};
+
+\node[widecard, fill=mist] (aggregate) at (11.20,0) {第 1 轮聚合\\角色提案与置信度};
+\node[diamond, draw=ink!80, fill=paperbg, line width=0.85pt, aspect=1.70, align=center, inner sep=1.7pt] (need) at (13.62,0) {需要\\二轮?};
+
+\node[widecard, fill=sand!22] (round2) at (16.55,0.72) {第 2 轮定向复核\\当前候选 vs. 挑战候选};
+\node[widecard, fill=clay!16] (auth) at (16.55,-0.72) {授权检查\\票数、增益、角色责任};
+\node[widecard, fill=steel!18] (output) at (20.55,0) {输出结果\\最终 $(\hat y,\hat R)$};
+
+\draw[mainarrow] (evidence.east) -- node[above, font=\footnotesize]{分发视图} (4.50,0);
+\draw[mainarrow] (9.05,0) -- node[above, font=\footnotesize]{汇总提案} (aggregate.west);
+\draw[mainarrow] (aggregate.east) -- (need.west);
+\draw[mainarrow] (need.north east) -- node[above, font=\footnotesize]{是} (round2.west);
+\draw[mainarrow] (need.south east) -- node[below, font=\footnotesize]{否} (auth.west);
+\draw[mainarrow] (round2.south) -- (auth.north);
+\draw[mainarrow] (auth.east) -- (output.west);
+\draw[bypass] (round2.east) -- (output.north west);
+
+\end{tikzpicture}
+\end{document}

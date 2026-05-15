@@ -1,0 +1,36 @@
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{ctex}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\tikzset{
+box/.style={draw, rectangle, minimum height=12mm, align=center, inner xsep=6mm, inner ysep=3mm, line width=1pt, font=\bfseries\Large},
+smallbox/.style={draw, rectangle, minimum height=11mm, align=center, inner xsep=5mm, inner ysep=2.5mm, line width=1pt, font=\bfseries\large},
+container/.style={draw, rectangle, inner sep=7mm, line width=1pt},
+flow/.style={-Latex, line width=1pt},
+plain/.style={line width=1pt}
+}
+\begin{document}
+\begin{tikzpicture}[node distance=8mm and 9mm]
+\node[font=\bfseries\fontsize{22}{24}\selectfont] (title) at (0,0) {图4};
+\node[box, below=9mm of title, minimum width=40mm] (snap) {智能体注册快照};
+\node[box, right=8mm of snap, minimum width=46mm] (match) {精确地址匹配过滤};
+\node[box, right=8mm of match, minimum width=40mm] (state) {实例状态过滤};
+\node[box, right=8mm of state, minimum width=40mm] (endpoint) {调用端点过滤};
+\node[box, right=8mm of endpoint, minimum width=30mm] (mode) {模式过滤};
+\foreach \a/\b in {snap/match,match/state,state/endpoint,endpoint/mode} {\draw[flow] (\a) -- (\b);} 
+
+\node[smallbox, below=24mm of match, xshift=-12mm, minimum width=42mm] (m1) {实例匹配度计算};
+\node[smallbox, right=10mm of m1, minimum width=32mm] (m2) {健康度计算};
+\node[smallbox, below=10mm of m1, minimum width=46mm] (m3) {实例曝光公平度计算};
+\node[smallbox, right=10mm of m3, minimum width=46mm] (m4) {提供方曝光公平度计算};
+\node[container, fit=(m1)(m2)(m3)(m4), label={[font=\bfseries\large]above:评分因子计算}] (metrics) {};
+\coordinate (mfeed) at ($(metrics.north)+(0,9mm)$);
+\draw[plain] (mode.south) -- ++(0,-8mm) -| (mfeed);
+\draw[flow] (mfeed) -- (metrics.north);
+
+\node[box, below=18mm of metrics, minimum width=70mm] (rank) {排序得分生成};
+\draw[flow] (metrics.south) -- (rank.north);
+
+\node[box, below=16mm of rank, minimum width=88mm] (out) {目标智能体实例地址及调用端点};
+\draw[flow] (rank) -- (out);
+\end{tikzpicture}
+\end{document}
