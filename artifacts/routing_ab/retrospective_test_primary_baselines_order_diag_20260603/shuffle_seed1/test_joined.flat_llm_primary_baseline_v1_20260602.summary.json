@@ -1,0 +1,18 @@
+{
+  "AcceptablePrimary@1": 0.9558,
+  "PrimaryAcc@1": 0.8938,
+  "acceptable_correct": 108,
+  "baseline_version": "flat_llm_primary_baseline_v1_20260602",
+  "candidate_limit": 10,
+  "candidate_order": "shuffle",
+  "candidate_shuffle_seed": 1,
+  "embedding_model": null,
+  "input_path": "artifacts/dataset/retrospective_stage_b_train_test_20260331/test_joined.jsonl",
+  "method": "flat_llm",
+  "model": "deepseek-chat",
+  "per_sample_path": "artifacts/routing_ab/retrospective_test_primary_baselines_order_diag_20260603/shuffle_seed1/test_joined.flat_llm_primary_baseline_v1_20260602.per_sample.jsonl",
+  "primary_correct": 101,
+  "provider": "deepseek",
+  "samples": 113,
+  "snapshot_path": "artifacts/stage_r_clean/retrospective_test_20260424_v4_flash/test_joined.sr_clean_v2_20260314_related2.jsonl"
+}

@@ -1,0 +1,1527 @@
+{
+  "labeled": true,
+  "samples": 125,
+  "stage_b_applied": 59,
+  "stage_b_changed_primary": 2,
+  "stage_b_fixed_primary": 1,
+  "stage_b_regressed_primary": 0,
+  "StageBPrimaryAcc@1": 0.808,
+  "StageBAcceptablePrimary@1": 0.808,
+  "StageBRelatedRecall": 0.0,
+  "StageBRelatedPrecision": 0.0,
+  "error_buckets": {
+    "OK": 62,
+    "decision_primary_miss": 21,
+    "decision_related_miss": 4,
+    "decision_related_overpredict": 35,
+    "stage_r_primary_miss": 3
+  },
+  "per_sample": [
+    {
+      "id": "hard_boundary_v1_000376",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000377",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [
+        "risk.security.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000378",
+      "ground_truth_fqdn": "risk.security.cn",
+      "stage_a_primary_fqdn": "risk.security.cn",
+      "stage_b_primary_fqdn": "risk.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000379",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000380",
+      "ground_truth_fqdn": "issue.invoice.finance.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000381",
+      "ground_truth_fqdn": "tax.finance.cn",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_primary_fqdn": "tax.finance.cn",
+      "stage_b_related_fqdns": [
+        "budget.finance.cn",
+        "reimburse.invoice.finance.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000382",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "stage_a_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000383",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000384",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000385",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000386",
+      "ground_truth_fqdn": "risk.security.cn",
+      "stage_a_primary_fqdn": "risk.security.cn",
+      "stage_b_primary_fqdn": "risk.security.cn",
+      "stage_b_related_fqdns": [
+        "compliance.security.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000387",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000388",
+      "ground_truth_fqdn": "issue.invoice.finance.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "stage_r_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000389",
+      "ground_truth_fqdn": "tax.finance.cn",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_primary_fqdn": "tax.finance.cn",
+      "stage_b_related_fqdns": [
+        "budget.finance.cn",
+        "invoice.finance.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000390",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "stage_a_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000391",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000392",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000393",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [
+        "risk.security.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000394",
+      "ground_truth_fqdn": "risk.security.cn",
+      "stage_a_primary_fqdn": "risk.security.cn",
+      "stage_b_primary_fqdn": "risk.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000395",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000396",
+      "ground_truth_fqdn": "issue.invoice.finance.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000397",
+      "ground_truth_fqdn": "tax.finance.cn",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_primary_fqdn": "tax.finance.cn",
+      "stage_b_related_fqdns": [
+        "budget.finance.cn",
+        "reimburse.invoice.finance.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000398",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "stage_a_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000399",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000400",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000401",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000402",
+      "ground_truth_fqdn": "risk.security.cn",
+      "stage_a_primary_fqdn": "risk.security.cn",
+      "stage_b_primary_fqdn": "risk.security.cn",
+      "stage_b_related_fqdns": [
+        "compliance.security.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000403",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000404",
+      "ground_truth_fqdn": "issue.invoice.finance.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "stage_r_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000405",
+      "ground_truth_fqdn": "tax.finance.cn",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_primary_fqdn": "tax.finance.cn",
+      "stage_b_related_fqdns": [
+        "invoice.finance.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000406",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "stage_a_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000407",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000408",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000409",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [
+        "risk.security.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000410",
+      "ground_truth_fqdn": "risk.security.cn",
+      "stage_a_primary_fqdn": "risk.security.cn",
+      "stage_b_primary_fqdn": "risk.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000411",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000412",
+      "ground_truth_fqdn": "issue.invoice.finance.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000413",
+      "ground_truth_fqdn": "tax.finance.cn",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_primary_fqdn": "tax.finance.cn",
+      "stage_b_related_fqdns": [
+        "budget.finance.cn",
+        "invoice.finance.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000414",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "stage_a_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000415",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000416",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000417",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000418",
+      "ground_truth_fqdn": "risk.security.cn",
+      "stage_a_primary_fqdn": "risk.security.cn",
+      "stage_b_primary_fqdn": "risk.security.cn",
+      "stage_b_related_fqdns": [
+        "compliance.security.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000419",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000420",
+      "ground_truth_fqdn": "issue.invoice.finance.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "stage_r_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000421",
+      "ground_truth_fqdn": "tax.finance.cn",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_primary_fqdn": "tax.finance.cn",
+      "stage_b_related_fqdns": [
+        "budget.finance.cn",
+        "invoice.finance.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000422",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "stage_a_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000423",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000424",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000425",
+      "ground_truth_fqdn": "compliance.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [
+        "risk.security.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000426",
+      "ground_truth_fqdn": "risk.security.cn",
+      "stage_a_primary_fqdn": "risk.security.cn",
+      "stage_b_primary_fqdn": "risk.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000427",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000428",
+      "ground_truth_fqdn": "issue.invoice.finance.cn",
+      "stage_a_primary_fqdn": "compliance.security.cn",
+      "stage_b_primary_fqdn": "compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000429",
+      "ground_truth_fqdn": "tax.finance.cn",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_primary_fqdn": "tax.finance.cn",
+      "stage_b_related_fqdns": [
+        "budget.finance.cn",
+        "invoice.finance.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000430",
+      "ground_truth_fqdn": "transaction.compliance.security.cn",
+      "stage_a_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_primary_fqdn": "transaction.compliance.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000431",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "fraud.security.cn",
+      "stage_b_primary_fqdn": "fraud.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000432",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000433",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000434",
+      "ground_truth_fqdn": "price.commerce.cn",
+      "stage_a_primary_fqdn": "price.commerce.cn",
+      "stage_b_primary_fqdn": "price.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000435",
+      "ground_truth_fqdn": "coupon.commerce.cn",
+      "stage_a_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000436",
+      "ground_truth_fqdn": "course.education.cn",
+      "stage_a_primary_fqdn": "course.education.cn",
+      "stage_b_primary_fqdn": "course.education.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000437",
+      "ground_truth_fqdn": "tutoring.education.cn",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_primary_fqdn": "tutoring.education.cn",
+      "stage_b_related_fqdns": [
+        "course.education.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000438",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000439",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000440",
+      "ground_truth_fqdn": "clinic.health.cn",
+      "stage_a_primary_fqdn": "clinic.health.cn",
+      "stage_b_primary_fqdn": "clinic.health.cn",
+      "stage_b_related_fqdns": [
+        "fitness.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000441",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "stage_a_primary_fqdn": "summary.meeting.productivity.cn",
+      "stage_b_primary_fqdn": "schedule.meeting.productivity.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": true,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000442",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "summary.meeting.productivity.cn",
+      "stage_b_primary_fqdn": "summary.meeting.productivity.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000443",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000444",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000445",
+      "ground_truth_fqdn": "price.commerce.cn",
+      "stage_a_primary_fqdn": "price.commerce.cn",
+      "stage_b_primary_fqdn": "price.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000446",
+      "ground_truth_fqdn": "coupon.commerce.cn",
+      "stage_a_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000447",
+      "ground_truth_fqdn": "course.education.cn",
+      "stage_a_primary_fqdn": "course.education.cn",
+      "stage_b_primary_fqdn": "course.education.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000448",
+      "ground_truth_fqdn": "tutoring.education.cn",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_primary_fqdn": "tutoring.education.cn",
+      "stage_b_related_fqdns": [
+        "course.education.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000449",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000450",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000451",
+      "ground_truth_fqdn": "clinic.health.cn",
+      "stage_a_primary_fqdn": "clinic.health.cn",
+      "stage_b_primary_fqdn": "clinic.health.cn",
+      "stage_b_related_fqdns": [
+        "fitness.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000452",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "stage_a_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_related_fqdns": [
+        "docs.productivity.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000453",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "fraud.security.cn",
+      "stage_b_primary_fqdn": "fraud.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000454",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000455",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000456",
+      "ground_truth_fqdn": "price.commerce.cn",
+      "stage_a_primary_fqdn": "price.commerce.cn",
+      "stage_b_primary_fqdn": "price.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000457",
+      "ground_truth_fqdn": "coupon.commerce.cn",
+      "stage_a_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000458",
+      "ground_truth_fqdn": "course.education.cn",
+      "stage_a_primary_fqdn": "course.education.cn",
+      "stage_b_primary_fqdn": "course.education.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000459",
+      "ground_truth_fqdn": "tutoring.education.cn",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_primary_fqdn": "tutoring.education.cn",
+      "stage_b_related_fqdns": [
+        "course.education.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000460",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000461",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000462",
+      "ground_truth_fqdn": "clinic.health.cn",
+      "stage_a_primary_fqdn": "clinic.health.cn",
+      "stage_b_primary_fqdn": "clinic.health.cn",
+      "stage_b_related_fqdns": [
+        "fitness.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000463",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "stage_a_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_related_fqdns": [
+        "docs.productivity.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000464",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "risk.security.cn",
+      "stage_b_primary_fqdn": "risk.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000465",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000466",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000467",
+      "ground_truth_fqdn": "price.commerce.cn",
+      "stage_a_primary_fqdn": "price.commerce.cn",
+      "stage_b_primary_fqdn": "price.commerce.cn",
+      "stage_b_related_fqdns": [
+        "coupon.commerce.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000468",
+      "ground_truth_fqdn": "coupon.commerce.cn",
+      "stage_a_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000469",
+      "ground_truth_fqdn": "course.education.cn",
+      "stage_a_primary_fqdn": "course.education.cn",
+      "stage_b_primary_fqdn": "course.education.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000470",
+      "ground_truth_fqdn": "tutoring.education.cn",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_primary_fqdn": "tutoring.education.cn",
+      "stage_b_related_fqdns": [
+        "course.education.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000471",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000472",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000473",
+      "ground_truth_fqdn": "clinic.health.cn",
+      "stage_a_primary_fqdn": "clinic.health.cn",
+      "stage_b_primary_fqdn": "clinic.health.cn",
+      "stage_b_related_fqdns": [
+        "fitness.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000474",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "stage_a_primary_fqdn": "docs.productivity.cn",
+      "stage_b_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": true,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000475",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "docs.productivity.cn",
+      "stage_b_primary_fqdn": "docs.productivity.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000476",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000477",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000478",
+      "ground_truth_fqdn": "price.commerce.cn",
+      "stage_a_primary_fqdn": "price.commerce.cn",
+      "stage_b_primary_fqdn": "price.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000479",
+      "ground_truth_fqdn": "coupon.commerce.cn",
+      "stage_a_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000480",
+      "ground_truth_fqdn": "course.education.cn",
+      "stage_a_primary_fqdn": "course.education.cn",
+      "stage_b_primary_fqdn": "course.education.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000481",
+      "ground_truth_fqdn": "tutoring.education.cn",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_primary_fqdn": "tutoring.education.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000482",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000483",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000484",
+      "ground_truth_fqdn": "clinic.health.cn",
+      "stage_a_primary_fqdn": "clinic.health.cn",
+      "stage_b_primary_fqdn": "clinic.health.cn",
+      "stage_b_related_fqdns": [
+        "fitness.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000485",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "stage_a_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_related_fqdns": [
+        "docs.productivity.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000486",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "fraud.security.cn",
+      "stage_b_primary_fqdn": "fraud.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000487",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000488",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000489",
+      "ground_truth_fqdn": "price.commerce.cn",
+      "stage_a_primary_fqdn": "price.commerce.cn",
+      "stage_b_primary_fqdn": "price.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000490",
+      "ground_truth_fqdn": "coupon.commerce.cn",
+      "stage_a_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_primary_fqdn": "coupon.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000491",
+      "ground_truth_fqdn": "course.education.cn",
+      "stage_a_primary_fqdn": "course.education.cn",
+      "stage_b_primary_fqdn": "course.education.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000492",
+      "ground_truth_fqdn": "tutoring.education.cn",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_primary_fqdn": "tutoring.education.cn",
+      "stage_b_related_fqdns": [
+        "course.education.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000493",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn"
+      ],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_primary_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000494",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_primary_fqdn": "fitness.health.cn",
+      "stage_b_related_fqdns": [
+        "clinic.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000495",
+      "ground_truth_fqdn": "clinic.health.cn",
+      "stage_a_primary_fqdn": "clinic.health.cn",
+      "stage_b_primary_fqdn": "clinic.health.cn",
+      "stage_b_related_fqdns": [
+        "fitness.health.cn",
+        "nutrition.health.cn"
+      ],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "decision_related_overpredict"
+    },
+    {
+      "id": "hard_boundary_v1_000496",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "stage_a_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000497",
+      "ground_truth_fqdn": "fraud.security.cn",
+      "stage_a_primary_fqdn": "fraud.security.cn",
+      "stage_b_primary_fqdn": "fraud.security.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": true,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_b",
+      "error_bucket": "decision_related_miss"
+    },
+    {
+      "id": "hard_boundary_v1_000498",
+      "ground_truth_fqdn": "policy.gov.cn",
+      "stage_a_primary_fqdn": "policy.gov.cn",
+      "stage_b_primary_fqdn": "policy.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000499",
+      "ground_truth_fqdn": "permit.gov.cn",
+      "stage_a_primary_fqdn": "permit.gov.cn",
+      "stage_b_primary_fqdn": "permit.gov.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    },
+    {
+      "id": "hard_boundary_v1_000500",
+      "ground_truth_fqdn": "price.commerce.cn",
+      "stage_a_primary_fqdn": "price.commerce.cn",
+      "stage_b_primary_fqdn": "price.commerce.cn",
+      "stage_b_related_fqdns": [],
+      "stage_b_applied": false,
+      "stage_b_changed_primary": false,
+      "final_decision_source": "stage_a_llm",
+      "error_bucket": "OK"
+    }
+  ],
+  "PrimaryAcc@1": 0.808,
+  "AcceptablePrimary@1": 0.808,
+  "RelatedRecall": 0.0,
+  "RelatedPrecision": 0.0,
+  "fast_path_rate": 0.528,
+  "slow_path_rate": 0.472,
+  "escalation_rate": 0.472,
+  "final_decision_source_counts": {
+    "stage_a_llm": 66,
+    "stage_b": 59
+  },
+  "stage_b_version": "stage_b_v3_20260331_hetero",
+  "prompt_version": "stage_b_prompt_v5_20260331",
+  "stage_a_version": "sa_llm_v2_20260323_uncertainty",
+  "stage_r_version": "sr_clean_v2_20260314_related2",
+  "input_path": "artifacts/dataset/hard_routing_boundary_v1_20260602/shards/hard_boundary_shard3.jsonl",
+  "trace_input_path": "artifacts/routing_ab/hard_routing_boundary_v1_stage_a_llm_20260602/shards/out3/hard_boundary_shard3.sa_llm_v2_20260323_uncertainty.jsonl",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "related_provider": "deterministic",
+  "related_model": "related_v2_deterministic",
+  "collaboration_mode": "heterogeneous",
+  "semantic_handoff_enabled": true,
+  "role_temperatures": {
+    "DomainExpert": 0.5,
+    "GovernanceRisk": 0.2,
+    "HierarchyResolver": 0.35,
+    "UserPreference": 0.7
+  },
+  "trace_validation": {
+    "valid": true,
+    "errors": []
+  }
+}

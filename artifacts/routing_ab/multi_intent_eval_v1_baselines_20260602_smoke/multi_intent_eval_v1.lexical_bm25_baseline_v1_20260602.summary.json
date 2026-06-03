@@ -1,0 +1,13 @@
+{
+  "method": "lexical_bm25",
+  "baseline_version": "lexical_bm25_baseline_v1_20260602",
+  "samples": 1,
+  "input_path": "data/agentdns_routing/formal/multi_intent_eval_v1.jsonl",
+  "snapshot_path": null,
+  "candidate_limit": 10,
+  "max_selected": 5,
+  "provider": null,
+  "model": null,
+  "embedding_model": null,
+  "avg_selected_size": 1.0
+}

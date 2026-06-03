@@ -6,9 +6,9 @@ import {
 } from "/Users/xizhuxizhu/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/@oai/artifact-tool/dist/artifact_tool.mjs";
 
 const INPUT =
-  "/Users/xizhuxizhu/Desktop/IndProj04/output/pptx/project_defense_20260426/项目评审答辩PPT_论文更新版_20260506.pptx";
+  "/Users/xizhuxizhu/Desktop/IndProj04/output/pptx/project_defense_20260426/项目评审答辩PPT_成果汇编口径版_20260524.pptx";
 const OUT_DIR =
-  "/Users/xizhuxizhu/Desktop/IndProj04/output/pptx/project_defense_20260426/paper_update_preview";
+  "/Users/xizhuxizhu/Desktop/IndProj04/output/pptx/project_defense_20260426/compilation_spine_preview";
 
 await fs.mkdir(OUT_DIR, { recursive: true });
 

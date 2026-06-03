@@ -1,0 +1,8 @@
+task mode: targeted-edit
+primary deck-profile: engineering-platform
+secondary gates: acceptance-defense, evidence-led technical review
+required proof objects: source slide images, task completion table, architecture diagrams, experiment result chart, prototype screenshot, output evidence pages
+source/asset requirements: preserve source deck claims and project evidence; improve hierarchy, spacing, title consistency, palette discipline, and proof-object framing
+brand constraints: use restrained CNNIC-style blue/white system; keep CNNIC mark visible; avoid decorative marketing-heavy treatment
+qa gates: slide count unchanged unless necessary; no source file overwrite; render previews; verify PPTX package integrity; verify key acceptance terms and metrics remain present
+known missing inputs: none

@@ -1,0 +1,13 @@
+{
+  "method": "flat_llm",
+  "baseline_version": "flat_llm_baseline_v1_20260602",
+  "samples": 120,
+  "input_path": "data/agentdns_routing/formal/multi_intent_eval_v1.jsonl",
+  "snapshot_path": "artifacts/stage_r_clean/multi_intent_eval_v1_deepseek_chat_v3_20260426/multi_intent_eval_v1.sr_clean_v0_20260306.jsonl",
+  "candidate_limit": 10,
+  "max_selected": 5,
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "embedding_model": null,
+  "avg_selected_size": 2.3083
+}

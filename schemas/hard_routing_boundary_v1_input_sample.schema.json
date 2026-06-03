@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdns.local/schemas/hard_routing_boundary_v1_input_sample.schema.json",
+  "title": "HardRoutingBoundaryV1InputSample",
+  "type": "object",
+  "required": [
+    "id",
+    "namespace_version",
+    "query",
+    "context",
+    "metadata",
+    "stress_slice",
+    "difficulty_tag",
+    "surface_style",
+    "paraphrase_group_id",
+    "variant_index"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^hard_boundary_v1_[0-9]{6}$"
+    },
+    "namespace_version": {
+      "type": "string",
+      "const": "ns_v1_20260311"
+    },
+    "query": {
+      "type": "string",
+      "minLength": 8
+    },
+    "context": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "dataset_version",
+        "stress_slice",
+        "primary_granularity"
+      ],
+      "properties": {
+        "dataset_version": {
+          "type": "string",
+          "const": "hard_routing_boundary_v1_20260602"
+        },
+        "stress_slice": {
+          "type": "string"
+        },
+        "primary_granularity": {
+          "type": "string",
+          "enum": [
+            "base",
+            "segment"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "stress_slice": {
+      "type": "string",
+      "enum": [
+        "low_rank_gold",
+        "parent_child_granularity",
+        "primary_secondary_conflict",
+        "cross_domain_overlap",
+        "high_risk_governance_tone",
+        "near_duplicate_descriptors"
+      ]
+    },
+    "difficulty_tag": {
+      "type": "string"
+    },
+    "surface_style": {
+      "type": "string",
+      "enum": [
+        "colloquial",
+        "formal",
+        "enterprise",
+        "compressed",
+        "indirect",
+        "mixed"
+      ]
+    },
+    "paraphrase_group_id": {
+      "type": "string",
+      "pattern": "^hard_boundary_v1_(?:low_rank_gold|parent_child_granularity|primary_secondary_conflict|cross_domain_overlap|high_risk_governance_tone|near_duplicate_descriptors)_[a-z0-9_]+$"
+    },
+    "variant_index": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    }
+  },
+  "additionalProperties": false
+}

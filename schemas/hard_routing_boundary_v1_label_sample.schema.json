@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentdns.local/schemas/hard_routing_boundary_v1_label_sample.schema.json",
+  "title": "HardRoutingBoundaryV1LabelSample",
+  "type": "object",
+  "required": [
+    "id",
+    "family_id",
+    "paraphrase_group_id",
+    "variant_index",
+    "ground_truth_fqdn",
+    "acceptable_fqdns",
+    "relevant_fqdns",
+    "stress_slice",
+    "expected_failure_mode",
+    "competing_fqdns",
+    "bucket_tags",
+    "primary_granularity",
+    "secondary_intent_present",
+    "high_risk_case",
+    "candidate_rank_probe",
+    "notes_for_audit"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^hard_boundary_v1_[0-9]{6}$"
+    },
+    "family_id": {
+      "type": "string",
+      "pattern": "^hard_boundary_v1_(?:low_rank_gold|parent_child_granularity|primary_secondary_conflict|cross_domain_overlap|high_risk_governance_tone|near_duplicate_descriptors)_[0-9]{6}_f01$"
+    },
+    "paraphrase_group_id": {
+      "type": "string",
+      "pattern": "^hard_boundary_v1_(?:low_rank_gold|parent_child_granularity|primary_secondary_conflict|cross_domain_overlap|high_risk_governance_tone|near_duplicate_descriptors)_[a-z0-9_]+$"
+    },
+    "variant_index": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    },
+    "ground_truth_fqdn": {
+      "type": "string"
+    },
+    "acceptable_fqdns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "relevant_fqdns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "stress_slice": {
+      "type": "string",
+      "enum": [
+        "low_rank_gold",
+        "parent_child_granularity",
+        "primary_secondary_conflict",
+        "cross_domain_overlap",
+        "high_risk_governance_tone",
+        "near_duplicate_descriptors"
+      ]
+    },
+    "expected_failure_mode": {
+      "type": "string"
+    },
+    "competing_fqdns": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "bucket_tags": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "primary_granularity": {
+      "type": "string",
+      "enum": [
+        "base",
+        "segment"
+      ]
+    },
+    "secondary_intent_present": {
+      "type": "boolean"
+    },
+    "high_risk_case": {
+      "type": "boolean"
+    },
+    "candidate_rank_probe": {
+      "type": "object",
+      "required": [
+        "stage_r_version",
+        "top_k",
+        "gold_rank",
+        "gold_in_top_k",
+        "head_fqdn"
+      ],
+      "properties": {
+        "stage_r_version": {
+          "type": "string"
+        },
+        "top_k": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "gold_rank": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "gold_in_top_k": {
+          "type": "boolean"
+        },
+        "head_fqdn": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "notes_for_audit": {
+      "type": "string",
+      "minLength": 8
+    }
+  },
+  "additionalProperties": false
+}

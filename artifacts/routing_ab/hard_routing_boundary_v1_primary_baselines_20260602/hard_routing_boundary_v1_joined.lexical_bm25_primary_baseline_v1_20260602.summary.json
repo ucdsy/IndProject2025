@@ -1,0 +1,16 @@
+{
+  "AcceptablePrimary@1": 0.536,
+  "PrimaryAcc@1": 0.506,
+  "acceptable_correct": 268,
+  "baseline_version": "lexical_bm25_primary_baseline_v1_20260602",
+  "candidate_limit": 10,
+  "embedding_model": null,
+  "input_path": "artifacts/dataset/hard_routing_boundary_v1_20260602/hard_routing_boundary_v1_joined.jsonl",
+  "method": "lexical_bm25",
+  "model": null,
+  "per_sample_path": "artifacts/routing_ab/hard_routing_boundary_v1_primary_baselines_20260602/hard_routing_boundary_v1_joined.lexical_bm25_primary_baseline_v1_20260602.per_sample.jsonl",
+  "primary_correct": 253,
+  "provider": null,
+  "samples": 500,
+  "snapshot_path": "artifacts/stage_r_clean/hard_routing_boundary_v1_20260602_top25/hard_routing_boundary_v1_joined.sr_clean_v2_20260314_related2.jsonl"
+}

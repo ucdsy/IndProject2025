@@ -1,0 +1,17 @@
+{
+  "AcceptablePrimary@1": 0.856,
+  "PrimaryAcc@1": 0.848,
+  "acceptable_correct": 428,
+  "baseline_version": "flat_llm_self_consistency_primary_baseline_v1_20260602",
+  "candidate_limit": 10,
+  "input_path": "artifacts/dataset/hard_routing_boundary_v1_20260602/hard_routing_boundary_v1_joined.jsonl",
+  "method": "flat_llm_self_consistency",
+  "model": "deepseek-chat",
+  "per_sample_path": "artifacts/routing_ab/hard_routing_boundary_v1_primary_baselines_20260602/hard_routing_boundary_v1_joined.flat_llm_self_consistency_primary_baseline_v1_20260602.per_sample.jsonl",
+  "primary_correct": 424,
+  "provider": "deepseek",
+  "samples": 500,
+  "self_consistency_samples": 3,
+  "self_consistency_temperature": 0.7,
+  "snapshot_path": "artifacts/stage_r_clean/hard_routing_boundary_v1_20260602_top25/hard_routing_boundary_v1_joined.sr_clean_v2_20260314_related2.jsonl"
+}

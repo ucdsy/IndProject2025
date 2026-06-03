@@ -1,4 +1,5 @@
 from copy import deepcopy
+import argparse
 from pathlib import Path
 import re
 
@@ -55,6 +56,26 @@ def insert_table_after(paragraph, rows, cols):
     table = paragraph._parent.add_table(rows=rows, cols=cols, width=Cm(16))
     paragraph._p.addnext(table._tbl)
     return table
+
+
+def insert_image_after(paragraph, image_path, caption):
+    caption_para = insert_paragraph_after(paragraph, caption)
+    set_paragraph_text(
+        caption_para,
+        caption,
+        size=10.5,
+        east_asia="宋体",
+        bold=False,
+        align=WD_ALIGN_PARAGRAPH.CENTER,
+    )
+    caption_para.paragraph_format.line_spacing = 1.0
+
+    image_para = insert_paragraph_after(paragraph)
+    image_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    image_para.paragraph_format.line_spacing = 1.0
+    run = image_para.add_run()
+    run.add_picture(str(image_path), width=Cm(15.2))
+    return image_para
 
 
 def set_table_borders(table):
@@ -150,6 +171,18 @@ def add_body_after(anchor, lines):
         if in_table:
             flush_table()
             in_table = False
+        image_match = re.match(r"^!\[(.+?)\]\((.+?)\)$", line)
+        if image_match:
+            caption = image_match.group(1).strip()
+            image_path = Path(image_match.group(2).strip())
+            if not image_path.is_absolute():
+                image_path = Path.cwd() / image_path
+            if image_path.exists():
+                insert_image_after(anchor, image_path, caption)
+            else:
+                para = insert_paragraph_after(anchor, f"{caption}（图片文件待补：{image_path}）")
+                set_paragraph_text(para, para.text, size=12, east_asia="宋体")
+            continue
         if line.startswith("### "):
             para = insert_paragraph_after(anchor, line[4:].strip())
             set_paragraph_text(para, line[4:].strip(), size=12, east_asia="黑体", bold=True)
@@ -180,7 +213,7 @@ def iter_all_paragraphs(doc):
 
 def fill_cover(doc, cover):
     replacements = {
-        "项目编号：": "项目编号：",
+        "项目编号：": f"项目编号：{cover.get('项目编号', '')}",
         "项目名称：": f"项目名称：{cover.get('项目名称', '')}",
         "项目类型：": f"项目类型：{cover.get('项目类型', '')}",
         "承研处/所：": f"承研处/所：{cover.get('承研处/所', '')}",
@@ -255,7 +288,7 @@ def build_fallback_template(cover):
         set_paragraph_text(p, text, size=size, east_asia=east_asia, bold=bold, align=align)
         return p
 
-    add_line("项目编号：", size=12)
+    add_line(f"项目编号：{cover.get('项目编号', '')}", size=12)
     for _ in range(5):
         add_line("")
     add_line("自立科研项目验收报告", size=18, east_asia="黑体", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
@@ -303,7 +336,12 @@ def build_fallback_template(cover):
 
 
 def main():
-    cover, sections = parse_markdown(INPUT_MD)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input-md", type=Path, default=INPUT_MD)
+    parser.add_argument("--output-docx", type=Path, default=OUTPUT_DOCX)
+    args = parser.parse_args()
+
+    cover, sections = parse_markdown(args.input_md)
     if TEMPLATE.exists():
         doc = Document(TEMPLATE)
         fill_cover(doc, cover)
@@ -313,9 +351,9 @@ def main():
     fill_sections(doc, sections)
     style_existing_headings(doc)
 
-    OUTPUT_DOCX.parent.mkdir(parents=True, exist_ok=True)
-    doc.save(OUTPUT_DOCX)
-    print(OUTPUT_DOCX)
+    args.output_docx.parent.mkdir(parents=True, exist_ok=True)
+    doc.save(args.output_docx)
+    print(args.output_docx)
 
 
 if __name__ == "__main__":

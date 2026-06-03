@@ -16,7 +16,7 @@ ROOT = Path("/Users/xizhuxizhu/Desktop/IndProj04")
 OUT_DIR = ROOT / "output/pptx/project_defense_20260426"
 ASSET_DIR = OUT_DIR / "scratch/assets"
 STRONG_ASSET_DIR = OUT_DIR / "scratch/strong_assets"
-OUTPUT = OUT_DIR / "项目评审答辩PPT_论文更新版_20260506.pptx"
+OUTPUT = OUT_DIR / "项目评审答辩PPT_成果汇编口径版_20260524.pptx"
 PAPER_DIR = ROOT / "output/doc/gjtx_submission_20260413"
 FIG_DIR = PAPER_DIR / "figures"
 
@@ -217,11 +217,11 @@ def blank(prs):
 def slide_cover(prs):
     s = blank(prs)
     add_picture(s, STRONG_ASSET_DIR / "cover_bg_deep.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_text(s, "重点项目验收答辩｜论文更新版", 0.72, 0.68, 3.25, 0.28, size=16, color="cyan", bold=True)
+    add_text(s, "重点项目验收答辩｜成果汇编口径版", 0.72, 0.68, 3.55, 0.28, size=16, color="cyan", bold=True)
     add_line(s, 0.72, 1.06, 1.72, "cyan", 3)
-    add_text(s, "面向受限能力命名空间的可信语义路由与职责化协作复核", 0.72, 1.48, 8.1, 0.92, size=32, color="white", bold=True)
-    add_text(s, "把智能体服务调用入口从“能找候选”推进到“候选内可判别、可复核、可审计”", 0.75, 2.72, 7.9, 0.35, size=16.5, color="cfe4ff")
-    metrics = [("563", "真实样本冻结集"), ("78.76→92.92%", "测试集主准确率"), ("44.25%", "默认协作触发率"), ("5/5/0", "改写/修正/回归")]
+    add_text(s, "面向互联网基础资源的大模型多智能体协作与可信认知标识技术研究", 0.72, 1.44, 8.4, 1.02, size=30, color="white", bold=True)
+    add_text(s, "以智能体能力命名与语义路由为典型验证场景，形成协作复核、可信留痕和原型验证闭环", 0.75, 2.72, 8.9, 0.35, size=15.8, color="cfe4ff")
+    metrics = [("563", "真实样本冻结集"), ("50/45", "节点/主标签"), ("44.25%", "默认协作触发率"), ("5/5/0", "改判/纠错/误改")]
     for i, (v, l) in enumerate(metrics):
         x = 0.78 + i * 2.18
         add_box(s, x, 4.25, 1.86, 0.76, fill="0b3c7c", line="4c96e8", alpha=16000)
@@ -235,14 +235,14 @@ def slide_cover(prs):
 def slide_verdict(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "论文主线：发现之后、执行之前，还有一个候选内语义判别层", "新版论文把项目创新落在智能体服务调用入口：受限能力命名空间内的可复核路由。", "01")
-    add_text(s, "核心判断", 0.72, 1.18, 1.5, 0.3, size=18, color="blue", bold=True)
-    add_text(s, "能力发现给出候选边界，工具执行依赖能力入口；真正难的是在固定候选集合内部完成主能力、相关能力与层级回落的稳定判别。", 0.72, 1.58, 10.15, 0.42, size=18, color="ink", bold=True)
+    add_title(s, "成果汇编主线：从研究目标到验收证据的闭环", "PPT 按成果汇编重排：研究背景、研究重点、研究成果、研究产出、考核对应和成果边界一线贯通。", "01")
+    add_text(s, "答辩判断", 0.72, 1.18, 1.5, 0.3, size=18, color="blue", bold=True)
+    add_text(s, "用成果汇编做母本，技术报告负责机制深度，论文负责实验硬证据，PPT 负责把“已完成什么、为什么有技术含量、凭什么可验收”讲清楚。", 0.72, 1.58, 10.85, 0.42, size=17.2, color="ink", bold=True)
     steps = [
-        ("发现 / 注册", "形成候选能力集合", "C(x)"),
-        ("语义路由", "主能力 + 相关能力 + 可接受回落", "ŷ, R̂"),
-        ("协作复核", "低置信 / 高风险 / 多意图样本", "Stage B"),
-        ("执行落点", "能力地址精确映射到 agent 实例", "â"),
+        ("研究目标", "能力命名、语义路由、协作复核、可信记录", "G"),
+        ("研究成果", "命名空间、算法、原型、实验资产", "R"),
+        ("成果产出", "原型、报告、论文、专利、数据实验", "O"),
+        ("考核对应", "任务书指标逐项落到证明材料", "A"),
     ]
     for i, (t, b, tag) in enumerate(steps):
         x = 0.78 + i * 3.05
@@ -254,10 +254,10 @@ def slide_verdict(prs):
         if i < 3:
             add_line(s, x + 2.62, 3.05, 0.34, "blue2", 2.0)
     cards = [
-        ("候选内约束", "所有主能力和相关能力输出必须来自当前候选集合，避免候选外发明。", "blue"),
-        ("结构化证据", "LLM 不是自由回答，而是输出 decision packet、置信、margin、冲突摘要。", "green"),
-        ("授权改判", "多角色复核只有满足票数、分数增益和显式证据门槛时才允许改判。", "orange2"),
-        ("过程轨迹", "候选快照、直接路由、升级原因、角色提案和最终落点进入统一 trace。", "purple"),
+        ("原型系统", "自然语言请求、候选组织、结构化裁决、协作复核、过程记录和执行映射。", "blue"),
+        ("数据实验", "563 样本、50 节点、45 主标签、冻结 train/test、配对消融和稳定性分析。", "green"),
+        ("论文报告", "技术报告承接任务书，论文提供问题定义、方法机制和实验验证。", "orange2"),
+        ("专利材料", "交底书、权利要求、说明书摘要和附图已形成，正式状态待补证明。", "purple"),
     ]
     for i, (t, b, col) in enumerate(cards):
         x = 0.82 + (i % 2) * 5.9
@@ -274,11 +274,11 @@ def slide_agenda(prs):
     add_text(s, "答辩提纲", 0.72, 0.72, 2.2, 0.48, size=30, color="white", bold=True)
     add_line(s, 0.74, 1.32, 1.6, "cyan", 3)
     items = [
-        ("一", "问题定位", "能力发现与工具执行之间的接口层难题"),
-        ("二", "算法路线", "候选内判别、结构化裁决、职责化复核"),
-        ("三", "工程实现", "Stage R/A/B/C、trace contract 与执行落点"),
-        ("四", "实验验证", "563 样本、冻结协议、累计稳定性与消融"),
-        ("五", "成果验收", "报告、论文、专利、宣传与后续工作"),
+        ("一", "研究背景与目标", "互联网基础资源智能化演进下的能力组织与可信调用问题"),
+        ("二", "研究重点与路线", "能力命名、结构化判别、职责化复核、过程留痕"),
+        ("三", "研究成果与验证", "原型系统、数据资产、算法结果、协作过程和典型案例"),
+        ("四", "成果产出与考核", "报告、论文、专利、实验资产、展示材料逐项对应任务书"),
+        ("五", "成果边界与后续", "明确原型边界、待补证明和后续深化方向"),
     ]
     for i, (n, t, b) in enumerate(items):
         y = 1.75 + i * 0.88
@@ -286,7 +286,7 @@ def slide_agenda(prs):
         add_text(s, n, 1.0, y + 0.06, 0.34, 0.18, size=9, color="navy", bold=True, align="center", valign="middle")
         add_text(s, t, 1.58, y - 0.03, 2.1, 0.28, size=17, color="white", bold=True)
         add_text(s, b, 3.7, y, 5.8, 0.24, size=11.5, color="d2e6ff")
-    add_text(s, "主线：以最新论文为骨架，把“最难点”讲成问题定义、算法约束、实验结论和工程证据。", 0.78, 6.52, 8.8, 0.3, size=14, color="d2e6ff", bold=True)
+    add_text(s, "主线：成果汇编管总，技术报告讲机制，论文给指标，PPT 把验收证据链讲成一条线。", 0.78, 6.52, 8.8, 0.3, size=14, color="d2e6ff", bold=True)
 
 
 def slide_background(prs):
@@ -402,7 +402,7 @@ def slide_review_architecture(prs):
 def slide_stage_r(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "Stage R 技术剖面：descriptor-only 候选召回与冻结快照", "技术难点在于既要高覆盖召回，又不能引入样例泄漏；候选边界必须可复核、可归因。", "07")
+    add_title(s, "研究成果一（2/2）：能力命名空间与候选边界", "成果汇编中的第一类研究成果：形成受控能力目录、候选召回和冻结快照，避免候选外发明。", "09")
     add_box(s, 0.75, 1.26, 5.45, 4.15, fill="071a46", line="1e83e6")
     add_text(s, "候选召回规则", 1.05, 1.55, 1.8, 0.24, size=17, color="white", bold=True)
     add_text(
@@ -442,13 +442,13 @@ def slide_stage_r(prs):
         add_text(s, score, 8.98, y, 0.55, 0.15, size=8.7, color="muted", font="Arial")
         add_text(s, phrase, 9.68, y, 1.5, 0.15, size=8.7, color="muted")
     add_text(s, "技术价值：后续所有裁决都在冻结候选集合内进行，错误类型可以被精确拆分。", 0.92, 6.18, 9.5, 0.24, size=13.5, color="ink", bold=True)
-    add_footer(s, 9)
+    add_footer(s, 11)
 
 
 def slide_stage_a(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "Stage A 技术剖面：把 LLM 输出校准为候选级 decision packet", "技术难点不是让模型多解释，而是把模型判断压缩成可计算、可升级、可复核的结构化字段。", "08")
+    add_title(s, "研究成果二：结构化语义路由算法", "成果汇编中的第二类研究成果：在固定候选集合内完成主能力、相关能力和竞争候选说明。", "10")
     add_box(s, 0.72, 1.22, 5.65, 2.05, fill="071a46", line="1e83e6")
     add_text(s, "主能力评分融合", 1.02, 1.5, 1.8, 0.24, size=16, color="white", bold=True)
     add_text(
@@ -486,13 +486,13 @@ def slide_stage_a(prs):
     for i, f in enumerate(cards):
         add_text(s, f, 7.12 + (i % 2) * 2.3, 4.38 + (i // 2) * 0.26, 2.0, 0.16, size=8.9, color="ink", font="Arial")
     add_text(s, "技术价值：模型输出不作为最终答案直出，而被转成可计算分数、升级理由和可审计证据包。", 0.92, 6.18, 10.0, 0.24, size=13.4, color="ink", bold=True)
-    add_footer(s, 10)
+    add_footer(s, 12)
 
 
 def slide_stage_b(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "Stage B 技术剖面：候选内复核、角色分视图与授权改判", "技术难点在于让多智能体产生有效纠错，同时防止候选外发明、无约束改判和高风险回归。", "09")
+    add_title(s, "研究成果三：职责化协作复核与授权改判", "成果汇编中的第三类研究成果：低置信、高风险、多意图和层级竞争样本进入多角色复核。", "12")
     add_box(s, 0.7, 1.18, 3.55, 4.4, fill="071a46", line="1e83e6")
     add_text(s, "角色不是摆设", 1.0, 1.48, 1.65, 0.24, size=16, color="white", bold=True)
     roles = [("DomainExpert", "core_task_match"), ("GovernanceRisk", "risk_boundary_check"), ("HierarchyResolver", "hierarchy_granularity"), ("UserPreference", "primary_secondary_split")]
@@ -538,13 +538,13 @@ def slide_stage_b(prs):
     for i, f in enumerate(trace_fields):
         add_text(s, f, 8.9, 3.02 + i * 0.28, 2.2, 0.15, size=8.8, color="muted", font="Arial")
     add_text(s, "技术价值：慢路径不是“再问一遍模型”，而是带门禁的候选内复核器。", 0.92, 6.18, 8.8, 0.24, size=13.5, color="ink", bold=True)
-    add_footer(s, 11)
+    add_footer(s, 14)
 
 
 def slide_trace(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "Trace 样例：一次请求如何从误判走到可审计改判", "展示对象：holdout3_000213；trace 不贴原始 JSON，而提炼为候选、裁决、复核、授权和最终落点。", "10")
+    add_title(s, "研究成果四：可信过程轨迹可回放", "成果汇编中的第四类研究成果：候选快照、结构化裁决、角色提案、授权判断和最终落点均可追溯。", "16")
 
     add_box(s, 0.68, 1.2, 3.75, 5.28, fill="071a46", line="1e83e6")
     add_text(s, "用户请求", 0.98, 1.48, 1.1, 0.24, size=16, color="white", bold=True)
@@ -608,13 +608,13 @@ def slide_trace(prs):
         color="muted",
         font="Arial",
     )
-    add_footer(s, 12)
+    add_footer(s, 18)
 
 
 def slide_code(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "工程实现：研究链路已经沉淀为可运行模块和测试用例", "这一页回应评审对系统落地、代码实现和测试支撑的关注。", "11")
+    add_title(s, "原型支撑：研究链路已经沉淀为可运行模块和测试用例", "成果汇编中的原型系统不是概念图，已经对应到模块、脚本、测试和实验资产。", "18")
     modules = [
         ("namespace.py", "能力节点 / FQDN / 层级", "blue"),
         ("stage_r_clean.py", "命名空间候选召回", "blue2"),
@@ -638,13 +638,13 @@ def slide_code(prs):
         add_text(s, v, 7.55 + i * 1.0, 4.22, 0.8, 0.24, size=16, color=["blue", "green", "orange2", "red"][i], bold=True, font="Arial")
         add_text(s, l, 7.52 + i * 1.0, 4.55, 0.95, 0.18, size=7.8, color="muted", align="center")
     add_text(s, "代码证明项目已经从方案说明进入可运行、可测试、可复现实验状态。", 0.9, 6.35, 7.4, 0.28, size=14, color="ink", bold=True)
-    add_footer(s, 13)
+    add_footer(s, 20)
 
 
 def slide_demo(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "Stage C 技术剖面：能力地址到执行实例的硬过滤与可解释排序", "技术难点在于路由结果不能停在能力标签，还要安全落到具体 agent endpoint，且执行层不能改写路由。", "12")
+    add_title(s, "原型系统：能力地址到执行实例的硬过滤与可解释排序", "成果汇编中的原型系统覆盖请求输入、候选组织、路由高亮、候选 Agent 排序和执行状态展示。", "17")
     add_box(s, 0.76, 1.28, 3.65, 4.1, fill="071a46", line="1e83e6")
     add_text(s, "硬过滤条件", 1.06, 1.58, 1.5, 0.24, size=16, color="white", bold=True)
     filters = ["routing_fqdn exact match", "endpoint exists", "status in online/ready/available", "input/output schema covered"]
@@ -679,14 +679,14 @@ def slide_demo(prs):
         add_text(s, f, 9.08, 2.02 + i * 0.34, 2.25, 0.17, size=8.8, color="ink", font="Arial")
     add_text(s, "输出：chosen_agent_fqdn -> endpoint", 9.08, 4.36, 2.35, 0.2, size=10.2, color="green", bold=True, font="Arial")
     add_text(s, "技术价值：把“语义正确”推进到“可执行、可审计、可解释选择”。", 0.92, 6.18, 8.8, 0.24, size=13.5, color="ink", bold=True)
-    add_footer(s, 14)
+    add_footer(s, 19)
 
 
 def slide_dataset(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "数据资产：563 条冻结样本覆盖 9 类领域与复杂语义场景", "主口径采用统一 train/test，历史 split 作为诊断材料。", "13")
-    for i, (v, l, col) in enumerate([("563", "总样本", "blue"), ("450", "train", "green"), ("113", "test", "orange2"), ("9", "领域", "purple"), ("25", "能力基座", "red")]):
+    add_title(s, "研究成果一（1/2）：建立统一评测样本集", "成果汇编优先呈现数据资产：563 条样本、50 个能力节点、45 类主标签和冻结 train/test 口径。", "07")
+    for i, (v, l, col) in enumerate([("563", "总样本", "blue"), ("450", "train", "green"), ("113", "test", "orange2"), ("50", "命名空间节点", "purple"), ("45", "主标签", "red")]):
         x = 0.78 + i * 1.5
         add_text(s, v, x, 1.52, 1.0, 0.38, size=27, color=col, bold=True, font="Arial")
         add_text(s, l, x + 0.03, 2.02, 1.1, 0.18, size=10, color="ink", bold=True)
@@ -704,15 +704,15 @@ def slide_dataset(prs):
     for i, (name, v, col) in enumerate([("multi_intent", 12, "orange2"), ("high_risk", 4, "red")]):
         add_text(s, name, 7.82, 3.55 + i * 0.62, 1.5, 0.2, size=12, color=col, bold=True, font="Arial")
         add_text(s, f"test={v}", 9.42, 3.56 + i * 0.62, 0.8, 0.18, size=11, color="muted", font="Arial")
-    add_text(s, "样本覆盖 finance、security、gov、productivity 等基础资源相关语义任务。", 0.9, 6.25, 8.8, 0.28, size=14, color="ink", bold=True)
-    add_footer(s, 15)
+    add_text(s, "最新报告口径：563 条样本、50 个命名空间节点、45 类主标签，测试集含 38 条相关能力标注、12 条多意图、4 条高风险样本。", 0.9, 6.25, 10.3, 0.28, size=12.3, color="ink", bold=True)
+    add_footer(s, 9)
 
 
 def slide_protocol(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "评测协议：冻结主口径，区分主结果、诊断结果与探索结果", "这页用于回答实验协议、配置选择和结果复现问题。", "14")
-    phases = [("统一样本池", "dev + blind + challenge + holdout2 + holdout3 = 563"), ("train=450", "方案开发 / 阈值选择 / 配置选择"), ("test=113", "一次性主结果报告"), ("holdout3 子集", "协作消融与 bucket 诊断")]
+    add_title(s, "评测协议：冻结主口径，区分主结果、诊断结果与探索结果", "成果汇编把实验资产作为验收证据，必须说明 train/test、配置选择和复现边界。", "08")
+    phases = [("统一样本池", "dev + blind + challenge + holdout2 + holdout3 = 563"), ("train=450", "方案开发 / 阈值选择 / 配置选择"), ("test=113", "一次性主结果报告"), ("配对消融", "train=320 / test=80，三类复核记录完整")]
     for i, (t, b) in enumerate(phases):
         x = 0.85 + i * 3.0
         add_box(s, x, 1.65, 2.3, 1.05, fill="ffffff", line="c8dbef")
@@ -726,13 +726,13 @@ def slide_protocol(prs):
     add_text(s, "指标", 7.3, 3.78, 1.0, 0.24, size=16, color="blue", bold=True)
     for i, m in enumerate(["PrimaryAcc@1", "Acceptable@1", "RelatedRecall", "RelatedPrecision", "Changed/Fix/Regress"]):
         add_text(s, m, 7.35 + (i % 2) * 1.8, 4.18 + (i // 2) * 0.28, 1.5, 0.16, size=8.8, color="muted", font="Arial")
-    add_footer(s, 16)
+    add_footer(s, 10)
 
 
 def slide_results(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "主结果：结构化语义判别是主台阶，职责化复核提供边界修正", "统一 train/test 主协议下，测试集 PrimaryAcc@1 从 0.7876 提升到 0.8850；补充扩展配置达到 0.9292。", "15")
+    add_title(s, "实验验证：结构化判别是主台阶，协作复核提供边界修正", "统一 train/test 主协议下，测试集 PrimaryAcc@1 从 0.7876 提升到 0.8850；补充扩展配置达到 0.9292。", "11")
     add_box(s, 0.72, 1.22, 7.9, 4.65, fill="ffffff", line="c8dbef")
     add_picture(s, FIG_DIR / "01_pooled_test_waterfall.png", 1.0, 1.52, 7.28, 3.95)
     add_box(s, 8.95, 1.3, 3.1, 0.98, fill="e7f1ff", line="7fb5ee")
@@ -745,13 +745,13 @@ def slide_results(prs):
     add_text(s, "0.9292", 9.55, 4.0, 1.7, 0.3, size=23, color="red", bold=True, align="center", font="Arial")
     add_text(s, "扩展配置 / 5 次改写全部修正", 9.12, 4.37, 2.7, 0.16, size=9.0, color="muted", align="center")
     add_text(s, "技术解释：先用结构化候选级证据解决大部分判别问题，再让协作复核只处理低置信、高风险和多意图冲突样本。", 0.92, 6.18, 10.0, 0.24, size=13.2, color="ink", bold=True)
-    add_footer(s, 17)
+    add_footer(s, 13)
 
 
 def slide_stability(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "累计稳定性：新增样本增加复杂度，但没有推翻方法排序", "新版论文补充训练/测试划分累计曲线，用来回答“样本是否太少、结论是否偶然”的评审追问。", "16")
+    add_title(s, "样本池稳定性：新增样本增加复杂度，但没有推翻方法排序", "成果汇编中的图表资产用于回答“样本是否太少、结论是否偶然”的评审追问。", "19")
     add_box(s, 0.66, 1.18, 8.25, 4.85, fill="ffffff", line="c8dbef")
     add_picture(s, FIG_DIR / "09_historical_cumulative_train_test.png", 0.94, 1.52, 7.7, 4.05)
     add_box(s, 9.25, 1.34, 2.78, 1.08, fill="ffffff", line=C["green"])
@@ -764,63 +764,174 @@ def slide_stability(prs):
     add_text(s, "答辩话术", 9.55, 4.46, 1.25, 0.2, size=13.5, color="red", bold=True)
     add_text(s, "不声称覆盖全部未来命名空间；当前 563 样本用于排除“少量早期样本偶然支撑”的解释。", 9.55, 4.74, 1.95, 0.48, size=8.1, color="muted")
     add_text(s, "这一页是新版论文的关键补强：把“项目样本规模是否支撑结论”从口头解释变成可视化证据。", 0.92, 6.28, 10.2, 0.24, size=13.2, color="ink", bold=True)
-    add_footer(s, 18)
+    add_footer(s, 21)
 
 
 def slide_ablation(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "消融结果：收益不是“多问几个智能体”，而是职责视图与授权改判", "协作协议对齐子集 n=80：单角色复核和同质复核均无增益，职责化协作复核达到 0.9250。", "17")
-    add_box(s, 0.75, 1.28, 6.55, 4.55, fill="ffffff", line="c8dbef")
-    add_picture(s, FIG_DIR / "03_holdout3_collaboration_ablation.png", 1.04, 1.62, 5.95, 3.75)
-    add_box(s, 7.65, 1.46, 3.85, 1.05, fill="fff1f1", line="f1c3c3")
-    add_text(s, "0.8625 → 0.9250", 8.0, 1.68, 3.0, 0.28, size=21, color="red", bold=True, align="center", font="Arial")
-    add_text(s, "职责化协作复核（扩展配置）", 8.06, 2.05, 2.8, 0.18, size=9.5, color="muted", align="center")
-    add_box(s, 7.65, 2.8, 3.85, 0.88, fill="ffffff", line="c8dbef")
-    add_text(s, "0 / 0 / 0", 8.15, 3.0, 1.5, 0.24, size=18, color="muted", bold=True, font="Arial")
-    add_text(s, "单角色与同质复核均未产生改写", 9.38, 3.02, 1.65, 0.18, size=8.6, color="muted")
-    add_box(s, 7.65, 3.95, 3.85, 1.65, fill="e7f1ff", line="7fb5ee")
-    add_text(s, "硬结论", 7.95, 4.25, 0.9, 0.22, size=15, color="blue", bold=True)
-    for i, b in enumerate(["附加复核流程本身不足以提升准确率", "互补职责 + 结构化证据 + 授权门槛同时成立才有收益", "5/5/0 说明改判不是盲目放行"]):
-        add_bullet(s, b, 7.98, 4.62 + i * 0.32, 3.0, color="blue", size=8.2)
-    add_footer(s, 19)
+    add_title(s, "配对消融：收益不是“多问几个智能体”，而是职责分工与授权控制", "成果汇编将配对消融作为多智能体协作增益的核心证据：训练侧 13/13/0，测试侧 5/5/0。", "13")
+    add_box(s, 0.75, 1.28, 6.75, 4.55, fill="ffffff", line="c8dbef")
+    add_text(s, "配对消融准确率", 1.05, 1.58, 1.8, 0.22, size=14, color="ink", bold=True)
+    groups = [
+        ("单角色复核", 0.8875, 0.8625),
+        ("同质复核", 0.8844, 0.8625),
+        ("职责化协作", 0.9187, 0.9250),
+    ]
+    base_y = 5.32
+    for i, (name, train, test) in enumerate(groups):
+        x = 1.35 + i * 1.75
+        for j, (val, col, label) in enumerate([(train, "blue", "train"), (test, "orange2", "test")]):
+            h = (val - 0.84) / (0.94 - 0.84) * 2.55
+            bx = x + j * 0.46
+            add_box(s, bx, base_y - h, 0.34, h, fill=C[col], line=C[col], radius=False)
+            add_text(s, f"{val:.4f}", bx - 0.16, base_y - h - 0.22, 0.66, 0.14, size=6.8, color=col, bold=True, align="center", font="Arial")
+            add_text(s, label, bx - 0.04, base_y + 0.08, 0.42, 0.12, size=6.5, color="muted", align="center", font="Arial")
+        add_text(s, name, x - 0.22, 5.58, 1.28, 0.16, size=8.5, color="muted", align="center")
+    add_box(s, 7.85, 1.42, 3.85, 1.05, fill="fff1f1", line="f1c3c3")
+    add_text(s, "13/13/0", 8.15, 1.66, 1.7, 0.28, size=23, color="red", bold=True, font="Arial")
+    add_text(s, "训练侧职责化协作改判/纠错/误改", 9.72, 1.72, 1.62, 0.18, size=8.5, color="muted")
+    add_box(s, 7.85, 2.72, 3.85, 0.88, fill="ffffff", line="c8dbef")
+    add_text(s, "0.8625 → 0.9250", 8.25, 2.92, 2.6, 0.24, size=18, color="red", bold=True, align="center", font="Arial")
+    add_text(s, "测试侧职责化协作提升 +0.0625", 8.42, 3.26, 2.3, 0.16, size=8.8, color="muted", align="center")
+    add_box(s, 7.85, 3.95, 3.85, 1.65, fill="e7f1ff", line="7fb5ee")
+    add_text(s, "硬结论", 8.15, 4.25, 0.9, 0.22, size=15, color="blue", bold=True)
+    for i, b in enumerate(["配对样本要求三类复核记录完整，口径更严谨", "单角色/同质复核测试侧没有超过基线", "职责化分工 + 结构化证据 + 授权门槛共同形成收益"]):
+        add_bullet(s, b, 8.18, 4.62 + i * 0.32, 3.0, color="blue", size=8.0)
+    add_footer(s, 15)
 
 
 def slide_cases(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "典型案例：复杂样本修正可以追到具体语义冲突", "新版论文选取跨域竞争、主次意图拆分和跨域重叠 3 类代表性困难场景。", "18")
+    add_title(s, "典型案例：样本语义揭示具体冲突", "成果汇编中的典型案例负责把实验指标落到“能处理什么复杂语义问题”。", "14")
     cases = [
-        ("000038 / 跨域竞争", "course.education.cn", "docs.productivity.cn", "词面命中误拉向教育域，复核补充文档处理证据"),
-        ("000173 / 主次意图拆分", "flight.travel.cn", "transport.travel.cn", "出行与接驳并存，复核保留接驳任务为主能力"),
-        ("000303 / 跨域重叠", "hotel.travel.cn", "activity.travel.cn", "活动安排与住宿调整同时出现，复核稳定主任务判断"),
+        {
+            "tag": "holdout3_000038 / 跨域竞争",
+            "quote": "请把驻场培训周内容压缩成一页领导评审材料，先搭材料骨架、梳理整体结构。",
+            "wrong": "course.education.cn",
+            "right": "docs.productivity.cn",
+            "mode": "expanded 放行后修正",
+            "basis": "表面词“培训”牵引到课程域；主动作是搭骨架、压材料、梳结构，应落文档处理。",
+            "color": "blue",
+        },
+        {
+            "tag": "holdout3_000173 / 主次意图拆分",
+            "quote": "到西安后还要二次换乘，先看哪种接驳最省事；航班和活动顺手再核对。",
+            "wrong": "flight.travel.cn",
+            "right": "transport.travel.cn",
+            "mode": "single_v2 / expanded 修正",
+            "basis": "航班、活动是并列背景；主任务由“接驳最省事”“二次换乘”限定为交通接驳。",
+            "color": "green",
+        },
+        {
+            "tag": "holdout3_000303 / 跨域重叠",
+            "quote": "杭州临时多出一个晚上，帮我挑一个不折腾的活动；住处是否需要调整也顺手看一下。",
+            "wrong": "hotel.travel.cn",
+            "right": "activity.travel.cn",
+            "mode": "职责化复核稳定修正",
+            "basis": "住处调整只是附带检查；主动作是挑活动，复核后把住宿从主标签降为干扰项。",
+            "color": "orange2",
+        },
     ]
-    x0, y0 = 0.72, 1.38
-    widths = [3.4, 2.4, 2.4, 3.3]
-    headers = ["样本类型", "单智能体结果", "协作复核结果", "修正原因"]
-    for i, h in enumerate(headers):
-        add_box(s, x0 + sum(widths[:i]), y0, widths[i], 0.42, fill=C["navy2"], line=C["navy2"], radius=False)
-        add_text(s, h, x0 + sum(widths[:i]) + 0.08, y0 + 0.12, widths[i] - 0.16, 0.14, size=9.2, color="white", bold=True, align="center")
-    for r, row in enumerate(cases):
-        y = y0 + 0.42 + r * 0.92
-        for c, val in enumerate(row):
-            add_box(s, x0 + sum(widths[:c]), y, widths[c], 0.92, fill="ffffff", line="dbe8f5", radius=False)
-            color = "red" if c == 1 else ("green" if c == 2 else "ink")
-            add_text(s, val, x0 + sum(widths[:c]) + 0.12, y + 0.28, widths[c] - 0.24, 0.24, size=9.3, color=color, bold=(c in [1, 2]), font="Arial" if "." in val else "Microsoft YaHei")
-    add_text(s, "案例价值：评审能看到协作复核具体修正了哪类错误，而不是只看到总体准确率。", 0.82, 5.55, 9.2, 0.28, size=14, color="ink", bold=True)
-    add_footer(s, 20)
+    add_text(s, "样本表达（整理）", 1.02, 1.22, 1.42, 0.18, size=9.4, color="muted", bold=True)
+    add_text(s, "误判路径", 5.68, 1.22, 0.9, 0.18, size=9.4, color="muted", bold=True, align="center")
+    add_text(s, "复核抓住的主任务", 8.55, 1.22, 1.42, 0.18, size=9.4, color="muted", bold=True, align="center")
+    x0, y0 = 0.72, 1.5
+    for i, item in enumerate(cases):
+        y = y0 + i * 1.34
+        add_box(s, x0, y, 11.78, 1.14, fill="ffffff", line="dbe8f5")
+        add_box(s, x0, y, 0.12, 1.14, fill=C[item["color"]], line=C[item["color"]], radius=False)
+        add_text(s, item["tag"], x0 + 0.28, y + 0.16, 2.72, 0.18, size=9.6, color=item["color"], bold=True)
+        add_text(s, item["quote"], x0 + 0.28, y + 0.42, 4.25, 0.38, size=9.0, color="ink", bold=True)
+        add_text(s, "单智能体", x0 + 4.95, y + 0.20, 0.86, 0.16, size=7.8, color="muted", align="center")
+        add_text(s, item["wrong"], x0 + 4.55, y + 0.48, 1.62, 0.18, size=9.2, color="red", bold=True, align="center", font="Arial")
+        add_text(s, "→", x0 + 6.28, y + 0.45, 0.26, 0.18, size=12.5, color="muted", bold=True, align="center", font="Arial")
+        add_text(s, item["mode"], x0 + 6.7, y + 0.20, 1.42, 0.16, size=7.8, color="muted", align="center")
+        add_text(s, item["right"], x0 + 6.46, y + 0.48, 1.9, 0.18, size=9.2, color="green", bold=True, align="center", font="Arial")
+        add_text(s, item["basis"], x0 + 8.72, y + 0.26, 3.0, 0.46, size=8.7, color="muted")
+    add_box(s, 0.82, 5.72, 10.98, 0.58, fill="e7f1ff", line="7fb5ee")
+    add_text(s, "案例价值：不是把样本堆满，而是用“样本语义 + trace 改判路径”证明系统能处理跨域竞争、主次拆分和重叠意图。", 1.08, 5.88, 9.85, 0.18, size=12.0, color="ink", bold=True)
+    add_text(s, "注：页面话术为答辩可读化整理，原始样本与完整 trace 已在实验记录中留存。", 1.1, 6.12, 7.2, 0.14, size=7.5, color="muted")
+    add_footer(s, 16)
+
+
+def slide_collab_trace(prs):
+    s = blank(prs)
+    add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
+    add_title(
+        s,
+        "协作复核可视化：多角色讨论把改判变成可审计过程",
+        "以 holdout3_000303 为例：Stage A 将主任务误判为住宿，Stage B 通过角色投票、证据归因和授权门槛完成改判。",
+        "15",
+    )
+    add_box(s, 0.75, 1.16, 11.75, 0.58, fill="071a46", line="1e83e6")
+    add_text(s, "样本语义", 1.05, 1.35, 0.8, 0.16, size=9.2, color="cyan", bold=True)
+    add_text(s, "杭州临时多出一晚：先挑一个不折腾的活动；住处是否调整只是顺手检查。", 1.95, 1.32, 6.4, 0.18, size=12.6, color="white", bold=True)
+    add_text(s, "trace fields: agent_votes / raw_response / trust_trace / feedback_scores", 8.35, 1.35, 3.4, 0.14, size=7.6, color="d2e6ff", font="Arial")
+
+    # Top decision path.
+    path = [
+        ("Stage A 初判", "hotel.travel.cn", "表面词：住处", "red"),
+        ("触发复核", "low confidence", "多意图 + close score", "orange2"),
+        ("角色讨论", "4 agents", "主任务/风险/层级/偏好", "blue"),
+        ("授权门槛", "3 : 1", "override allowed", "purple"),
+        ("最终落点", "activity.travel.cn", "主任务：挑活动", "green"),
+    ]
+    for i, (t, v, b, col) in enumerate(path):
+        x = 0.82 + i * 2.38
+        add_box(s, x, 2.02, 1.82, 0.84, fill="ffffff", line=C[col])
+        add_text(s, t, x + 0.12, 2.18, 0.9, 0.14, size=7.8, color="muted", bold=True)
+        add_text(s, v, x + 0.12, 2.42, 1.3, 0.16, size=9.6, color=col, bold=True, font="Arial")
+        add_text(s, b, x + 0.12, 2.64, 1.35, 0.12, size=6.9, color="muted")
+        if i < len(path) - 1:
+            add_text(s, "→", x + 1.96, 2.36, 0.22, 0.16, size=13, color="muted", bold=True, align="center", font="Arial")
+
+    # Role lanes.
+    roles = [
+        ("DomainExpert", "主任务匹配", "activity.travel.cn", "“活动”直接命中主任务，住处是附带检查", "green"),
+        ("GovernanceRisk", "风险边界", "hotel.travel.cn", "无高风险，保守支持 Stage A 原判", "red"),
+        ("HierarchyResolver", "层级/粒度", "activity.travel.cn", "住宿节点更像 related，活动才是 primary", "green"),
+        ("UserPreference", "用户偏好", "activity.travel.cn", "“重点/顺手”明确主次，活动优先", "green"),
+    ]
+    for i, (role, focus, vote, note, col) in enumerate(roles):
+        x = 0.92 + (i % 2) * 5.05
+        y = 3.25 + (i // 2) * 0.98
+        add_box(s, x, y, 4.64, 0.76, fill="ffffff", line=C[col])
+        add_circle(s, x + 0.22, y + 0.22, 0.24, col)
+        add_text(s, str(i + 1), x + 0.22, y + 0.29, 0.24, 0.1, size=6.5, color="white", bold=True, align="center", valign="middle", font="Arial")
+        add_text(s, role, x + 0.58, y + 0.15, 1.2, 0.16, size=9.2, color="ink", bold=True, font="Arial")
+        add_text(s, focus, x + 1.78, y + 0.16, 0.9, 0.12, size=7.4, color="muted", align="center")
+        add_text(s, vote, x + 2.76, y + 0.14, 1.35, 0.14, size=8.2, color=col, bold=True, font="Arial")
+        add_text(s, note, x + 0.58, y + 0.43, 3.52, 0.14, size=7.6, color="muted")
+
+    # Audit gate.
+    add_box(s, 10.72, 3.25, 1.82, 1.74, fill="fff1f1", line="f1c3c3")
+    add_text(s, "TRUST GATE", 10.99, 3.48, 1.18, 0.16, size=10.5, color="red", bold=True, align="center", font="Arial")
+    add_text(s, "override votes", 11.02, 3.82, 0.95, 0.12, size=7.0, color="muted", align="center", font="Arial")
+    add_text(s, "3", 10.86, 3.98, 0.42, 0.26, size=21, color="green", bold=True, align="center", font="Arial")
+    add_text(s, ":", 11.29, 4.03, 0.12, 0.16, size=12, color="muted", bold=True, align="center", font="Arial")
+    add_text(s, "1", 11.44, 3.98, 0.42, 0.26, size=21, color="red", bold=True, align="center", font="Arial")
+    add_text(s, "support Stage A", 10.89, 4.36, 1.25, 0.12, size=7.0, color="muted", align="center", font="Arial")
+    add_text(s, "allowed", 11.06, 4.65, 0.88, 0.16, size=10.4, color="green", bold=True, align="center", font="Arial")
+
+    add_box(s, 0.9, 5.55, 10.96, 0.68, fill="e7f1ff", line="7fb5ee")
+    add_text(s, "可审计证据", 1.18, 5.76, 0.95, 0.16, size=10.4, color="blue", bold=True)
+    for i, txt in enumerate(["agent_votes 保存每个角色的投票", "raw_response 保存 LLM 原始结构化回复", "trust_trace 记录分歧、票数和授权结果", "feedback_scores 记录候选得分和共识增益"]):
+        add_bullet(s, txt, 2.35 + (i % 2) * 4.35, 5.72 + (i // 2) * 0.25, 3.55, color="blue", size=7.6)
+    add_footer(s, 17)
 
 
 def slide_contribution(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "突破创新：把“智能体能力入口选择”做成可验证的技术机制", "创新不在简单堆叠智能体，而在候选内约束、结构化证据、职责化复核和授权改判的组合设计。", "19")
+    add_title(s, "突破创新：把多智能体协作与可信认知标识压实到可验证链路", "最新报告口径强调项目不是单点算法，而是能力组织、协作共识、可信留痕和原型验证的组合突破。", "20")
     items = [
-        ("接口层问题定义", "发现/注册之后、执行之前，单独定义能力地址语义路由"),
-        ("候选内结构化裁决", "将大模型输出压缩为 decision packet、score、margin 和冲突摘要"),
-        ("职责化协作复核", "任务匹配、风险治理、层级解析、用户偏好读取不同证据视图"),
-        ("显式授权改判", "票数、共识增益、主任务证据和敏感改判门槛共同控制回归"),
-        ("统一过程轨迹", "Stage R/A/B/C 全链路记录支持样本级回放、归因和审计"),
+        ("能力命名突破", "构建能力逻辑地址与实例逻辑地址分层表达，支撑候选组织"),
+        ("结构化判别突破", "将大模型判断压缩为 decision packet、score、margin 和冲突摘要"),
+        ("职责化协作突破", "任务匹配、治理风险、层级解析、用户偏好形成异质证据视图"),
+        ("显式授权突破", "复核触发与最终改判解耦，用票数、共识增益和证据门槛控制误改"),
+        ("可信留痕突破", "候选、判断、复核、授权、执行落点全链路记录，支撑回放和审计"),
     ]
     for i, (t, b) in enumerate(items):
         x = 0.85 + (i % 3) * 4.0
@@ -830,54 +941,55 @@ def slide_contribution(prs):
         add_text(s, t, x + 0.72, y + 0.2, 1.75, 0.22, size=14.2, color="ink", bold=True)
         add_text(s, b, x + 0.72, y + 0.56, 2.25, 0.34, size=10.2, color="muted")
     add_box(s, 1.0, 5.42, 10.8, 0.78, fill="e7f1ff", line="7fb5ee")
-    add_text(s, "攻关结果：形成“受限命名空间—候选内判别—职责化复核—执行落点—可信轨迹”的可复用技术链条。", 1.3, 5.64, 9.4, 0.2, size=13.0, color="ink", bold=True)
-    add_text(s, "实验层面用 563 冻结样本、累计稳定性、协作消融和典型案例证明该链条不是概念拼接。", 1.3, 5.93, 8.7, 0.16, size=9.8, color="muted")
-    add_footer(s, 21)
+    add_text(s, "攻关结果：形成“能力命名—结构化判别—职责化复核—可信过程记录—执行落点衔接”的可复用技术链条。", 1.3, 5.64, 9.4, 0.2, size=12.8, color="ink", bold=True)
+    add_text(s, "实验层面用 563 冻结样本、累计稳定性、配对消融和典型案例证明该链条不是概念拼接。", 1.3, 5.93, 8.7, 0.16, size=9.8, color="muted")
+    add_footer(s, 22)
 
 
 def slide_evidence(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "成果证据：新版论文、报告、专利、宣传和图示材料已经成套沉淀", "这一页把文档成果显性化，避免答辩只停留在技术流程。", "20")
+    add_title(s, "研究产出：五类成果进入验收材料包", "按成果汇编口径组织，不把论文、报告、专利、原型和数据实验割裂展示。", "21")
     add_picture(s, STRONG_ASSET_DIR / "evidence_wall.png", 0.62, 1.22, 8.4, 4.4)
     add_box(s, 9.35, 1.5, 2.6, 3.7, fill="071a46", line="1e83e6")
-    add_text(s, "材料清单", 9.65, 1.85, 1.3, 0.24, size=16, color="white", bold=True)
-    for i, b in enumerate(["新版论文投稿稿", "技术研究报告", "专利技术交底书", "权利要求书/说明书", "成果宣传稿", "验收报告填写版"]):
+    add_text(s, "成果清单", 9.65, 1.85, 1.3, 0.24, size=16, color="white", bold=True)
+    for i, b in enumerate(["原型系统", "技术报告", "论文投稿稿", "发明专利材料", "数据与实验资产", "成果汇编/宣传稿"]):
         add_bullet(s, b, 9.68, 2.32 + i * 0.34, 1.8, color="cyan", size=9.6, text_color="d2e6ff")
-    add_text(s, "材料体系已经覆盖评审、投稿、专利、宣传和后续报送不同场景。", 0.85, 6.25, 8.0, 0.28, size=14, color="ink", bold=True)
-    add_footer(s, 22)
+    add_text(s, "成果汇编作为“证据总账”：原型、报告、论文、专利和实验资产均有对应材料，正式受理/展示证明按管理口径补齐。", 0.85, 6.25, 10.4, 0.28, size=12.8, color="ink", bold=True)
+    add_footer(s, 23)
 
 
 def slide_acceptance(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "考核指标完成情况：硬指标均已形成对应产物", "需补充正式专利提交/展示记录时，可在最终版替换为回执或会议证明。", "21")
+    add_title(s, "考核指标对应：成果汇编已逐项落到证明材料", "把任务书指标转成验收表，而不是只列技术亮点。专利正式受理号、展示证明等以最终附件补充。", "22")
     rows = [
-        ("多智能体协作原型框架", "已完成", "覆盖候选组织、结构化裁决、协作复核、过程记录和结果展示"),
-        ("技术研究报告或论文", "已完成", "技术报告、论文稿、图表、实验协议与结果分析齐备"),
-        ("发明专利", "材料已形成", "交底书、权利要求书、说明书摘要和附图已整理"),
-        ("对内成果展示或汇报演示", "已形成支撑", "PPT、Demo 脚本、原型截图/录屏可继续补强"),
+        ("原型系统", "已完成", "能力命名与语义路由控制台，覆盖请求输入、候选组织、协作复核、过程记录和执行映射"),
+        ("算法方法", "已完成", "结构化语义路由、职责化协作复核、执行实例过滤和过程轨迹模型"),
+        ("数据实验", "已完成", "563 样本、50 个能力节点、45 类主标签，完成冻结 train/test、配对消融和稳定性分析"),
+        ("论文报告", "已完成", "技术报告、论文投稿稿、成果汇编和验收报告填写版已经形成"),
+        ("知识产权", "状态待补", "专利申请材料、交底书、权利要求、说明书摘要和附图已形成，受理证明待正式补充"),
     ]
     x0, y0 = 0.82, 1.35
-    widths = [3.2, 1.55, 6.35]
+    widths = [2.55, 1.35, 7.2]
     for i, h in enumerate(["考核指标", "状态", "证据说明"]):
         add_box(s, x0 + sum(widths[:i]), y0, widths[i], 0.46, fill=C["navy2"], line=C["navy2"], radius=False)
         add_text(s, h, x0 + sum(widths[:i]) + 0.08, y0 + 0.12, widths[i] - 0.16, 0.16, size=9.8, color="white", bold=True, align="center")
     for r, row in enumerate(rows):
-        y = y0 + 0.46 + r * 0.88
+        y = y0 + 0.46 + r * 0.74
         for c, val in enumerate(row):
-            add_box(s, x0 + sum(widths[:c]), y, widths[c], 0.88, fill="ffffff", line="dbe8f5", radius=False)
-            color = "green" if c == 1 else "ink"
-            add_text(s, val, x0 + sum(widths[:c]) + 0.12, y + 0.28, widths[c] - 0.24, 0.22, size=10.5, color=color, bold=(c <= 1))
+            add_box(s, x0 + sum(widths[:c]), y, widths[c], 0.74, fill="ffffff", line="dbe8f5", radius=False)
+            color = "orange2" if val == "状态待补" else ("green" if c == 1 else "ink")
+            add_text(s, val, x0 + sum(widths[:c]) + 0.12, y + 0.22, widths[c] - 0.24, 0.22, size=9.5, color=color, bold=(c <= 1))
     add_box(s, 1.0, 5.7, 10.5, 0.62, fill="e7f1ff", line="7fb5ee")
-    add_text(s, "验收建议：最终提交包按 PPT、研究报告/论文、专利、原型演示、实验复现、附录材料六类组织。", 1.28, 5.92, 8.9, 0.2, size=12.5, color="ink", bold=True)
-    add_footer(s, 23)
+    add_text(s, "验收提交包建议按成果汇编目录组装：原型系统、算法方法、数据实验、论文报告、知识产权、展示证明。", 1.28, 5.92, 9.3, 0.2, size=12.2, color="ink", bold=True)
+    add_footer(s, 24)
 
 
 def slide_risks(prs):
     s = blank(prs)
     add_picture(s, ASSET_DIR / "light_texture.png", 0, 0, SLIDE_W, SLIDE_H)
-    add_title(s, "问题边界与下一步：保留严谨表述，避免过度承诺", "评审往往会追问规模化、成本、外推性和端到端联调，这页提前回答。", "22")
+    add_title(s, "问题边界与下一步：保留严谨表述，避免过度承诺", "评审往往会追问规模化、成本、外推性和端到端联调，这页提前回答。", "23")
     risks = [
         ("外推性", "现有结果建立在冻结样本与后验诊断池上，后续需扩展独立验证样本。"),
         ("运行成本", "已用慢路径率与修正收益做代理，真实 token、时延、稳定性仍需统一记录。"),
@@ -892,7 +1004,7 @@ def slide_risks(prs):
         add_text(s, b, x + 1.38, y + 0.2, 3.15, 0.36, size=10.5, color="muted")
     add_box(s, 1.0, 5.25, 10.8, 0.86, fill="071a46", line="1e83e6")
     add_text(s, "后续重点：扩大验证范围、完善质量/成本/时延日志、推动演示端联调、凝练标准化表达与业务试点。", 1.28, 5.55, 9.3, 0.24, size=13.5, color="white", bold=True)
-    add_footer(s, 24)
+    add_footer(s, 25)
 
 
 def slide_close(prs):
@@ -928,18 +1040,19 @@ def build():
         slide_object,
         slide_architecture,
         slide_review_architecture,
-        slide_stage_r,
-        slide_stage_a,
-        slide_stage_b,
-        slide_trace,
-        slide_code,
-        slide_demo,
         slide_dataset,
         slide_protocol,
+        slide_stage_r,
+        slide_stage_a,
         slide_results,
-        slide_stability,
+        slide_stage_b,
         slide_ablation,
         slide_cases,
+        slide_collab_trace,
+        slide_trace,
+        slide_demo,
+        slide_code,
+        slide_stability,
         slide_contribution,
         slide_evidence,
         slide_acceptance,

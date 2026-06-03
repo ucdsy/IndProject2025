@@ -1,0 +1,635 @@
+{
+  "replay_mode": "responsibility_only",
+  "trace_path": "artifacts/stage_b/hard_routing_boundary_v1_20260602/heterogeneous/hard_routing_boundary_v1_joined.stage_b_v3_20260331_hetero.jsonl",
+  "samples": 500,
+  "PrimaryAcc@1": 0.624,
+  "AcceptablePrimary@1": 0.68,
+  "stage_b_changed_primary": 47,
+  "stage_b_fixed_primary": 45,
+  "stage_b_regressed_primary": 0,
+  "reason_histogram": {
+    "keep_stage_a_top": 261,
+    "no_stage_b": 103,
+    "override": 47,
+    "cross_l1_override_requires_stage_a_score_gain|missing_governance_clearance|sensitive_override_requires_primary_hits|sensitive_override_requires_stronger_explicit_support": 6,
+    "cross_l1_override_requires_stage_a_score_gain|sensitive_override_requires_primary_hits|sensitive_override_requires_stronger_explicit_support": 46,
+    "missing_user_preference_confirmation": 2,
+    "sensitive_override_requires_primary_hits|sensitive_override_requires_stronger_explicit_support": 32,
+    "insufficient_score_delta|sensitive_override_requires_primary_hits|sensitive_override_requires_stronger_explicit_support": 1,
+    "insufficient_score_delta": 1,
+    "cross_l1_override_requires_stage_a_score_gain|insufficient_score_delta|missing_governance_clearance|sensitive_override_requires_primary_hits|sensitive_override_requires_stronger_explicit_support": 1
+  },
+  "changed_samples": [
+    {
+      "sample_id": "hard_boundary_v1_000017",
+      "stage_a_primary_fqdn": "transport.travel.cn",
+      "stage_b_trace_primary_fqdn": "hangzhou.itinerary.travel.cn",
+      "simulated_primary_fqdn": "hangzhou.itinerary.travel.cn",
+      "ground_truth_fqdn": "activity.travel.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000027",
+      "stage_a_primary_fqdn": "transport.travel.cn",
+      "stage_b_trace_primary_fqdn": "activity.travel.cn",
+      "simulated_primary_fqdn": "activity.travel.cn",
+      "ground_truth_fqdn": "activity.travel.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000029",
+      "stage_a_primary_fqdn": "transport.travel.cn",
+      "stage_b_trace_primary_fqdn": "activity.travel.cn",
+      "simulated_primary_fqdn": "activity.travel.cn",
+      "ground_truth_fqdn": "activity.travel.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000030",
+      "stage_a_primary_fqdn": "nutrition.health.cn",
+      "stage_b_trace_primary_fqdn": "fitness.health.cn",
+      "simulated_primary_fqdn": "fitness.health.cn",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000032",
+      "stage_a_primary_fqdn": "nutrition.health.cn",
+      "stage_b_trace_primary_fqdn": "fitness.health.cn",
+      "simulated_primary_fqdn": "fitness.health.cn",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000033",
+      "stage_a_primary_fqdn": "nutrition.health.cn",
+      "stage_b_trace_primary_fqdn": "fitness.health.cn",
+      "simulated_primary_fqdn": "fitness.health.cn",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000035",
+      "stage_a_primary_fqdn": "nutrition.health.cn",
+      "stage_b_trace_primary_fqdn": "fitness.health.cn",
+      "simulated_primary_fqdn": "fitness.health.cn",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000036",
+      "stage_a_primary_fqdn": "nutrition.health.cn",
+      "stage_b_trace_primary_fqdn": "fitness.health.cn",
+      "simulated_primary_fqdn": "fitness.health.cn",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000037",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_trace_primary_fqdn": "nutrition.health.cn",
+      "simulated_primary_fqdn": "nutrition.health.cn",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000041",
+      "stage_a_primary_fqdn": "meeting.productivity.cn",
+      "stage_b_trace_primary_fqdn": "docs.productivity.cn",
+      "simulated_primary_fqdn": "docs.productivity.cn",
+      "ground_truth_fqdn": "docs.productivity.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000042",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_trace_primary_fqdn": "course.education.cn",
+      "simulated_primary_fqdn": "course.education.cn",
+      "ground_truth_fqdn": "course.education.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000043",
+      "stage_a_primary_fqdn": "transport.travel.cn",
+      "stage_b_trace_primary_fqdn": "activity.travel.cn",
+      "simulated_primary_fqdn": "activity.travel.cn",
+      "ground_truth_fqdn": "activity.travel.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000044",
+      "stage_a_primary_fqdn": "transport.travel.cn",
+      "stage_b_trace_primary_fqdn": "activity.travel.cn",
+      "simulated_primary_fqdn": "activity.travel.cn",
+      "ground_truth_fqdn": "activity.travel.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000045",
+      "stage_a_primary_fqdn": "transport.travel.cn",
+      "stage_b_trace_primary_fqdn": "activity.travel.cn",
+      "simulated_primary_fqdn": "activity.travel.cn",
+      "ground_truth_fqdn": "activity.travel.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000046",
+      "stage_a_primary_fqdn": "transport.travel.cn",
+      "stage_b_trace_primary_fqdn": "activity.travel.cn",
+      "simulated_primary_fqdn": "activity.travel.cn",
+      "ground_truth_fqdn": "activity.travel.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000047",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_trace_primary_fqdn": "nutrition.health.cn",
+      "simulated_primary_fqdn": "nutrition.health.cn",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000053",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_trace_primary_fqdn": "course.education.cn",
+      "simulated_primary_fqdn": "course.education.cn",
+      "ground_truth_fqdn": "course.education.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000055",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_trace_primary_fqdn": "nutrition.health.cn",
+      "simulated_primary_fqdn": "nutrition.health.cn",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000057",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_trace_primary_fqdn": "nutrition.health.cn",
+      "simulated_primary_fqdn": "nutrition.health.cn",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000059",
+      "stage_a_primary_fqdn": "fitness.health.cn",
+      "stage_b_trace_primary_fqdn": "nutrition.health.cn",
+      "simulated_primary_fqdn": "nutrition.health.cn",
+      "ground_truth_fqdn": "nutrition.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000060",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_trace_primary_fqdn": "course.education.cn",
+      "simulated_primary_fqdn": "course.education.cn",
+      "ground_truth_fqdn": "course.education.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000061",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_trace_primary_fqdn": "course.education.cn",
+      "simulated_primary_fqdn": "course.education.cn",
+      "ground_truth_fqdn": "course.education.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000062",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_trace_primary_fqdn": "course.education.cn",
+      "simulated_primary_fqdn": "course.education.cn",
+      "ground_truth_fqdn": "course.education.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000063",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_trace_primary_fqdn": "course.education.cn",
+      "simulated_primary_fqdn": "course.education.cn",
+      "ground_truth_fqdn": "course.education.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000064",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_trace_primary_fqdn": "course.education.cn",
+      "simulated_primary_fqdn": "course.education.cn",
+      "ground_truth_fqdn": "course.education.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000065",
+      "stage_a_primary_fqdn": "tutoring.education.cn",
+      "stage_b_trace_primary_fqdn": "course.education.cn",
+      "simulated_primary_fqdn": "course.education.cn",
+      "ground_truth_fqdn": "course.education.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000078",
+      "stage_a_primary_fqdn": "nutrition.health.cn",
+      "stage_b_trace_primary_fqdn": "fitness.health.cn",
+      "simulated_primary_fqdn": "fitness.health.cn",
+      "ground_truth_fqdn": "fitness.health.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000171",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000180",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000189",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000198",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000207",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000216",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000225",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000234",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000243",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000252",
+      "stage_a_primary_fqdn": "tax.finance.cn",
+      "stage_b_trace_primary_fqdn": "reimburse.invoice.finance.cn",
+      "simulated_primary_fqdn": "reimburse.invoice.finance.cn",
+      "ground_truth_fqdn": "reimburse.invoice.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000262",
+      "stage_a_primary_fqdn": "invoice.finance.cn",
+      "stage_b_trace_primary_fqdn": "budget.finance.cn",
+      "simulated_primary_fqdn": "budget.finance.cn",
+      "ground_truth_fqdn": "budget.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000271",
+      "stage_a_primary_fqdn": "invoice.finance.cn",
+      "stage_b_trace_primary_fqdn": "budget.finance.cn",
+      "simulated_primary_fqdn": "budget.finance.cn",
+      "ground_truth_fqdn": "budget.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000280",
+      "stage_a_primary_fqdn": "invoice.finance.cn",
+      "stage_b_trace_primary_fqdn": "budget.finance.cn",
+      "simulated_primary_fqdn": "budget.finance.cn",
+      "ground_truth_fqdn": "budget.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000298",
+      "stage_a_primary_fqdn": "invoice.finance.cn",
+      "stage_b_trace_primary_fqdn": "budget.finance.cn",
+      "simulated_primary_fqdn": "budget.finance.cn",
+      "ground_truth_fqdn": "budget.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000307",
+      "stage_a_primary_fqdn": "invoice.finance.cn",
+      "stage_b_trace_primary_fqdn": "invoice.finance.cn",
+      "simulated_primary_fqdn": "budget.finance.cn",
+      "ground_truth_fqdn": "budget.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000316",
+      "stage_a_primary_fqdn": "invoice.finance.cn",
+      "stage_b_trace_primary_fqdn": "budget.finance.cn",
+      "simulated_primary_fqdn": "budget.finance.cn",
+      "ground_truth_fqdn": "budget.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000334",
+      "stage_a_primary_fqdn": "invoice.finance.cn",
+      "stage_b_trace_primary_fqdn": "budget.finance.cn",
+      "simulated_primary_fqdn": "budget.finance.cn",
+      "ground_truth_fqdn": "budget.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000343",
+      "stage_a_primary_fqdn": "invoice.finance.cn",
+      "stage_b_trace_primary_fqdn": "budget.finance.cn",
+      "simulated_primary_fqdn": "budget.finance.cn",
+      "ground_truth_fqdn": "budget.finance.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000441",
+      "stage_a_primary_fqdn": "summary.meeting.productivity.cn",
+      "stage_b_trace_primary_fqdn": "schedule.meeting.productivity.cn",
+      "simulated_primary_fqdn": "schedule.meeting.productivity.cn",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    },
+    {
+      "sample_id": "hard_boundary_v1_000474",
+      "stage_a_primary_fqdn": "docs.productivity.cn",
+      "stage_b_trace_primary_fqdn": "meeting.productivity.cn",
+      "simulated_primary_fqdn": "meeting.productivity.cn",
+      "ground_truth_fqdn": "meeting.productivity.cn",
+      "reason": "override",
+      "sensitive_override_flags": {
+        "high_risk_override": false,
+        "hierarchical_override": false,
+        "cross_l1_override": false
+      }
+    }
+  ]
+}
