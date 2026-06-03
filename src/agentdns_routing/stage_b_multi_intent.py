@@ -11,6 +11,8 @@ from typing import Any, Protocol
 
 from openai import OpenAI
 
+from .llm_json import load_json_object as _load_json_object
+from .llm_json import should_retry_without_json_mode as _should_retry_without_json_mode
 from .namespace import NamespaceResolver, validate_fqdn
 
 
@@ -197,36 +199,6 @@ def _user_prompt(packet: dict[str, Any]) -> str:
         "7. 如果候选与已选候选属于父子或同链路重复，保留最能直接承接用户需求的粒度。\n"
         "8. 输出字段：proposed_selected_fqdns, keep_fqdns, add_fqdns, remove_fqdns, confidence, rationale, candidate_decisions。\n\n"
         f"{json.dumps(packet, ensure_ascii=False, indent=2)}"
-    )
-
-
-def _load_json_object(text: str) -> dict[str, Any]:
-    stripped = text.strip()
-    if not stripped:
-        raise ValueError("Empty LLM response")
-    try:
-        return json.loads(stripped)
-    except json.JSONDecodeError:
-        start = stripped.find("{")
-        end = stripped.rfind("}")
-        if start < 0 or end <= start:
-            raise
-        return json.loads(stripped[start : end + 1])
-
-
-def _should_retry_without_json_mode(exc: Exception) -> bool:
-    message = str(exc).lower()
-    return isinstance(exc, TypeError) or any(
-        token in message
-        for token in (
-            "response_format",
-            "json_object",
-            "unexpected keyword",
-            "unknown parameter",
-            "not supported",
-            "unsupported",
-            "extra inputs are not permitted",
-        )
     )
 
 

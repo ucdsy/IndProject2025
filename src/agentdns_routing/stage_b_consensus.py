@@ -11,6 +11,8 @@ from typing import Any, Protocol
 
 from openai import OpenAI
 
+from .llm_json import load_json_object as _load_json_object
+from .llm_json import should_retry_without_json_mode as _should_retry_without_json_mode
 from .namespace import NamespaceResolver, validate_fqdn
 from .related_v2 import RelatedV2Config, RelatedV2LLMClient, attach_related_v2_final_fields
 from .routing_chain import attach_stage_b_final_fields
@@ -169,36 +171,6 @@ def _coerce_text_list(value: Any, limit: int = 3) -> list[str]:
     return items
 
 
-def _load_json_object(text: str) -> dict[str, Any]:
-    stripped = text.strip()
-    if not stripped:
-        raise ValueError("Empty Stage B LLM response")
-    try:
-        return json.loads(stripped)
-    except json.JSONDecodeError:
-        start = stripped.find("{")
-        end = stripped.rfind("}")
-        if start < 0 or end <= start:
-            raise
-        return json.loads(stripped[start : end + 1])
-
-
-def _should_retry_without_json_mode(exc: Exception) -> bool:
-    message = str(exc).lower()
-    return isinstance(exc, TypeError) or any(
-        token in message
-        for token in (
-            "response_format",
-            "json_object",
-            "unexpected keyword",
-            "unknown parameter",
-            "not supported",
-            "unsupported",
-            "extra inputs are not permitted",
-        )
-    )
-
-
 class OpenAICompatibleStageBLLMClient:
     def __init__(
         self,
@@ -233,7 +205,7 @@ class OpenAICompatibleStageBLLMClient:
                 raise
             response = self._client.chat.completions.create(**request_kwargs)
         content = response.choices[0].message.content or ""
-        decision = _load_json_object(content)
+        decision = _load_json_object(content, empty_message="Empty Stage B LLM response")
         return decision, content
 
 

@@ -1,5 +1,11 @@
 # Related v2 架构设计（2026-04-01）
 
+> 当前状态更新（2026-06-03）:
+> - 本文档保留 related v2 的设计演进记录，但 related v2 当前不作为冻结 primary-routing 主实验链路。
+> - 论文/结项主线仍按 `Stage R -> Stage A 单智能体结构化语义判别 -> Stage B 职责化协作复核 -> expanded gate` 组织。
+> - related v2 更适合作为在线 sidecar：在 primary 决策后生成 related 候选，供界面推荐、用户勾选或补充实验使用。
+> - 多意图问题已单独抽象为集合路由任务，使用 `gold_intent_fqdns` 和集合指标，不再强行通过 primary/related 拆分解释。
+
 > 目的: 将 `related` 从当前与 `primary` 近似共用的 `R -> A -> B` 对称链中拆出来，改成 **query-anchored、primary-aware、LLM-centered** 的独立 related 子系统。
 >
 > 设计结论:

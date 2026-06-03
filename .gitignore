@@ -1,2 +1,8 @@
 __pycache__/
 .DS_Store
+.venv*/
+venv/
+env/
+.playwright-cli/
+output/playwright/
+tmp/runtime_logs/

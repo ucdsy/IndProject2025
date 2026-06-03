@@ -10,6 +10,8 @@ from typing import Any, Protocol
 
 from openai import OpenAI
 
+from .llm_json import load_json_object as _load_json_object
+from .llm_json import should_retry_without_json_mode as _should_retry_without_json_mode
 from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
 from .stage_r_clean import StageRCleanConfig, score_node
 
@@ -98,7 +100,7 @@ class OpenAICompatibleRelatedV2LLMClient:
                 raise
             response = self._client.chat.completions.create(**request_kwargs)
         content = response.choices[0].message.content or ""
-        decision = _load_json_object(content)
+        decision = _load_json_object(content, empty_message="Empty related_v2 LLM response")
         return decision, content
 
 
@@ -146,36 +148,6 @@ def _dedupe_texts(items: list[str]) -> list[str]:
         seen.add(normalized)
         ordered.append(normalized)
     return ordered
-
-
-def _load_json_object(text: str) -> dict[str, Any]:
-    stripped = text.strip()
-    if not stripped:
-        raise ValueError("Empty related_v2 LLM response")
-    try:
-        return json.loads(stripped)
-    except json.JSONDecodeError:
-        start = stripped.find("{")
-        end = stripped.rfind("}")
-        if start < 0 or end <= start:
-            raise
-        return json.loads(stripped[start : end + 1])
-
-
-def _should_retry_without_json_mode(exc: Exception) -> bool:
-    message = str(exc).lower()
-    return isinstance(exc, TypeError) or any(
-        token in message
-        for token in (
-            "response_format",
-            "json_object",
-            "unexpected keyword",
-            "unknown parameter",
-            "not supported",
-            "unsupported",
-            "extra inputs are not permitted",
-        )
-    )
 
 
 def _safe_float(value: Any, default: float = 0.0) -> float:

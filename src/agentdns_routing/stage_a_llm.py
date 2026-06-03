@@ -10,6 +10,8 @@ from typing import Any, Protocol
 
 from openai import OpenAI
 
+from .llm_json import load_json_object as _load_json_object
+from .llm_json import should_retry_without_json_mode as _should_retry_without_json_mode
 from .namespace import NamespaceResolver, RoutingNode, validate_fqdn
 from .related_v2 import RelatedV2Config, RelatedV2LLMClient, attach_related_v2_final_fields
 from .routing_chain import attach_stage_a_final_fields
@@ -218,20 +220,6 @@ def _user_prompt(packet: dict[str, Any]) -> str:
     )
 
 
-def _load_json_object(text: str) -> dict[str, Any]:
-    stripped = text.strip()
-    if not stripped:
-        raise ValueError("Empty LLM response")
-    try:
-        return json.loads(stripped)
-    except json.JSONDecodeError:
-        start = stripped.find("{")
-        end = stripped.rfind("}")
-        if start < 0 or end <= start:
-            raise
-        return json.loads(stripped[start : end + 1])
-
-
 def _candidate_desc(node: RoutingNode | None) -> str:
     if not node:
         return ""
@@ -242,22 +230,6 @@ def _truncate_aliases(node: RoutingNode | None, limit: int = 5) -> list[str]:
     if not node:
         return []
     return list(node.aliases[:limit])
-
-
-def _should_retry_without_json_mode(exc: Exception) -> bool:
-    message = str(exc).lower()
-    return isinstance(exc, TypeError) or any(
-        token in message
-        for token in (
-            "response_format",
-            "json_object",
-            "unexpected keyword",
-            "unknown parameter",
-            "not supported",
-            "unsupported",
-            "extra inputs are not permitted",
-        )
-    )
 
 
 def _minmax_norm(values: dict[str, float], spread_floor: float = 0.5) -> dict[str, float]:
